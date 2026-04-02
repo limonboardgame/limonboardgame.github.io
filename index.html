@@ -290,6 +290,144 @@
             50% { transform: translateY(-30px) rotate(15deg); }
         }
 
+        /* ===== BROWSE LIBRARY BUTTON ===== */
+        .browse-library-btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            margin-top: 1.5rem; padding: 0.8rem 1.8rem; border-radius: 50px; border: none;
+            background: var(--gradient-warm); color: #2C3A1A;
+            font-weight: 600; font-size: 0.95rem; cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: 'Outfit', sans-serif;
+        }
+        .browse-library-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(247,208,0,0.35); }
+
+        /* ===== GAME LIBRARY MODAL ===== */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 200;
+            background: rgba(44, 58, 26, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+            padding: 1.5rem;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-overlay.active .modal-container {
+            transform: translateY(0) scale(1); opacity: 1;
+        }
+
+        .modal-container {
+            background: #FFFEF5;
+            border-radius: 20px;
+            width: 100%; max-width: 960px; max-height: 85vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 24px 80px rgba(44, 58, 26, 0.2), 0 0 0 1px rgba(247, 208, 0, 0.2);
+            transform: translateY(30px) scale(0.96); opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 1.8rem 2rem 1rem;
+            border-bottom: 1px solid rgba(44,58,26,0.08);
+            display: flex; flex-direction: column; gap: 1rem;
+            flex-shrink: 0;
+        }
+        .modal-header-top {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem; font-weight: 700; color: #2C3A1A;
+        }
+        .modal-header h2 span {
+            background: var(--gradient-warm); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .modal-close {
+            width: 40px; height: 40px; border-radius: 50%;
+            border: 1px solid rgba(44,58,26,0.1); background: #FFF9E0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; cursor: pointer;
+            transition: background 0.2s, transform 0.2s; color: #2C3A1A;
+        }
+        .modal-close:hover { background: rgba(247,208,0,0.25); transform: scale(1.1); }
+
+        .modal-search-row {
+            display: flex; gap: 0.8rem; align-items: center;
+        }
+        .modal-search {
+            flex: 1; padding: 0.7rem 1rem 0.7rem 2.6rem;
+            border-radius: 12px; border: 1px solid rgba(44,58,26,0.12);
+            background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238A9A78' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E") 0.85rem center no-repeat;
+            font-size: 0.95rem; font-family: 'Outfit', sans-serif;
+            color: #2C3A1A; outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .modal-search::placeholder { color: #8A9A78; }
+        .modal-search:focus { border-color: #F7D000; box-shadow: 0 0 0 3px rgba(247,208,0,0.15); }
+
+        .modal-filters {
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+            padding: 0 2rem 1rem;
+            border-bottom: 1px solid rgba(44,58,26,0.06);
+            flex-shrink: 0;
+        }
+        .filter-btn {
+            padding: 0.35rem 0.9rem; border-radius: 50px;
+            border: 1px solid rgba(44,58,26,0.12); background: transparent;
+            color: #5A6B47; font-size: 0.8rem; font-weight: 500;
+            cursor: pointer; transition: 0.2s; font-family: 'Outfit', sans-serif;
+        }
+        .filter-btn:hover { background: rgba(247,208,0,0.1); border-color: rgba(247,208,0,0.3); }
+        .filter-btn.active {
+            background: #F7D000; color: #2C3A1A; border-color: #F7D000; font-weight: 600;
+        }
+
+        .modal-body {
+            overflow-y: auto; padding: 1.5rem 2rem 2rem;
+            flex: 1;
+        }
+        .modal-body::-webkit-scrollbar { width: 6px; }
+        .modal-body::-webkit-scrollbar-track { background: transparent; }
+        .modal-body::-webkit-scrollbar-thumb { background: rgba(247,208,0,0.3); border-radius: 3px; }
+
+        .games-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;
+        }
+        .game-card {
+            background: #FFFFFF; border-radius: 14px; padding: 1.2rem;
+            border: 1px solid rgba(44,58,26,0.06);
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+            cursor: default;
+        }
+        .game-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(247,208,0,0.35);
+            box-shadow: 0 8px 20px rgba(247,208,0,0.1);
+        }
+        .game-card-emoji {
+            font-size: 2rem; margin-bottom: 0.6rem; display: block;
+        }
+        .game-card-name {
+            font-weight: 600; font-size: 0.95rem; color: #2C3A1A; margin-bottom: 0.3rem;
+        }
+        .game-card-meta {
+            display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.5rem;
+        }
+        .game-meta-tag {
+            font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 50px;
+            background: rgba(107,159,54,0.1); color: #6B9F36; font-weight: 500;
+        }
+        .game-card-detail {
+            font-size: 0.8rem; color: #8A9A78; line-height: 1.4;
+        }
+        .no-results {
+            text-align: center; padding: 3rem 1rem; color: #8A9A78;
+            grid-column: 1 / -1;
+        }
+        .no-results span { font-size: 2.5rem; display: block; margin-bottom: 0.8rem; }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .nav-links { display: none; }
@@ -302,6 +440,11 @@
             .about-grid, .games-showcase, .menu-grid { grid-template-columns: 1fr; gap: 2rem; }
             .hours-section { grid-template-columns: 1fr; }
             .about-stats { grid-template-columns: repeat(3, 1fr); }
+            .modal-container { max-height: 92vh; }
+            .modal-header { padding: 1.2rem 1.2rem 0.8rem; }
+            .modal-filters { padding: 0 1.2rem 0.8rem; }
+            .modal-body { padding: 1rem 1.2rem 1.5rem; }
+            .games-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
         }
     </style>
 </head>
@@ -309,7 +452,7 @@
 
 <!-- NAVBAR -->
 <nav id="navbar">
-    <div class="logo">Roll & Brew <span>☕🎲</span></div>
+    <div class="logo">Limon <span>☕🎲</span></div>
     <ul class="nav-links" id="navLinks">
         <li><a href="#about">About</a></li>
         <li><a href="#games">Games</a></li>
@@ -335,7 +478,7 @@
         <p>Discover our library of 500+ board games, enjoy artisan drinks, and join a community of fellow game lovers at the coziest cafe in town.</p>
         <div class="hero-buttons">
             <a href="#visit" class="btn-primary">Reserve a Table</a>
-            <a href="#games" class="btn-outline">Explore Games</a>
+            <button class="btn-outline" onclick="openGameLibrary()">Explore Games</button>
         </div>
     </div>
 </section>
@@ -344,7 +487,7 @@
 <section id="about">
     <div class="about-grid">
         <div class="about-img reveal">
-            <img src="images/hero.png" alt="Inside Limon Cafe">
+            <img src="images/hero.png" alt="Inside Limon cafe">
         </div>
         <div class="reveal">
             <div class="section-label">Our Story</div>
@@ -363,7 +506,7 @@
 <section id="features">
     <div class="reveal">
         <div class="section-label">Why Choose Us</div>
-        <h2 class="section-title">The Roll & Brew Experience</h2>
+        <h2 class="section-title">The Limon Experience</h2>
         <p class="section-desc">More than just a cafe — we're a destination for fun, community, and unforgettable game nights.</p>
     </div>
     <div class="features-grid">
@@ -397,26 +540,15 @@
             <div class="section-label">Our Collection</div>
             <h2 class="section-title">Find Your Next Favorite Game</h2>
             <p class="section-desc">Our shelves are packed with over 500 carefully curated board games spanning every genre and skill level. Our game guides are always happy to recommend the perfect game for your group.</p>
-            <div class="game-categories">
-                <span class="game-tag">Strategy</span>
-                <span class="game-tag">Party Games</span>
-                <span class="game-tag">Co-op</span>
-                <span class="game-tag">Card Games</span>
-                <span class="game-tag">Family</span>
-                <span class="game-tag">RPGs</span>
-                <span class="game-tag">Trivia</span>
-                <span class="game-tag">Puzzle</span>
-                <span class="game-tag">Deck Building</span>
-                <span class="game-tag">Euro Games</span>
-            </div>
+            <button class="browse-library-btn" onclick="openGameLibrary()">📚 Browse Full Library</button>
         </div>
         <div class="games-img reveal">
             <img src="images/games.png" alt="Board game collection">
         </div>
     </div>
 </section>
-    
- <!-- MENU 
+
+<!-- MENU 
 <section id="menu">
     <div class="menu-grid">
         <div class="menu-img reveal">
@@ -436,7 +568,7 @@
             </div>
         </div>
     </div>
-</section> -->
+</section>-->
 
 <!-- EVENTS 
 <section id="events">
@@ -471,7 +603,7 @@
             </div>
         </div>
     </div>
-</section> -->
+</section>-->
 
 <!-- VISIT / HOURS -->
 <section id="visit">
@@ -484,20 +616,20 @@
         <div>
             <h3 style="margin-bottom:1.5rem; font-size:1.2rem;">Saatler</h3>
             <div class="hours-list">
-                <div class="hours-row"><span class="hours-day">Monday</span><span class="hours-time">12:00 – 23:00</span></div>
-                <div class="hours-row"><span class="hours-day">Tuesday</span><span class="hours-time">12:00 – 23:00</span></div>
-                <div class="hours-row"><span class="hours-day">Wednesday</span><span class="hours-time">12:00 – 23:00</span></div>
-                <div class="hours-row"><span class="hours-day">Thursday</span><span class="hours-time">12:00 – 23:00</span></div>
-                <div class="hours-row"><span class="hours-day">Friday</span><span class="hours-time">12:00 – 23:00</span></div>
-                <div class="hours-row"><span class="hours-day">Saturday</span><span class="hours-time">12:00 – 23:00</span></div>
-                <div class="hours-row"><span class="hours-day">Sunday</span><span class="hours-time">12:00 – 23:00</span></div>
+                <div class="hours-row"><span class="hours-day">Pazartesi</span><span class="hours-time">12:00 – 23:00</span></div>
+                <div class="hours-row"><span class="hours-day">Salı</span><span class="hours-time">12:00 – 23:00</span></div>
+                <div class="hours-row"><span class="hours-day">Çarşamba</span><span class="hours-time">12:00 – 23:00</span></div>
+                <div class="hours-row"><span class="hours-day">Perşembe</span><span class="hours-time">12:00 – 23:00</span></div>
+                <div class="hours-row"><span class="hours-day">Cuma</span><span class="hours-time">12:00 – 23:00</span></div>
+                <div class="hours-row"><span class="hours-day">Cumartesi</span><span class="hours-time">12:00 – 23:00</span></div>
+                <div class="hours-row"><span class="hours-day">Pazar</span><span class="hours-time">12:00 – 23:00</span></div>
             </div>
         </div>
         <div>
             <h3 style="margin-bottom:1.5rem; font-size:1.2rem;">İletişim</h3>
             <div class="contact-info">
                 <div class="contact-item"><div class="contact-icon">📍</div><span>123 Board Street, Gametown, GT 10001</span></div>
-                <div class="contact-item"><div class="contact-icon">📞</div><span>+1 (555) ROLL-BREW</span></div>
+                <div class="contact-item"><div class="contact-icon">📞</div><span>+1 (555) LIMON</span></div>
                 <div class="contact-item"><div class="contact-icon">✉️</div><span>info@limonboardgame.com</span></div>
                 <div class="contact-item"><div class="contact-icon">📸</div><span>@limonboardgame</span></div>
             </div>
@@ -516,6 +648,34 @@
     </div>
     <p>&copy; 2026 Roll & Brew Board Game Cafe. All rights reserved.</p>
 </footer>
+
+<!-- GAME LIBRARY MODAL -->
+<div class="modal-overlay" id="gameLibraryModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-header-top">
+                <h2>🍋 Game <span>Library</span></h2>
+                <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+            </div>
+            <div class="modal-search-row">
+                <input type="text" class="modal-search" id="gameSearch" placeholder="Search games..." autocomplete="off">
+            </div>
+        </div>
+        <div class="modal-filters" id="modalFilters">
+            <button class="filter-btn active" data-filter="all">All Games</button>
+            <button class="filter-btn" data-filter="strategy">🧠 Strategy</button>
+            <button class="filter-btn" data-filter="party">🎉 Party</button>
+            <button class="filter-btn" data-filter="coop">🤝 Co-op</button>
+            <button class="filter-btn" data-filter="card">🃏 Card</button>
+            <button class="filter-btn" data-filter="family">👨‍👩‍👧‍👦 Family</button>
+            <button class="filter-btn" data-filter="rpg">⚔️ RPG</button>
+            <button class="filter-btn" data-filter="abstract">🧩 Abstract</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <div class="games-grid" id="gamesGrid"></div>
+        </div>
+    </div>
+</div>
 
 <script>
     // Scroll-based navbar
@@ -538,6 +698,102 @@
     document.querySelectorAll('.nav-links a').forEach(a => {
         a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active'));
     });
+
+    // ===== GAME LIBRARY DATA & MODAL =====
+    const GAMES = [
+        { name: 'Catan', emoji: '🏝️', category: 'strategy', players: '3-4', difficulty: 'Medium', desc: 'Trade, build, and settle the island of Catan.' },
+        { name: 'Ticket to Ride', emoji: '🚂', category: 'family', players: '2-5', difficulty: 'Easy', desc: 'Claim railway routes across the country.' },
+        { name: 'Pandemic', emoji: '🦠', category: 'coop', players: '2-4', difficulty: 'Medium', desc: 'Work together to save the world from outbreaks.' },
+        { name: 'Codenames', emoji: '🕵️', category: 'party', players: '4-8', difficulty: 'Easy', desc: 'Give one-word clues to help your team guess.' },
+        { name: 'Dominion', emoji: '👑', category: 'card', players: '2-4', difficulty: 'Medium', desc: 'The original deck-building card game.' },
+        { name: 'Terraforming Mars', emoji: '🪐', category: 'strategy', players: '1-5', difficulty: 'Hard', desc: 'Compete to make Mars habitable.' },
+        { name: 'Wingspan', emoji: '🐦', category: 'strategy', players: '1-5', difficulty: 'Medium', desc: 'Attract birds to your nature reserves.' },
+        { name: 'Azul', emoji: '🎨', category: 'abstract', players: '2-4', difficulty: 'Easy', desc: 'Create beautiful mosaic patterns.' },
+        { name: 'Dixit', emoji: '🌙', category: 'party', players: '3-8', difficulty: 'Easy', desc: 'A storytelling game with surreal art cards.' },
+        { name: 'Gloomhaven', emoji: '⚔️', category: 'rpg', players: '1-4', difficulty: 'Hard', desc: 'An epic tactical dungeon-crawling RPG.' },
+        { name: 'Splendor', emoji: '💎', category: 'strategy', players: '2-4', difficulty: 'Easy', desc: 'Collect gems and build your merchant empire.' },
+        { name: 'Exploding Kittens', emoji: '🐱', category: 'card', players: '2-5', difficulty: 'Easy', desc: 'A kitty-powered version of Russian Roulette.' },
+        { name: 'Scythe', emoji: '🏗️', category: 'strategy', players: '1-5', difficulty: 'Hard', desc: 'Lead your faction in an alternate-history 1920s.' },
+        { name: 'Mysterium', emoji: '👻', category: 'coop', players: '2-7', difficulty: 'Medium', desc: 'Solve a ghostly murder mystery together.' },
+        { name: 'Carcassonne', emoji: '🏰', category: 'family', players: '2-5', difficulty: 'Easy', desc: 'Build a medieval landscape tile by tile.' },
+        { name: 'Root', emoji: '🦊', category: 'strategy', players: '2-4', difficulty: 'Hard', desc: 'Asymmetric woodland warfare.' },
+        { name: 'Uno', emoji: '🔴', category: 'card', players: '2-10', difficulty: 'Easy', desc: 'The classic color and number matching game.' },
+        { name: 'The Crew', emoji: '🚀', category: 'coop', players: '2-5', difficulty: 'Medium', desc: 'A cooperative trick-taking space adventure.' },
+        { name: 'Telestrations', emoji: '✏️', category: 'party', players: '4-8', difficulty: 'Easy', desc: 'A hilarious draw-and-guess telephone game.' },
+        { name: 'Dungeons & Dragons', emoji: '🐉', category: 'rpg', players: '3-6', difficulty: 'Medium', desc: 'The legendary tabletop role-playing game.' },
+        { name: 'Everdell', emoji: '🌳', category: 'strategy', players: '1-4', difficulty: 'Medium', desc: 'Build a city of critters in a charming valley.' },
+        { name: 'Sushi Go!', emoji: '🍣', category: 'card', players: '2-5', difficulty: 'Easy', desc: 'A fast-paced card-drafting sushi game.' },
+        { name: 'Betrayal at House on the Hill', emoji: '🏚️', category: 'rpg', players: '3-6', difficulty: 'Medium', desc: 'Explore a haunted mansion... one of you is the traitor.' },
+        { name: 'Kingdomino', emoji: '🏰', category: 'family', players: '2-4', difficulty: 'Easy', desc: 'Build your kingdom with domino-like tiles.' },
+        { name: 'Forbidden Island', emoji: '🏝️', category: 'coop', players: '2-4', difficulty: 'Easy', desc: 'Rescue treasures from a sinking island.' },
+        { name: 'Cards Against Humanity', emoji: '😈', category: 'party', players: '4-10', difficulty: 'Easy', desc: 'The famously irreverent party card game.' },
+        { name: 'Spirit Island', emoji: '🌋', category: 'strategy', players: '1-4', difficulty: 'Hard', desc: 'Defend your island as powerful spirits.' },
+        { name: 'Sagrada', emoji: '🪟', category: 'abstract', players: '1-4', difficulty: 'Medium', desc: 'Draft dice to build stained glass windows.' },
+        { name: 'Clue', emoji: '🔍', category: 'family', players: '3-6', difficulty: 'Easy', desc: 'Solve the mystery: Who, where, and with what?' },
+        { name: 'Brass: Birmingham', emoji: '🏭', category: 'strategy', players: '2-4', difficulty: 'Hard', desc: 'Build networks during the Industrial Revolution.' },
+        { name: 'Wavelength', emoji: '📡', category: 'party', players: '2-12', difficulty: 'Easy', desc: 'Read your teammates\' minds on a spectrum.' },
+        { name: 'Star Realms', emoji: '🌌', category: 'card', players: '2', difficulty: 'Medium', desc: 'A fast-paced space combat deck-builder.' },
+        { name: 'Patchwork', emoji: '🧵', category: 'abstract', players: '2', difficulty: 'Easy', desc: 'Stitch together the best quilt.' },
+    ];
+
+    const modal = document.getElementById('gameLibraryModal');
+    const gamesGrid = document.getElementById('gamesGrid');
+    const searchInput = document.getElementById('gameSearch');
+    const filters = document.getElementById('modalFilters');
+    let activeFilter = 'all';
+
+    function renderGames(filter, query) {
+        let filtered = GAMES;
+        if (filter !== 'all') filtered = filtered.filter(g => g.category === filter);
+        if (query) {
+            const q = query.toLowerCase();
+            filtered = filtered.filter(g => g.name.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q) || g.category.includes(q));
+        }
+        if (filtered.length === 0) {
+            gamesGrid.innerHTML = '<div class="no-results"><span>🍋</span>No games found. Try a different search!</div>';
+            return;
+        }
+        gamesGrid.innerHTML = filtered.map(g => `
+            <div class="game-card">
+                <span class="game-card-emoji">${g.emoji}</span>
+                <div class="game-card-name">${g.name}</div>
+                <div class="game-card-meta">
+                    <span class="game-meta-tag">👥 ${g.players}</span>
+                    <span class="game-meta-tag">${g.difficulty}</span>
+                </div>
+                <div class="game-card-detail">${g.desc}</div>
+            </div>
+        `).join('');
+    }
+
+    function openGameLibrary() {
+        activeFilter = 'all';
+        searchInput.value = '';
+        filters.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+        renderGames('all', '');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => searchInput.focus(), 400);
+    }
+
+    function closeGameLibrary() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('modalClose').addEventListener('click', closeGameLibrary);
+    modal.addEventListener('click', e => { if (e.target === modal) closeGameLibrary(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('active')) closeGameLibrary(); });
+
+    filters.addEventListener('click', e => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+        activeFilter = btn.dataset.filter;
+        filters.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b === btn));
+        renderGames(activeFilter, searchInput.value);
+    });
+
+    searchInput.addEventListener('input', () => renderGames(activeFilter, searchInput.value));
 </script>
 
 </body>
