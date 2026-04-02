@@ -406,9 +406,11 @@
             border-color: rgba(247,208,0,0.35);
             box-shadow: 0 8px 20px rgba(247,208,0,0.1);
         }
-        .game-card-emoji {
-            font-size: 2rem; margin-bottom: 0.6rem; display: block;
-        }
+        .game-card-img {
+    width: 100%; height: 140px;
+    object-fit: cover; border-radius: 10px;
+    margin-bottom: 0.6rem;
+}
         .game-card-name {
             font-weight: 600; font-size: 0.95rem; color: #2C3A1A; margin-bottom: 0.3rem;
         }
@@ -701,7 +703,7 @@
 
     // ===== GAME LIBRARY DATA & MODAL =====
     const GAMES = [
-        { name: 'Catan', image: 'images/games/catan.webp', category: 'strategy', players: '3-4', difficulty: 'Medium', desc: 'Trade, build, and settle the island of Catan.' },
+        { name: 'Catan', image: 'images/games/catan.jpg', category: 'strategy', players: '3-4', difficulty: 'Medium', desc: 'Trade, build, and settle the island of Catan.' },
         { name: 'Ticket to Ride', emoji: '🚂', category: 'family', players: '2-5', difficulty: 'Easy', desc: 'Claim railway routes across the country.' },
         { name: 'Pandemic', emoji: '🦠', category: 'coop', players: '2-4', difficulty: 'Medium', desc: 'Work together to save the world from outbreaks.' },
         { name: 'Codenames', emoji: '🕵️', category: 'party', players: '4-8', difficulty: 'Easy', desc: 'Give one-word clues to help your team guess.' },
@@ -755,7 +757,7 @@
         }
         gamesGrid.innerHTML = filtered.map(g => `
             <div class="game-card">
-                <span class="game-card-emoji">${g.emoji}</span>
+                <img class="game-card-img" src="${g.image}" alt="${g.name}">
                 <div class="game-card-name">${g.name}</div>
                 <div class="game-card-meta">
                     <span class="game-meta-tag">👥 ${g.players}</span>
