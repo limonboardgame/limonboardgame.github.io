@@ -767,12 +767,12 @@
         <div class="modal-filters" id="modalFilters">
             <button class="filter-btn active" data-filter="all">Tüm Oyunlar</button>
             <button class="filter-btn" data-filter="strategy">🧠 Strateji</button>
-            <button class="filter-btn" data-filter="party">🎉 Parti</button>
-            <button class="filter-btn" data-filter="coop">🤝 Co-op</button>
-            <button class="filter-btn" data-filter="card">🃏 Kart</button>
-            <button class="filter-btn" data-filter="family">👨‍👩‍👧‍👦 Aile</button>
+            <button class="filter-btn" data-filter="parti">🎉 Parti</button>
+            <button class="filter-btn" data-filter="koop">🤝 Co-op</button>
+            <button class="filter-btn" data-filter="kart">🃏 Kart</button>
+            <button class="filter-btn" data-filter="aile">👨‍👩‍👧‍👦 Aile</button>
             <button class="filter-btn" data-filter="rpg">⚔️ RPG</button>
-            <button class="filter-btn" data-filter="abstract">🧩 Soyut Strateji</button>
+            <button class="filter-btn" data-filter="soyut">🧩 Soyut Strateji</button>
         </div>
         <div class="modal-body" id="modalBody">
             <div class="games-grid" id="gamesGrid"></div>
@@ -858,16 +858,15 @@
         { name: 'MLEM', image: 'images/games/mlem.jpg', category: 'aile', players: '2-5', zorluk: 'Kolay', desc: 'Astronotlarınızı aylara ve gezegenlere indirin. Ha bu arada, astronotlarınız birer kedi!', bgg: 'https://boardgamegeek.com/boardgame/387378/mlem-space-agency' },
         { name: 'Irish Gauge', image: 'images/games/irish.jpg', category: 'strategy', players: '3-5', zorluk: 'Kolay-Orta', desc: 'İrlanda raylı ulaşımını geliştirmeye yardım edin ama doğru tren şirketlerine yatırım yapın.', bgg: 'https://boardgamegeek.com/boardgame/161882/irish-gauge' },
         { name: 'Mysterium Park', image: 'images/games/mysterium.jpg', category: 'koop', players: '2-6', zorluk: 'Kolay', desc: 'Sirk ymneticisi öldü. Medyumlar olarak bir araya gelin ve olayı çözün.', bgg: 'https://boardgamegeek.com/boardgame/301767/mysterium-park' },
-        { name: 'Sabika', image: 'images/games/sabika.jpg', category: 'strategy', players: '1-4', zorluk: 'Orta-Zor', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/360265/sabika' },
-        { name: 'Creature Caravan', image: 'images/games/caravan.jpg', category: 'strategy', players: '1-4', zorluk: 'Kolay-Orta', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/385331/creature-caravan' },
-        { name: 'Carson City', image: 'images/games/carson.jpg', category: 'strategy', players: '1-6', zorluk: 'Orta', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/177352/carson-city-big-box' },
-        { name: 'HUANG', image: 'images/games/huang.jpg', category: 'strategy', players: '2-4', zorluk: 'Orta', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/371688/huang' },
-        { name: 'Gold West', image: 'images/games/goldwest.jpg', category: 'strategy', players: '2-4', zorluk: 'Orta', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/154086/gold-west' },
-        { name: 'ito', image: 'images/games/ito.jpg', category: 'parti', players: '2-10', zorluk: 'Kolay', desc: 'Birbirinizin düşüncesini okumanızı gerektiren kooperatif bir oyun.', bgg: 'https://boardgamegeek.com/boardgame/327778/ito' },
-        { name: 'Tetrarchia', image: 'images/games/tetra.jpg', category: 'koop', players: '1-5', zorluk: 'Kolay-Orta', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/183315/tetrarchia' },
-        { name: 'Iliad', image: 'images/games/iliad.jpg', category: 'soyut strateji', players: '2', zorluk: 'Kolay', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/420914/iliad' },
-        { name: 'Steam Power', image: 'images/games/steam.jpg', category: 'strateji', players: '1-5', zorluk: 'Kolay-Orta', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/391752/steam-power' },
-        { name: 'Kronologic:Paris 1920', image: 'images/games/krono.jpg', category: 'koop', players: '1-4', zorluk: 'Kolay', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/402111/kronologic-paris-1920' },
+        { name: 'Creature Caravan', image: 'images/games/caravan.jpg', category: 'strategy', players: '1-4', zorluk: 'Kolay-Orta', desc: 'Fantastik dostlarınızı karavanınıza alın, onların yardımıyla güvenli bölgeye ulaşmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/385331/creature-caravan' },
+        { name: 'Carson City', image: 'images/games/carson.jpg', category: 'strategy', players: '1-6', zorluk: 'Orta', desc: 'Carson şehrini en karlı binalarla donatın, rakip kovboyları düellolarda elemeyi unutmayın.', bgg: 'https://boardgamegeek.com/boardgame/177352/carson-city-big-box' },
+        { name: 'HUANG', image: 'images/games/huang.jpg', category: 'strategy', players: '2-4', zorluk: 'Orta', desc: "5. yüzyıl Çin Savaşan Devletler Çağı'nda Çin'i bir araya getiren klan siz olun.", bgg: 'https://boardgamegeek.com/boardgame/371688/huang' },
+        { name: 'Gold West', image: 'images/games/goldwest.jpg', category: 'strategy', players: '2-4', zorluk: 'Orta', desc: 'En verimli madencilik ağını oluşturmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/154086/gold-west' },
+        { name: 'ito', image: 'images/games/ito.jpg', category: 'parti', players: '2-10', zorluk: 'Kolay', desc: 'Birbirinizin düşüncesini okumayı gerektirecek kooperatif bir oyun.', bgg: 'https://boardgamegeek.com/boardgame/327778/ito' },
+        { name: 'Tetrarchia', image: 'images/games/tetra.jpg', category: 'koop', players: '1-5', zorluk: 'Kolay-Orta', desc: "Tetrarşi'yi oluşturun ve Roma İmparatorluğu'nu kurtarın.", bgg: 'https://boardgamegeek.com/boardgame/183315/tetrarchia' },
+        { name: 'Iliad', image: 'images/games/iliad.jpg', category: 'soyut strateji', players: '2', zorluk: 'Kolay', desc: 'Tanrıların korumasını kazanın, Hector ya da Aşil olarak Truva Savaşı galibi siz olun.', bgg: 'https://boardgamegeek.com/boardgame/420914/iliad' },
+        { name: 'Steam Power', image: 'images/games/steam.jpg', category: 'strateji', players: '1-5', zorluk: 'Kolay-Orta', desc: 'Tren ağınızı kurun, fabrikalar açın ve en çok kontratı tamamlayıp puan kazanan siz olun.', bgg: 'https://boardgamegeek.com/boardgame/391752/steam-power' },
+        { name: 'Kronologic:Paris 1920', image: 'images/games/krono.jpg', category: 'koop', players: '1-4', zorluk: 'Kolay', desc: 'Paris Opera binasında bir cinayet işlendi, ama nerede ve kim tarafından bilinmiyor. İlk bulan oyunu kazanır.', bgg: 'https://boardgamegeek.com/boardgame/402111/kronologic-paris-1920' },
         { name: 'Wine Cellar', image: 'images/games/wine.jpg', category: 'kart', players: '1-8', zorluk: 'Kolay', desc: 'Doğru şarapları doğru zamanlarda yıllandırın ve en iyi şarap dağıtıcısı olun.', bgg: 'https://boardgamegeek.com/boardgame/411033/wine-cellar' },
 
     ];
