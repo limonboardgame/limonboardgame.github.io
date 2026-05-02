@@ -478,8 +478,11 @@
         }
         .game-card-img {
             width: 100%; height: 140px;
-            object-fit: cover; border-radius: 8px;
+            object-fit: contain;
+            background: linear-gradient(135deg, var(--cream-warm), rgba(245, 217, 0, 0.06));
+            border-radius: 8px;
             margin-bottom: 0.6rem;
+            padding: 6px;
         }
         .game-card-emoji {
             display: flex; align-items: center; justify-content: center;
@@ -540,7 +543,7 @@
             overflow: hidden;
         }
         .game-popup-hero img {
-            width: 100%; height: 100%; object-fit: cover;
+            width: 100%; height: 100%; object-fit: contain; padding: 12px;
         }
         .game-popup-hero-emoji {
             width: 100%; height: 100%;
