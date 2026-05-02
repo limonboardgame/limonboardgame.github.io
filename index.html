@@ -509,6 +509,157 @@
             grid-column: 1 / -1;
         }
         .no-results span { font-size: 2.5rem; display: block; margin-bottom: 0.8rem; }
+                /* === GAME DETAIL POPUP === */
+        .game-popup-overlay {
+            position: fixed; inset: 0; z-index: 300;
+            background: rgba(42, 35, 24, 0.45);
+            backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            padding: 1.5rem;
+        }
+        .game-popup-overlay.active { opacity: 1; visibility: visible; }
+        .game-popup-overlay.active .game-popup {
+            transform: translateY(0) scale(1); opacity: 1;
+        }
+        .game-popup {
+            background: var(--white);
+            border-radius: var(--radius);
+            width: 100%; max-width: 520px; max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(245, 217, 0, 0.12);
+            transform: translateY(16px) scale(0.96); opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+        }
+        .game-popup::-webkit-scrollbar { width: 4px; }
+        .game-popup::-webkit-scrollbar-thumb { background: rgba(245, 217, 0, 0.3); border-radius: 2px; }
+        .game-popup-hero {
+            position: relative; width: 100%; height: 200px;
+            background: linear-gradient(135deg, var(--cream-warm), rgba(245, 217, 0, 0.08));
+            overflow: hidden;
+        }
+        .game-popup-hero img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .game-popup-hero-emoji {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 5rem;
+        }
+        .game-popup-close {
+            position: absolute; top: 0.8rem; right: 0.8rem;
+            width: 36px; height: 36px; border-radius: 50%;
+            border: none; background: rgba(255, 254, 248, 0.9);
+            backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; cursor: pointer; color: var(--bark);
+            transition: all 0.3s; z-index: 2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .game-popup-close:hover { background: var(--lemon); transform: rotate(90deg); }
+        .game-popup-body { padding: 1.5rem 1.8rem 1.8rem; }
+        .game-popup-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem; margin-bottom: 0.5rem;
+        }
+        .game-popup-title a {
+            color: var(--bark); text-decoration: none;
+            transition: color 0.2s;
+        }
+        .game-popup-title a:hover { color: var(--leaf); }
+        .game-popup-stats {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem;
+            margin-bottom: 1.2rem; margin-top: 0.8rem;
+        }
+        .game-popup-stat {
+            text-align: center; padding: 0.7rem 0.5rem;
+            background: var(--cream-warm); border-radius: var(--radius-sm);
+            border: 1px solid rgba(245, 217, 0, 0.12);
+        }
+        .game-popup-stat-val {
+            font-weight: 700; font-size: 0.95rem; color: var(--bark);
+        }
+        .game-popup-stat-label {
+            font-size: 0.68rem; color: var(--bark-soft);
+            text-transform: uppercase; letter-spacing: 1px; margin-top: 0.15rem;
+        }
+        .game-popup-desc {
+            font-size: 0.92rem; color: var(--bark-mid);
+            line-height: 1.65; margin-bottom: 1.4rem;
+        }
+        .game-popup-docs-title {
+            font-weight: 600; font-size: 0.82rem;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--bark-soft); margin-bottom: 0.7rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .game-popup-docs-title::after {
+            content: ''; flex: 1; height: 1px;
+            background: rgba(42, 35, 24, 0.08);
+        }
+        .game-popup-docs {
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .doc-link {
+            display: flex; align-items: center; gap: 0.7rem;
+            padding: 0.7rem 1rem; border-radius: var(--radius-sm);
+            background: var(--lemon-pale);
+            border: 1px solid rgba(245, 217, 0, 0.15);
+            text-decoration: none; color: var(--bark);
+            transition: all 0.25s; font-size: 0.88rem;
+        }
+        .doc-link:hover {
+            background: rgba(245, 217, 0, 0.15);
+            border-color: rgba(245, 217, 0, 0.35);
+            transform: translateX(4px);
+        }
+        .doc-link-icon {
+            width: 34px; height: 34px; border-radius: 8px;
+            background: var(--white);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .doc-link-info { flex: 1; }
+        .doc-link-name { font-weight: 600; font-size: 0.85rem; }
+        .doc-link-size { font-size: 0.7rem; color: var(--bark-soft); }
+        .doc-link-arrow { color: var(--bark-soft); font-size: 0.8rem; transition: transform 0.2s; }
+        .doc-link:hover .doc-link-arrow { transform: translateX(3px); }
+        .game-popup-bgg {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            margin-top: 1.2rem; padding: 0.5rem 1rem; border-radius: 50px;
+            border: 1px solid rgba(42, 35, 24, 0.1); background: var(--cream);
+            color: var(--bark-mid); font-size: 0.78rem; font-weight: 500;
+            text-decoration: none; transition: all 0.25s;
+        }
+        .game-popup-bgg:hover {
+            background: rgba(245, 217, 0, 0.1);
+            border-color: rgba(245, 217, 0, 0.3);
+            color: var(--bark);
+        }
+        .game-popup-no-docs {
+            text-align: center; padding: 1rem;
+            color: var(--bark-soft); font-size: 0.85rem;
+            background: var(--cream-warm); border-radius: var(--radius-sm);
+            border: 1px dashed rgba(42, 35, 24, 0.12);
+        }
+        /* Make images/emojis clickable */
+        .game-card-visual {
+            cursor: pointer; position: relative;
+        }
+        .game-card-visual::after {
+            content: '📄 Detaylar';
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(42, 35, 24, 0.6);
+            color: white; font-size: 0.82rem; font-weight: 600;
+            border-radius: 8px; opacity: 0;
+            transition: opacity 0.25s;
+            letter-spacing: 0.02em;
+        }
+        .game-card-visual:hover::after { opacity: 1; }
+
 
         /* === RESPONSIVE === */
         @media (max-width: 768px) {
@@ -533,6 +684,9 @@
             .modal-filters { padding: 0 1.2rem 0.8rem; }
             .modal-body { padding: 1rem 1.2rem 1.5rem; }
             .games-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .game-popup { max-height: 90vh; border-radius: 14px; }
+            .game-popup-body { padding: 1.2rem 1.3rem 1.5rem; }
+            .game-popup-hero { height: 160px; }
         }
     </style>
 </head>
@@ -766,7 +920,7 @@
         </div>
         <div class="modal-filters" id="modalFilters">
             <button class="filter-btn active" data-filter="all">Tüm Oyunlar</button>
-            <button class="filter-btn" data-filter="strategy">🧠 Strateji</button>
+            <button class="filter-btn" data-filter="strateji">🧠 Strateji</button>
             <button class="filter-btn" data-filter="parti">🎉 Parti</button>
             <button class="filter-btn" data-filter="koop">🤝 Co-op</button>
             <button class="filter-btn" data-filter="kart">🃏 Kart</button>
@@ -776,6 +930,22 @@
         </div>
         <div class="modal-body" id="modalBody">
             <div class="games-grid" id="gamesGrid"></div>
+        </div>
+    </div>
+</div>
+
+<!-- GAME DETAIL POPUP -->
+<div class="game-popup-overlay" id="gamePopup">
+    <div class="game-popup">
+        <div class="game-popup-hero" id="popupHero">
+            <button class="game-popup-close" id="popupClose" aria-label="Kapat">✕</button>
+        </div>
+        <div class="game-popup-body">
+            <div class="game-popup-title" id="popupTitle"></div>
+            <div class="game-popup-stats" id="popupStats"></div>
+            <div class="game-popup-desc" id="popupDesc"></div>
+            <div id="popupDocs"></div>
+            <div id="popupBgg"></div>
         </div>
     </div>
 </div>
@@ -810,61 +980,61 @@
     // ===== GAME LIBRARY DATA & MODAL =====
     const GAMES = [
 
-        { name: 'Brass: Birmingham', image: 'images/games/brass.jpg', category: 'strategy', players: '2-4', zorluk: 'Zor', desc: 'Sanayi Devrimi sırasında ağlar kurun.', bgg: 'https://boardgamegeek.com/boardgame/224517/brass-birmingham' },
-        { name: 'Power Grid', image: 'images/games/powergrid.jpg', category: 'strategy', players: '2-6', zorluk: 'Orta', desc: 'Açık arttırmalarla santraller alın, bina ağınızı genişletin, en çok eve elektrik veren kazanır.', bgg: 'https://boardgamegeek.com/boardgame/2651/power-grid' },
-        { name: 'Puerto Rico', image: 'images/games/puerto.jpg', category: 'strategy', players: '2-5', zorluk: 'Orta', desc: 'Doğru zamanda doğru üretimleri yapıp kargolayın ve en yüksek puanı almaya çalışın', bgg: 'https://boardgamegeek.com/boardgame/9209/ticket-ride' },
-        { name: '7 Wonders Duel', image: 'images/games/7wd.jpg', category: 'strategy', players: '2', zorluk: 'Kolay-Orta', desc: 'En iyi medeniyeti oluşturup rakibinizi yenin.', bgg: 'https://boardgamegeek.com/boardgame/173346/7-wonders-duel' },
-        { name: 'Radlands', image: 'images/games/radlands.jpg', category: 'strategy', players: '2', zorluk: 'Kolay-Orta', desc: 'Post-apokalitlik bir dünyada punk gruplarınızı savaştırın.', bgg: 'https://boardgamegeek.com/boardgame/329082/radlands' },
-        { name: 'Royal Society of Archeology', image: 'images/games/archeology.jpg', category: 'strategy', players: '1-4', zorluk: 'Orta', desc: 'En iyi keşif yapan arkeolog ekibini oluşturup rakiplerinizi yenin.', bgg: 'https://boardgamegeek.com/boardgame/437101/the-royal-society-of-archeology' },
-        { name: 'RA', image: 'images/games/ra.jpg', category: 'strategy', players: '2-5', zorluk: 'Kolay-Orta', desc: "Anıtlar ve antik eserler kazanmak için açık arttırma yapmak ister misin? RA'yı çağır!", bgg: 'https://boardgamegeek.com/boardgame/12/ra' },
-        { name: "Tzolk'in", image: 'images/games/tzolkin.jpg', category: 'strategy', players: '2-4', zorluk: 'Orta-Zor', desc: 'Halkına liderlik et ve en iyi medeniyeti kur.', bgg: 'https://boardgamegeek.com/boardgame/126163/tzolkin-the-mayan-calendar' },
-        { name: 'Five Tribes', image: 'images/games/tribes.jpg', category: 'strategy', players: '2-4', zorluk: 'Orta', desc: '5 Kabilenin üyelerini Naqala üzerinde hareket ettirin, şehirleri, ve Djinnleri kontrol edin', bgg: 'https://boardgamegeek.com/boardgame/157354/five-tribes-the-djinns-of-naqala' },
-        { name: 'Architects of the West Kingdom', image: 'images/games/west.jpg', category: 'strategy', players: '1-5', zorluk: 'Orta', desc: 'Katedral ve binalar inşa edin ve kralın favori mimarı olmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/236457/architects-of-the-west-kingdom' },
-        { name: 'White Castle', image: 'images/games/castle.jpg', category: 'strategy', players: '1-4', zorluk: 'Orta', desc: "Japonya Himeji Kalesi'ndeki en etkili klan olun.", bgg: 'https://boardgamegeek.com/boardgame/371942/the-white-castle' },
-        { name: 'Troyes', image: 'images/games/troyes.jpg', category: 'strategy', players: '1-4', zorluk: 'Orta', desc: 'Tek cümleyle özetlemek mümkün değil, zarlı bir strateji oyunu diyelim.', bgg: 'https://boardgamegeek.com/boardgame/73439/troyes' },
+        { name: 'Brass: Birmingham', image: 'images/games/brass.jpg', category: 'strateji', players: '2-4', zorluk: 'Zor', desc: 'Sanayi Devrimi sırasında ağlar kurun.', bgg: 'https://boardgamegeek.com/boardgame/224517/brass-birmingham' },
+        { name: 'Power Grid', image: 'images/games/powergrid.jpg', category: 'strateji', players: '2-6', zorluk: 'Orta', desc: 'Açık arttırmalarla santraller alın, bina ağınızı genişletin, en çok eve elektrik veren kazanır.', bgg: 'https://boardgamegeek.com/boardgame/2651/power-grid' },
+        { name: 'Puerto Rico', image: 'images/games/puerto.jpg', category: 'strateji', players: '2-5', zorluk: 'Orta', desc: 'Doğru zamanda doğru üretimleri yapıp kargolayın ve en yüksek puanı almaya çalışın', bgg: 'https://boardgamegeek.com/boardgame/9209/ticket-ride' },
+        { name: '7 Wonders Duel', image: 'images/games/7wd.jpg', category: 'strateji', players: '2', zorluk: 'Kolay-Orta', desc: 'En iyi medeniyeti oluşturup rakibinizi yenin.', bgg: 'https://boardgamegeek.com/boardgame/173346/7-wonders-duel' },
+        { name: 'Radlands', image: 'images/games/radlands.jpg', category: 'strateji', players: '2', zorluk: 'Kolay-Orta', desc: 'Post-apokalitlik bir dünyada punk gruplarınızı savaştırın.', bgg: 'https://boardgamegeek.com/boardgame/329082/radlands' },
+        { name: 'Royal Society of Archeology', image: 'images/games/archeology.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: 'En iyi keşif yapan arkeolog ekibini oluşturup rakiplerinizi yenin.', bgg: 'https://boardgamegeek.com/boardgame/437101/the-royal-society-of-archeology' },
+        { name: 'RA', image: 'images/games/ra.jpg', category: 'strateji', players: '2-5', zorluk: 'Kolay-Orta', desc: "Anıtlar ve antik eserler kazanmak için açık arttırma yapmak ister misin? RA'yı çağır!", bgg: 'https://boardgamegeek.com/boardgame/12/ra' },
+        { name: "Tzolk'in", image: 'images/games/tzolkin.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta-Zor', desc: 'Halkına liderlik et ve en iyi medeniyeti kur.', bgg: 'https://boardgamegeek.com/boardgame/126163/tzolkin-the-mayan-calendar' },
+        { name: 'Five Tribes', image: 'images/games/tribes.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: '5 Kabilenin üyelerini Naqala üzerinde hareket ettirin, şehirleri, ve Djinnleri kontrol edin', bgg: 'https://boardgamegeek.com/boardgame/157354/five-tribes-the-djinns-of-naqala' },
+        { name: 'Architects of the West Kingdom', image: 'images/games/west.jpg', category: 'strateji', players: '1-5', zorluk: 'Orta', desc: 'Katedral ve binalar inşa edin ve kralın favori mimarı olmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/236457/architects-of-the-west-kingdom' },
+        { name: 'White Castle', image: 'images/games/castle.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: "Japonya Himeji Kalesi'ndeki en etkili klan olun.", bgg: 'https://boardgamegeek.com/boardgame/371942/the-white-castle' },
+        { name: 'Troyes', image: 'images/games/troyes.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: 'Tek cümleyle özetlemek mümkün değil, zarlı bir strateji oyunu diyelim.', bgg: 'https://boardgamegeek.com/boardgame/73439/troyes' },
         { name: 'Crew: Quest for Planet Nine', image: 'images/games/crew.jpg', category: 'kart', players: '2-5', zorluk: 'Kolay', desc: "Astronot arkadaşlarınızla doğru kartları oynayıp görevleri tamamlayın, birlikte kazanın.", bgg: 'https://boardgamegeek.com/boardgame/284083/the-crew-the-quest-for-planet-nine' },
-        { name: 'Grand Austria Hotel', image: 'images/games/hotel.jpg', category: 'strategy', players: '2-4', zorluk: 'Orta', desc: 'Ziyaretçilerinize en iyi hizmeti sunup en iyi odaları hazırlayın ve en başarılı otelci olun.', bgg: 'https://boardgamegeek.com/boardgame/182874/grand-austria-hotel' },
-        { name: 'Modern Art', image: 'images/games/modernart.jpg', category: 'strategy', players: '3-5', zorluk: 'Kolay-Orta', desc: 'Sanat eserlerini açık arttırmaya çıkarın ve en çok parayı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/118/modern-art' },
+        { name: 'Grand Austria Hotel', image: 'images/games/hotel.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: 'Ziyaretçilerinize en iyi hizmeti sunup en iyi odaları hazırlayın ve en başarılı otelci olun.', bgg: 'https://boardgamegeek.com/boardgame/182874/grand-austria-hotel' },
+        { name: 'Modern Art', image: 'images/games/modernart.jpg', category: 'strateji', players: '3-5', zorluk: 'Kolay-Orta', desc: 'Sanat eserlerini açık arttırmaya çıkarın ve en çok parayı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/118/modern-art' },
         { name: 'Flamme Rouge', image: 'images/games/rouge.jpg', category: 'aile', players: '2-4', zorluk: 'Kolay', desc: 'Kartlarınızı doğru zamanda oynayın ve en hızlı bisiklet yarışçısı olun.', bgg: 'https://boardgamegeek.com/boardgame/199478/flamme-rouge' },
         { name: 'Cartographers', image: 'images/games/carto.jpg', category: 'aile', players: '1-100', zorluk: 'Kolay', desc: 'Yeni topraklar keşfedin ve en iyi haritayı oluşturun.', bgg: 'https://boardgamegeek.com/boardgame/263918/cartographers' },
-        { name: 'Age of Innovation', image: 'images/games/aoi.jpg', category: 'strategy', players: '1-5', zorluk: 'Zor', desc: 'Terra Mystica dünyasında kendi klanınızla yayılın ve binalar inşa edip en yüksek puanı kazanın.', bgg: 'https://boardgamegeek.com/boardgame/383179/age-of-innovation' },
-        { name: 'Carnegie', image: 'images/games/carnegie.jpg', category: 'strategy', players: '1-4', zorluk: 'Orta-Zor', desc: 'Şirketini en etkili yöneten iş adamı siz olun.', bgg: 'https://boardgamegeek.com/boardgame/310873/carnegie' },
-        { name: 'Lewis & Clark', image: 'images/games/lewis.jpg', category: 'strategy', players: '1-5', zorluk: 'Orta', desc: "Yerlilerin de yardımıyla Missouri'den Oregon'a yolculuk yapın ve ilk varan siz olun.", bgg: 'https://boardgamegeek.com/boardgame/140620/lewis-and-clark-the-expedition' },
-        { name: 'Princes of Florence', image: 'images/games/prince.jpg', category: 'strategy', players: '1-5', zorluk: 'Orta', desc: "Floransa'da en prestijli sarayı siz kurun.", bgg: 'https://boardgamegeek.com/boardgame/555/the-princes-of-florence' },
-        { name: 'Castles of Burgundy', image: 'images/games/burgund.jpg', category: 'strategy', players: '1-4', zorluk: 'Orta', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/271320/the-castles-of-burgundy' },
-        { name: 'Arboretum', image: 'images/games/arboretum.jpg', category: 'strategy', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Hayalinizdeki botanik bahçesini kurun, rakipleriniz sizi engellemezse.', bgg: 'https://boardgamegeek.com/boardgame/140934/arboretum' },
+        { name: 'Age of Innovation', image: 'images/games/aoi.jpg', category: 'strateji', players: '1-5', zorluk: 'Zor', desc: 'Terra Mystica dünyasında kendi klanınızla yayılın ve binalar inşa edip en yüksek puanı kazanın.', bgg: 'https://boardgamegeek.com/boardgame/383179/age-of-innovation' },
+        { name: 'Carnegie', image: 'images/games/carnegie.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta-Zor', desc: 'Şirketini en etkili yöneten iş adamı siz olun.', bgg: 'https://boardgamegeek.com/boardgame/310873/carnegie' },
+        { name: 'Lewis & Clark', image: 'images/games/lewis.jpg', category: 'strateji', players: '1-5', zorluk: 'Orta', desc: "Yerlilerin de yardımıyla Missouri'den Oregon'a yolculuk yapın ve ilk varan siz olun.", bgg: 'https://boardgamegeek.com/boardgame/140620/lewis-and-clark-the-expedition' },
+        { name: 'Princes of Florence', image: 'images/games/prince.jpg', category: 'strateji', players: '1-5', zorluk: 'Orta', desc: "Floransa'da en prestijli sarayı siz kurun.", bgg: 'https://boardgamegeek.com/boardgame/555/the-princes-of-florence' },
+        { name: 'Castles of Burgundy', image: 'images/games/burgund.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/271320/the-castles-of-burgundy' },
+        { name: 'Arboretum', image: 'images/games/arboretum.jpg', category: 'strateji', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Hayalinizdeki botanik bahçesini kurun, rakipleriniz sizi engellemezse.', bgg: 'https://boardgamegeek.com/boardgame/140934/arboretum' },
         { name: 'Onitama', image: 'images/games/onitama.jpg', category: 'soyut', players: '2', zorluk: 'Kolay', desc: 'Satranç gibi, ama daha iyi.', bgg: 'https://boardgamegeek.com/boardgame/160477/onitama' },
         { name: 'Faraway', image: 'images/games/faraway.jpg', category: 'kart', players: '2-6', zorluk: 'Kolay', desc: "Gizemli Alula'yı keşfedin, geri dönerken görevlerinizi tamamladığınızdan emin olun.", bgg: 'https://boardgamegeek.com/boardgame/385761/faraway' },
         { name: 'Biblios', image: 'images/games/biblios.jpg', category: 'kart', players: '2-4', zorluk: 'Kolay', desc: 'Açık arttırma kart oyunu.', bgg: 'https://boardgamegeek.com/boardgame/34219/biblios' },
-        { name: 'Kanban', image: 'images/games/kanban.jpg', category: 'strategy', players: '2-4', zorluk: 'Zor', desc: 'Araba fabrikasında en verimli yönetici siz olun.', bgg: 'https://boardgamegeek.com/boardgame/109276/kanban-drivers-editiony' },
+        { name: 'Kanban', image: 'images/games/kanban.jpg', category: 'strateji', players: '2-4', zorluk: 'Zor', desc: 'Araba fabrikasında en verimli yönetici siz olun.', bgg: 'https://boardgamegeek.com/boardgame/109276/kanban-drivers-editiony' },
         { name: 'High Society', image: 'images/games/society.jpg', category: 'kart', players: '3-5', zorluk: 'Kolay', desc: 'Açık arttırmada paranı bitirmeden doğru kartları kazan.', bgg: 'https://boardgamegeek.com/boardgame/220/high-society' },
-        { name: 'Ginkgopoils', image: 'images/games/ginkgo.jpg', category: 'strategy', players: '1-5', zorluk: 'Orta', desc: 'Şehir inşa et puan kazan? diye özetlesek? Olmaz ama diyelim', bgg: 'https://boardgamegeek.com/boardgame/128271/ginkgopolis' },
-        { name: 'Concordia Venus', image: 'images/games/venus.jpg', category: 'strategy', players: '2-6', zorluk: 'Orta', desc: "Bir klasik olan Concordia'nın yeni versiyonu.", bgg: 'https://boardgamegeek.com/boardgame/256916/concordia-venus' },
-        { name: 'Bus', image: 'images/games/bus.jpg', category: 'strategy', players: '3-5', zorluk: 'Orta', desc: 'Otobüs hattınızı genişletip insanları şehirde taşıyın. Uzay-zamanı çok da bozmadan.', bgg: 'https://boardgamegeek.com/boardgame/552/bus' },
-        { name: 'Tekhenu', image: 'images/games/tekhenu.jpg', category: 'strategy', players: '1-4', zorluk: 'Zor', desc: "Obelisk'in dönüşünü dikkate alarak doğru zarları doğru zamanda kulan medeniyetini kur.", bgg: 'https://boardgamegeek.com/boardgame/297030/tekhenu-obelisk-of-the-sun' },
+        { name: 'Ginkgopoils', image: 'images/games/ginkgo.jpg', category: 'strateji', players: '1-5', zorluk: 'Orta', desc: 'Şehir inşa et puan kazan? diye özetlesek? Olmaz ama diyelim', bgg: 'https://boardgamegeek.com/boardgame/128271/ginkgopolis' },
+        { name: 'Concordia Venus', image: 'images/games/venus.jpg', category: 'strateji', players: '2-6', zorluk: 'Orta', desc: "Bir klasik olan Concordia'nın yeni versiyonu.", bgg: 'https://boardgamegeek.com/boardgame/256916/concordia-venus' },
+        { name: 'Bus', image: 'images/games/bus.jpg', category: 'strateji', players: '3-5', zorluk: 'Orta', desc: 'Otobüs hattınızı genişletip insanları şehirde taşıyın. Uzay-zamanı çok da bozmadan.', bgg: 'https://boardgamegeek.com/boardgame/552/bus' },
+        { name: 'Tekhenu', image: 'images/games/tekhenu.jpg', category: 'strateji', players: '1-4', zorluk: 'Zor', desc: "Obelisk'in dönüşünü dikkate alarak doğru zarları doğru zamanda kulan medeniyetini kur.", bgg: 'https://boardgamegeek.com/boardgame/297030/tekhenu-obelisk-of-the-sun' },
         { name: 'Castle Combo', image: 'images/games/combo.jpg', category: 'kart', players: '2-5', zorluk: 'Kolay', desc: 'Kale ve köy sakini insanları en iyi sırada bölgenize ekleyip en çok puanı kazanın.', bgg: 'https://boardgamegeek.com/boardgame/416851/castle-combo' },
-        { name: 'Furnace', image: 'images/games/furnace.jpg', category: 'strategy', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Doğru şirketlere yatırım yapıp en verimli üretimi siz yapın.', bgg: 'https://boardgamegeek.com/boardgame/318084/furnace' },
-        { name: 'Navegador', image: 'images/games/navegador.jpg', category: 'strategy', players: '2-5', zorluk: 'Orta', desc: "Geminizle Dünya'yı dolaşıp Portekiz Keşif Çağı'nı yeniden yaşayın.", bgg: 'https://boardgamegeek.com/boardgame/66589/navegador' },
-        { name: 'Rococo', image: 'images/games/rococo.jpg', category: 'strategy', players: '2-5', zorluk: 'Orta', desc: 'Prestijli balo için en güzel giysileri diken terzi siz olun.', bgg: 'https://boardgamegeek.com/boardgame/144344/rococo' },
-        { name: 'Splendor Duel', image: 'images/games/splendor.jpg', category: 'strategy', players: '2', zorluk: 'Kolay-Orta', desc: 'Gerekli mücevherleri toplayıp en yüksek puanı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/364073/splendor-duel' },
-        { name: 'The King is Dead', image: 'images/games/kingdead.jpg', category: 'strategy', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Kralsız kalan krallığı kim kazanacak belirleyin, kontrolü kazananın en iyi yancısı olan kazanır.', bgg: 'https://boardgamegeek.com/boardgame/319966/the-king-is-dead-second-edition' },
+        { name: 'Furnace', image: 'images/games/furnace.jpg', category: 'strateji', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Doğru şirketlere yatırım yapıp en verimli üretimi siz yapın.', bgg: 'https://boardgamegeek.com/boardgame/318084/furnace' },
+        { name: 'Navegador', image: 'images/games/navegador.jpg', category: 'strateji', players: '2-5', zorluk: 'Orta', desc: "Geminizle Dünya'yı dolaşıp Portekiz Keşif Çağı'nı yeniden yaşayın.", bgg: 'https://boardgamegeek.com/boardgame/66589/navegador' },
+        { name: 'Rococo', image: 'images/games/rococo.jpg', category: 'strateji', players: '2-5', zorluk: 'Orta', desc: 'Prestijli balo için en güzel giysileri diken terzi siz olun.', bgg: 'https://boardgamegeek.com/boardgame/144344/rococo' },
+        { name: 'Splendor Duel', image: 'images/games/splendor.jpg', category: 'strateji', players: '2', zorluk: 'Kolay-Orta', desc: 'Gerekli mücevherleri toplayıp en yüksek puanı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/364073/splendor-duel' },
+        { name: 'The King is Dead', image: 'images/games/kingdead.jpg', category: 'strateji', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Kralsız kalan krallığı kim kazanacak belirleyin, kontrolü kazananın en iyi yancısı olan kazanır.', bgg: 'https://boardgamegeek.com/boardgame/319966/the-king-is-dead-second-edition' },
         { name: 'Medici', image: 'images/games/medici.jpg', category: 'kart', players: '2-6', zorluk: 'Kolay-Orta', desc: 'Rakip ürün tacilerinden daha yüksek prestij kazandıracak mallar kazanın.', bgg: 'https://boardgamegeek.com/boardgame/46/medici' },
-        { name: 'Fromage', image: 'images/games/fromage.jpg', category: 'strategy', players: '1-4', zorluk: 'Orta', desc: "'Fransa'da en iyi peyniri kim yapacak?' Oyunu.", bgg: 'https://boardgamegeek.com/boardgame/384213/fromage' },
-        { name: 'Zoo Vadis', image: 'images/games/zoo.jpg', category: 'strategy', players: '3-7', zorluk: 'Kolay', desc: 'Pazarlık yeteneğinizi bu oyunda test edin. Dikkat kavga çıkabilir!', bgg: 'https://boardgamegeek.com/boardgame/368061/zoo-vadis' },
-        { name: 'Cooper Island', image: 'images/games/cooper.jpg', category: 'strategy', players: '1-4', zorluk: 'Zor', desc: 'Yarımadasını en iyi geliştiriğ Cooper Adası etrafında en çok gezen gemi sahibi kazanır.', bgg: 'https://boardgamegeek.com/boardgame/269511/cooper-island' },
-        { name: 'Hansa Teutonica', image: 'images/games/hansa.jpg', category: 'strategy', players: '3-5', zorluk: 'Orta', desc: 'Bir tema ile özetlemek zor olsa da, gerçek bir klasik.', bgg: 'https://boardgamegeek.com/boardgame/286749/hansa-teutonica-big-box' },
-        { name: 'Knarr', image: 'images/games/knarr.jpg', category: 'strategy', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Viking ekibinizi genişletin ve yeni yerler keşfedin, en hızlı hedefe ulaşan kazanır.', bgg: 'https://boardgamegeek.com/boardgame/379629/knarr' },
+        { name: 'Fromage', image: 'images/games/fromage.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: "'Fransa'da en iyi peyniri kim yapacak?' Oyunu.", bgg: 'https://boardgamegeek.com/boardgame/384213/fromage' },
+        { name: 'Zoo Vadis', image: 'images/games/zoo.jpg', category: 'strateji', players: '3-7', zorluk: 'Kolay', desc: 'Pazarlık yeteneğinizi bu oyunda test edin. Dikkat kavga çıkabilir!', bgg: 'https://boardgamegeek.com/boardgame/368061/zoo-vadis' },
+        { name: 'Cooper Island', image: 'images/games/cooper.jpg', category: 'strateji', players: '1-4', zorluk: 'Zor', desc: 'Yarımadasını en iyi geliştiriğ Cooper Adası etrafında en çok gezen gemi sahibi kazanır.', bgg: 'https://boardgamegeek.com/boardgame/269511/cooper-island' },
+        { name: 'Hansa Teutonica', image: 'images/games/hansa.jpg', category: 'strateji', players: '3-5', zorluk: 'Orta', desc: 'Bir tema ile özetlemek zor olsa da, gerçek bir klasik.', bgg: 'https://boardgamegeek.com/boardgame/286749/hansa-teutonica-big-box' },
+        { name: 'Knarr', image: 'images/games/knarr.jpg', category: 'strateji', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Viking ekibinizi genişletin ve yeni yerler keşfedin, en hızlı hedefe ulaşan kazanır.', bgg: 'https://boardgamegeek.com/boardgame/379629/knarr' },
         { name: 'Babylonia', image: 'images/games/babylon.jpg', category: 'soyut', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Güney Mezopotamya dönemine gidip şehirleri kontrolünüz altına alın.', bgg: 'https://boardgamegeek.com/boardgame/266164/babylonia' },
         { name: 'MLEM', image: 'images/games/mlem.jpg', category: 'aile', players: '2-5', zorluk: 'Kolay', desc: 'Astronotlarınızı aylara ve gezegenlere indirin. Ha bu arada, astronotlarınız birer kedi!', bgg: 'https://boardgamegeek.com/boardgame/387378/mlem-space-agency' },
-        { name: 'Irish Gauge', image: 'images/games/irish.jpg', category: 'strategy', players: '3-5', zorluk: 'Kolay-Orta', desc: 'İrlanda raylı ulaşımını geliştirmeye yardım edin ama doğru tren şirketlerine yatırım yapın.', bgg: 'https://boardgamegeek.com/boardgame/161882/irish-gauge' },
+        { name: 'Irish Gauge', image: 'images/games/irish.jpg', category: 'strateji', players: '3-5', zorluk: 'Kolay-Orta', desc: 'İrlanda raylı ulaşımını geliştirmeye yardım edin ama doğru tren şirketlerine yatırım yapın.', bgg: 'https://boardgamegeek.com/boardgame/161882/irish-gauge' },
         { name: 'Mysterium Park', image: 'images/games/mysterium.jpg', category: 'koop', players: '2-6', zorluk: 'Kolay', desc: 'Sirk ymneticisi öldü. Medyumlar olarak bir araya gelin ve olayı çözün.', bgg: 'https://boardgamegeek.com/boardgame/301767/mysterium-park' },
-        { name: 'Creature Caravan', image: 'images/games/caravan.jpg', category: 'strategy', players: '1-4', zorluk: 'Kolay-Orta', desc: 'Fantastik dostlarınızı karavanınıza alın, onların yardımıyla güvenli bölgeye ulaşmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/385331/creature-caravan' },
-        { name: 'Carson City', image: 'images/games/carson.jpg', category: 'strategy', players: '1-6', zorluk: 'Orta', desc: 'Carson şehrini en karlı binalarla donatın, rakip kovboyları düellolarda elemeyi unutmayın.', bgg: 'https://boardgamegeek.com/boardgame/177352/carson-city-big-box' },
-        { name: 'HUANG', image: 'images/games/huang.jpg', category: 'strategy', players: '2-4', zorluk: 'Orta', desc: "5. yüzyıl Çin Savaşan Devletler Çağı'nda Çin'i bir araya getiren klan siz olun.", bgg: 'https://boardgamegeek.com/boardgame/371688/huang' },
-        { name: 'Gold West', image: 'images/games/goldwest.jpg', category: 'strategy', players: '2-4', zorluk: 'Orta', desc: 'En verimli madencilik ağını oluşturmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/154086/gold-west' },
+        { name: 'Creature Caravan', image: 'images/games/caravan.jpg', category: 'strateji', players: '1-4', zorluk: 'Kolay-Orta', desc: 'Fantastik dostlarınızı karavanınıza alın, onların yardımıyla güvenli bölgeye ulaşmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/385331/creature-caravan' },
+        { name: 'Carson City', image: 'images/games/carson.jpg', category: 'strateji', players: '1-6', zorluk: 'Orta', desc: 'Carson şehrini en karlı binalarla donatın, rakip kovboyları düellolarda elemeyi unutmayın.', bgg: 'https://boardgamegeek.com/boardgame/177352/carson-city-big-box' },
+        { name: 'HUANG', image: 'images/games/huang.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: "5. yüzyıl Çin Savaşan Devletler Çağı'nda Çin'i bir araya getiren klan siz olun.", bgg: 'https://boardgamegeek.com/boardgame/371688/huang' },
+        { name: 'Gold West', image: 'images/games/goldwest.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: 'En verimli madencilik ağını oluşturmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/154086/gold-west' },
         { name: 'ito', image: 'images/games/ito.jpg', category: 'parti', players: '2-10', zorluk: 'Kolay', desc: 'Birbirinizin düşüncesini okumayı gerektirecek kooperatif bir oyun.', bgg: 'https://boardgamegeek.com/boardgame/327778/ito' },
         { name: 'Tetrarchia', image: 'images/games/tetra.jpg', category: 'koop', players: '1-5', zorluk: 'Kolay-Orta', desc: "Tetrarşi'yi oluşturun ve Roma İmparatorluğu'nu kurtarın.", bgg: 'https://boardgamegeek.com/boardgame/183315/tetrarchia' },
-        { name: 'Iliad', image: 'images/games/iliad.jpg', category: 'soyut strateji', players: '2', zorluk: 'Kolay', desc: 'Tanrıların korumasını kazanın, Hector ya da Aşil olarak Truva Savaşı galibi siz olun.', bgg: 'https://boardgamegeek.com/boardgame/420914/iliad' },
+        { name: 'Iliad', image: 'images/games/iliad.jpg', category: 'soyut', players: '2', zorluk: 'Kolay', desc: 'Tanrıların korumasını kazanın, Hector ya da Aşil olarak Truva Savaşı galibi siz olun.', bgg: 'https://boardgamegeek.com/boardgame/420914/iliad' },
         { name: 'Steam Power', image: 'images/games/steam.jpg', category: 'strateji', players: '1-5', zorluk: 'Kolay-Orta', desc: 'Tren ağınızı kurun, fabrikalar açın ve en çok kontratı tamamlayıp puan kazanan siz olun.', bgg: 'https://boardgamegeek.com/boardgame/391752/steam-power' },
         { name: 'Kronologic:Paris 1920', image: 'images/games/krono.jpg', category: 'koop', players: '1-4', zorluk: 'Kolay', desc: 'Paris Opera binasında bir cinayet işlendi, ama nerede ve kim tarafından bilinmiyor. İlk bulan oyunu kazanır.', bgg: 'https://boardgamegeek.com/boardgame/402111/kronologic-paris-1920' },
         { name: 'Wine Cellar', image: 'images/games/wine.jpg', category: 'kart', players: '1-8', zorluk: 'Kolay', desc: 'Doğru şarapları doğru zamanlarda yıllandırın ve en iyi şarap dağıtıcısı olun.', bgg: 'https://boardgamegeek.com/boardgame/411033/wine-cellar' },
@@ -889,9 +1059,10 @@
             return;
         }
         gamesGrid.innerHTML = filtered.map(g => {
+            const realIndex = GAMES.indexOf(g);
             const visual = g.image
-                ? `<img class="game-card-img" src="${g.image}" alt="${g.name}">`
-                : `<div class="game-card-emoji">${g.emoji}</div>`;
+                ? `<div class="game-card-visual" data-game="${realIndex}"><img class="game-card-img" src="${g.image}" alt="${g.name}"></div>`
+                : `<div class="game-card-visual" data-game="${realIndex}"><div class="game-card-emoji">${g.emoji}</div></div>`;
             return `
             <div class="game-card">
                 ${visual}
@@ -922,7 +1093,6 @@
 
     document.getElementById('modalClose').addEventListener('click', closeGameLibrary);
     modal.addEventListener('click', e => { if (e.target === modal) closeGameLibrary(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('active')) closeGameLibrary(); });
 
     filters.addEventListener('click', e => {
         const btn = e.target.closest('.filter-btn');
@@ -934,6 +1104,103 @@
 
     searchInput.addEventListener('input', () => {
         renderGames(activeFilter, searchInput.value);
+    });
+    
+
+    // ===== GAME DETAIL POPUP =====
+    const popup = document.getElementById('gamePopup');
+    const popupHero = document.getElementById('popupHero');
+    const popupTitle = document.getElementById('popupTitle');
+    const popupStats = document.getElementById('popupStats');
+    const popupDesc = document.getElementById('popupDesc');
+    const popupDocs = document.getElementById('popupDocs');
+    const popupBgg = document.getElementById('popupBgg');
+
+    function openGamePopup(index) {
+        const g = GAMES[index];
+        if (!g) return;
+
+        // Hero image or emoji
+        const closeBtn = '<button class="game-popup-close" onclick="closeGamePopup()" aria-label="Kapat">✕</button>';
+        if (g.image) {
+            popupHero.innerHTML = closeBtn + `<img src="${g.image}" alt="${g.name}">`;
+        } else {
+            popupHero.innerHTML = closeBtn + `<div class="game-popup-hero-emoji">${g.emoji}</div>`;
+        }
+
+        // Title (linked to BGG)
+        popupTitle.innerHTML = `<a href="${g.bgg}" target="_blank" rel="noopener noreferrer">${g.name}</a>`;
+
+        // Stats
+        popupStats.innerHTML = `
+            <div class="game-popup-stat">
+                <div class="game-popup-stat-val">👥 ${g.players}</div>
+                <div class="game-popup-stat-label">Oyuncu</div>
+            </div>
+            <div class="game-popup-stat">
+                <div class="game-popup-stat-val">${g.zorluk}</div>
+                <div class="game-popup-stat-label">Zorluk</div>
+            </div>
+        `;
+
+        // Description (use details if available, fallback to desc)
+        popupDesc.textContent = g.details || g.desc;
+
+        // Documents
+        const docs = g.docs || [];
+        if (docs.length > 0) {
+            popupDocs.innerHTML = `
+                <div class="game-popup-docs-title">Dokümanlar</div>
+                <div class="game-popup-docs">
+                    ${docs.map(d => `
+                        <a href="${d.file}" target="_blank" class="doc-link">
+                            <div class="doc-link-icon">${d.icon || '📄'}</div>
+                            <div class="doc-link-info">
+                                <div class="doc-link-name">${d.name}</div>
+                                ${d.size ? `<div class="doc-link-size">${d.size}</div>` : ''}
+                            </div>
+                            <div class="doc-link-arrow">→</div>
+                        </a>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            popupDocs.innerHTML = `
+                <div class="game-popup-docs-title">Dokümanlar</div>
+                <div class="game-popup-no-docs">📄 Henüz doküman eklenmedi</div>
+            `;
+        }
+
+        // BGG link
+        popupBgg.innerHTML = `<a href="${g.bgg}" target="_blank" rel="noopener noreferrer" class="game-popup-bgg">🎲 BoardGameGeek'te Gör →</a>`;
+
+        popup.classList.add('active');
+    }
+
+    function closeGamePopup() {
+        popup.classList.remove('active');
+    }
+
+    // Click delegation for game visuals
+    gamesGrid.addEventListener('click', e => {
+        const visual = e.target.closest('.game-card-visual');
+        if (!visual) return;
+        const index = parseInt(visual.dataset.game);
+        if (!isNaN(index)) openGamePopup(index);
+    });
+
+    // Close popup
+    document.getElementById('popupClose').addEventListener('click', closeGamePopup);
+    popup.addEventListener('click', e => { if (e.target === popup) closeGamePopup(); });
+
+    // Unified Escape handler — popup first, then library
+    document.addEventListener('keydown', e => {
+        if (e.key !== 'Escape') return;
+        if (popup.classList.contains('active')) {
+            closeGamePopup();
+        } else if (modal.classList.contains('active')) {
+            closeGameLibrary();
+        }
     });
 </script>
 </body>
