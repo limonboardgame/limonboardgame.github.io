@@ -345,6 +345,57 @@
             flex-shrink: 0;
         }
 
+        /* === MAP SECTION === */
+        .map-section {
+            margin-top: 2rem;
+            background: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid rgba(42, 35, 24, 0.06);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+        .map-frame {
+            width: 100%; height: 360px;
+            border: none; display: block;
+            filter: saturate(0.92);
+            transition: filter 0.3s;
+        }
+        .map-section:hover .map-frame { filter: saturate(1); }
+        .map-actions {
+            display: flex; gap: 0.7rem; padding: 1rem 1.2rem;
+            border-top: 1px solid rgba(42, 35, 24, 0.06);
+            background: var(--cream-warm);
+            flex-wrap: wrap;
+        }
+        .map-btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 1.1rem; border-radius: 50px;
+            font-size: 0.85rem; font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'DM Sans', sans-serif;
+            border: 1px solid transparent;
+        }
+        .map-btn-primary {
+            background: var(--lemon); color: var(--bark);
+        }
+        .map-btn-primary:hover {
+            background: var(--lemon-glow);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lemon);
+        }
+        .map-btn-secondary {
+            background: var(--white); color: var(--bark);
+            border-color: rgba(42, 35, 24, 0.1);
+        }
+        .map-btn-secondary:hover {
+            border-color: var(--leaf-light);
+            color: var(--leaf);
+            transform: translateY(-2px);
+        }
+
+        
         /* === FOOTER === */
         footer {
             text-align: center; padding: 3rem 2rem 2.5rem;
@@ -690,6 +741,9 @@
             .game-popup { max-height: 90vh; border-radius: 14px; }
             .game-popup-body { padding: 1.2rem 1.3rem 1.5rem; }
             .game-popup-hero { height: 160px; }
+            .map-frame { height: 280px; }
+            .map-actions { padding: 0.8rem; }
+            .map-btn { flex: 1; justify-content: center; padding: 0.7rem 0.8rem; font-size: 0.82rem; }
         }
     </style>
 </head>
@@ -883,6 +937,34 @@
                 <div class="contact-item"><div class="contact-icon">✉️</div><span>info@limonboardgame.com</span></div>
                 <div class="contact-item"><div class="contact-icon">📸</div><span>@limonboardgame</span></div>
             </div>
+        </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="map-section reveal">
+        <iframe
+            class="map-frame"
+            src="https://www.google.com/maps?q=38.465654,27.091742&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Limon Board Game Kafe konumu"
+            allowfullscreen></iframe>
+        <div class="map-actions">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=38.465654,27.091742"
+               target="_blank" rel="noopener noreferrer"
+               class="map-btn map-btn-primary">
+                🧭 Yol Tarifi Al
+            </a>
+            <a href="https://www.google.com/maps/search/?api=1&query=38.465654,27.091742"
+               target="_blank" rel="noopener noreferrer"
+               class="map-btn map-btn-secondary">
+                📍 Haritada Aç
+            </a>
+            <a href="https://maps.apple.com/?q=38.465654,27.091742"
+               target="_blank" rel="noopener noreferrer"
+               class="map-btn map-btn-secondary">
+                🍎 Apple Maps
+            </a>
         </div>
     </div>
 </section>
