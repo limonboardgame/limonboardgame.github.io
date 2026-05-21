@@ -365,6 +365,90 @@
         .feature-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
         .feature-card p { color: var(--bark-mid); font-size: 0.92rem; line-height: 1.6; }
 
+        /* === HYGGE SUBSECTION === */
+        .hygge {
+            margin-top: 3rem;
+            background:
+                radial-gradient(ellipse 60% 80% at 85% 30%, rgba(255, 200, 120, 0.18) 0%, transparent 70%),
+                linear-gradient(135deg, #FFF6E0 0%, #FBEFD2 100%);
+            border-radius: var(--radius);
+            padding: 3.5rem 3rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(212, 184, 0, 0.18);
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .hygge-visual {
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .hygge-candle {
+            position: relative;
+            filter: drop-shadow(0 0 30px rgba(255, 180, 80, 0.35));
+        }
+        .hygge-flame {
+            transform-origin: center bottom;
+            animation: flicker 3s ease-in-out infinite;
+        }
+        @keyframes flicker {
+            0%, 100% { transform: scale(1) rotate(-1deg); opacity: 0.95; }
+            25% { transform: scale(1.04) rotate(1deg); opacity: 1; }
+            50% { transform: scale(0.98) rotate(-0.5deg); opacity: 0.92; }
+            75% { transform: scale(1.02) rotate(0.5deg); opacity: 1; }
+        }
+        .hygge-glow {
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 40%, rgba(255, 200, 120, 0.4), transparent 60%);
+            pointer-events: none;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        .hygge-content {
+            position: relative;
+        }
+        .hygge-eyebrow {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            color: #B8841F; font-weight: 600; font-size: 0.78rem;
+            text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 1rem;
+        }
+        .hygge-eyebrow::before {
+            content: ''; width: 28px; height: 2px;
+            background: #D4A53A; border-radius: 2px;
+        }
+        .hygge-word {
+            font-family: 'DM Serif Display', serif;
+            font-style: italic;
+            font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+            color: #8A5A1A;
+            line-height: 1; letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+        .hygge-pronunciation {
+            font-size: 0.88rem; color: var(--bark-soft);
+            letter-spacing: 0.05em; margin-bottom: 1.8rem;
+            font-style: italic;
+        }
+        .hygge-pronunciation strong {
+            color: var(--bark-mid); font-style: normal; font-weight: 600;
+        }
+        .hygge-body p {
+            font-size: 1.02rem; color: var(--bark-mid);
+            line-height: 1.75; margin-bottom: 1.1rem;
+        }
+        .hygge-body p:last-child { margin-bottom: 0; }
+        .hygge-body em {
+            color: var(--bark); font-style: italic;
+            background: linear-gradient(180deg, transparent 65%, rgba(255, 200, 120, 0.35) 65%);
+            padding: 0 2px;
+        }
+        
         /* === GAMES === */
         .games-showcase { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
         .games-img {
@@ -816,6 +900,10 @@
             .hero { padding: 5rem 1.5rem 3rem; }
             .hero-deco { display: none; }
             .about-grid, .games-showcase { grid-template-columns: 1fr; gap: 2rem; }
+            .hygge { grid-template-columns: 1fr; padding: 2.2rem 1.6rem; gap: 1.5rem; margin-top: 2.5rem; text-align: center; }
+            .hygge-eyebrow { justify-content: center; }
+            .hygge-content { text-align: left; }
+            .hygge-eyebrow { text-align: left; }
             .what-is-bg { padding: 1.8rem 1.4rem; margin-top: 2.5rem; }
             .what-is-bg-header { gap: 0.8rem; }
             .what-is-bg-icon { width: 46px; height: 46px; font-size: 1.4rem; border-radius: 12px; }
@@ -950,7 +1038,8 @@
             <div class="what-is-bg-title">Peki <span class="accent">"board game"</span> nedir?</div>
         </div>
         <p class="what-is-bg-intro">
-            Aslında bu oyunlar Türkçe'ye "kutu oyunu" şeklinde çevrilmiş olmasına rağmen, tam olarak anlamın karşılamadığını düşündüğümüz için Türkçe olmamasına rağmen "board game" olarak kullanmak istedik. Mağazalarda sadece onlar bulunduğu için aklınıza ilk Monopoly, Tabu veya UNO geliyor olabilir — ama "modern board game" dediğimiz şey çok daha geniş bir dünya. Geçtiğimiz 30 yılda, dünya çapında on binlerce oyun tasarlanmış; her biri farklı bir tema, farklı bir mekanik ve farklı bir his sunuyor. Bizim kütüphanemizdeki oyunlar da işte bu modern dünyanın seçkin örnekleri.
+            <p> "Kutu oyunu" tabirinin bu oyunlara tam olarak karşılık olmadığını düşündüğümüzden, İngilizce olsa da "board game" kalıbını kullanmak istedik.</p> 
+            <p> Yakın zamana kadar ülkemizde satılan oyunlar oldukça kısıtlı olduğundan aklınıza ilk Monopoly, Tabu veya UNO geliyor olabilir — ama "modern board game" dediğimiz şey çok daha geniş bir dünya. Geçtiğimiz 30 yılda, dünya çapında on binlerce oyun tasarlanmış; her biri farklı bir tema, farklı bir mekanik ve farklı bir his sunuyor. Bizim kütüphanemizdeki oyunlar da işte bu modern dünyanın seçkin örnekleri. </p>
         </p>
         <div class="what-is-bg-points">
             <div class="what-is-bg-point">
@@ -1007,6 +1096,65 @@
             <div class="feature-icon">🎉</div>
             <h3>Etkinlikler</h3>
             <p>Özel oyun günleri, oyun turnuvaları ve buluşmaları için takvimimizi takip edin.</p>
+        </div>
+    </div>
+
+    <!-- HYGGE SUBSECTION -->
+    <div class="hygge reveal">
+        <div class="hygge-visual">
+            <svg class="hygge-candle" width="180" height="220" viewBox="0 0 180 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- Warm ambient glow -->
+                <defs>
+                    <radialGradient id="flameGrad" cx="50%" cy="60%" r="50%">
+                        <stop offset="0%" stop-color="#FFF4C2"/>
+                        <stop offset="40%" stop-color="#FFC961"/>
+                        <stop offset="100%" stop-color="#E8851A" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="flameCore" cx="50%" cy="65%" r="40%">
+                        <stop offset="0%" stop-color="#FFFFFF"/>
+                        <stop offset="60%" stop-color="#FFE08A"/>
+                        <stop offset="100%" stop-color="#FFA940"/>
+                    </radialGradient>
+                    <linearGradient id="candleBody" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#FFFDF5"/>
+                        <stop offset="50%" stop-color="#FFF8E0"/>
+                        <stop offset="100%" stop-color="#F0E5C5"/>
+                    </linearGradient>
+                </defs>
+
+                <!-- Halo glow -->
+                <ellipse cx="90" cy="60" rx="80" ry="55" fill="url(#flameGrad)" opacity="0.5"/>
+
+                <!-- Candle body -->
+                <rect x="62" y="90" width="56" height="115" rx="3" fill="url(#candleBody)" stroke="#D4B886" stroke-width="0.8"/>
+                <!-- Candle top edge highlight -->
+                <ellipse cx="90" cy="92" rx="28" ry="4" fill="#E8D8A8" opacity="0.6"/>
+                <!-- Melted wax pool -->
+                <ellipse cx="90" cy="92" rx="22" ry="2.5" fill="#FFEFBC"/>
+
+                <!-- Wick -->
+                <rect x="89" y="78" width="2" height="14" fill="#3D2817" rx="1"/>
+
+                <!-- Flame -->
+                <g class="hygge-flame">
+                    <!-- Outer flame -->
+                    <path d="M 90 32 Q 78 50 80 68 Q 82 82 90 84 Q 98 82 100 68 Q 102 50 90 32 Z" fill="url(#flameGrad)"/>
+                    <!-- Inner flame -->
+                    <path d="M 90 44 Q 84 56 85 70 Q 87 78 90 80 Q 93 78 95 70 Q 96 56 90 44 Z" fill="url(#flameCore)"/>
+                </g>
+
+                <!-- Candle base -->
+                <ellipse cx="90" cy="205" rx="32" ry="4" fill="#8A7150" opacity="0.25"/>
+            </svg>
+        </div>
+        <div class="hygge-content">
+            <div class="hygge-eyebrow">Felsefemiz</div>
+            <span class="hygge-word">hygge</span>
+            <div class="hygge-pronunciation">okunuşu: <strong>"hu-ga"</strong> · Danimarka kökenli</div>
+            <div class="hygge-body">
+                <p><em>Hygge</em>, Danimarkalıların yıllar içinde yarattığı, başka bir dile tam çevrilemeyen bir kavram: sıcak bir ışıkta, sevdiklerinizle, hiçbir yere yetişmek zorunda kalmadan geçen anların adı. Limon'un kapısından girdiğinizde de tam olarak bunu hissetmenizi istiyoruz.</p>
+                <p>Burası bir kahve zinciri değil. Acelesi olmayan, sıkışıklığı olmayan, sadece sizin ve oyununuzun hızında akan bir yer. Evdeki sevdiğiniz koltuğun verdiği o "oh, geldim" hissini bulacağınız ikinci eviniz.</p>
+            </div>
         </div>
     </div>
 </section>
