@@ -661,11 +661,20 @@
         .modal-search::placeholder { color: var(--bark-soft); }
         .modal-search:focus { border-color: var(--lemon); box-shadow: 0 0 0 3px rgba(245, 217, 0, 0.12); }
         .modal-filters {
-            display: flex; gap: 0.45rem; flex-wrap: wrap;
+            display: flex; flex-direction: column; gap: 0.6rem;
             padding: 0 2rem 1rem;
             border-bottom: 1px solid rgba(42, 35, 24, 0.04);
             flex-shrink: 0;
         }
+        .filter-row {
+            display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center;
+        }
+        .filter-row-label {
+            font-size: 0.72rem; font-weight: 600;
+            color: var(--bark-soft); text-transform: uppercase;
+            letter-spacing: 1.5px; margin-right: 0.4rem;
+        }
+        
         .filter-btn {
             padding: 0.35rem 0.85rem; border-radius: 50px;
             border: 1px solid rgba(42, 35, 24, 0.1); background: transparent;
@@ -677,6 +686,21 @@
             background: var(--lemon); color: var(--bark);
             border-color: var(--lemon); font-weight: 600;
         }
+        /* Player count buttons - tighter, more like a selector */
+        .player-btn {
+            min-width: 38px; padding: 0.35rem 0.6rem;
+            border-radius: 50px;
+            border: 1px solid rgba(42, 35, 24, 0.1); background: transparent;
+            color: var(--bark-mid); font-size: 0.78rem; font-weight: 600;
+            cursor: pointer; transition: all 0.25s; font-family: 'DM Sans', sans-serif;
+            text-align: center;
+        }
+        .player-btn:hover { background: rgba(74, 124, 35, 0.08); border-color: rgba(74, 124, 35, 0.3); }
+        .player-btn.active {
+            background: var(--leaf); color: white;
+            border-color: var(--leaf); font-weight: 700;
+        }
+        
         .modal-body {
             overflow-y: auto; padding: 1.5rem 2rem 2rem; flex: 1;
         }
@@ -686,6 +710,42 @@
         .games-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;
         }
+        /* Co-op badge on game cards */
+        .coop-badge {
+            display: inline-flex; align-items: center; gap: 0.25rem;
+            font-size: 0.66rem; padding: 0.18rem 0.5rem;
+            border-radius: 50px;
+            background: rgba(74, 124, 35, 0.12);
+            color: var(--leaf); font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        /* Difficulty bar - 5 segments going green to red */
+        .difficulty-bar {
+            display: flex; gap: 2px;
+            margin: 0.5rem 0 0.4rem;
+            align-items: center;
+        }
+        .difficulty-segments {
+            display: flex; gap: 2px; flex: 1;
+        }
+        .difficulty-segment {
+            flex: 1; height: 6px;
+            border-radius: 2px;
+            background: rgba(42, 35, 24, 0.08);
+            transition: background 0.3s;
+        }
+        .difficulty-segment.filled-1 { background: #4ade80; }  /* green */
+        .difficulty-segment.filled-2 { background: #a3e635; }  /* yellow-green */
+        .difficulty-segment.filled-3 { background: #facc15; }  /* yellow */
+        .difficulty-segment.filled-4 { background: #fb923c; }  /* orange */
+        .difficulty-segment.filled-5 { background: #f87171; }  /* red */
+        .difficulty-label {
+            font-size: 0.7rem; color: var(--bark-soft);
+            font-weight: 500; margin-left: 0.4rem;
+            white-space: nowrap;
+        }
+        
         .game-card {
             background: var(--white); border-radius: 14px; padding: 1.1rem;
             border: 1px solid rgba(42, 35, 24, 0.05);
@@ -913,7 +973,10 @@
             section { padding: 3.5rem 1.5rem; }
             .modal-container { max-height: 92vh; border-radius: 16px; }
             .modal-header { padding: 1.2rem 1.2rem 0.8rem; }
-            .modal-filters { padding: 0 1.2rem 0.8rem; }
+            .modal-filters { padding: 0 1.2rem 0.8rem; gap: 0.4rem; }
+            .filter-row-label { font-size: 0.65rem; letter-spacing: 1px; margin-right: 0.2rem; }
+            .filter-btn { padding: 0.3rem 0.7rem; font-size: 0.72rem; }
+            .player-btn { min-width: 32px; padding: 0.3rem 0.5rem; font-size: 0.72rem; }
             .modal-body { padding: 1rem 1.2rem 1.5rem; }
             .games-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
             .game-popup { max-height: 90vh; border-radius: 14px; }
@@ -1025,7 +1088,6 @@
             <div class="what-is-bg-title">Peki <span class="accent">"board game"</span> nedir?</div>
         </div>
         <p class="what-is-bg-intro">
-            <p> "Kutu oyunu" tabirinin bu oyunlara tam olarak karşılık olmadığını düşündüğümüzden, İngilizce olsa da "board game" kalıbını kullanmak istedik.</p> 
             <p> Yakın zamana kadar ülkemizde satılan oyunlar oldukça kısıtlı olduğundan aklınıza ilk Monopoly, Tabu veya UNO geliyor olabilir — ama "modern" oyunlar diyebileceğimiz kapsamdaki oyunlar çok daha geniş bir dünya. Geçtiğimiz 40 yılda, dünya çapında on binlerce oyun tasarlandı; her biri farklı bir tema, farklı bir mekanik ve farklı bir eğlence sunuyor. Bizim kütüphanemizdeki oyunlar da işte bu modern dünyanın seçkin örnekleri. </p>
         </p>
         <div class="what-is-bg-points">
@@ -1072,7 +1134,7 @@
         <div class="feature-card reveal">
             <div class="feature-icon">☕</div>
             <h3>Özenle Hazırlanmış Kahveler</h3>
-            <p>Özenle demlenmiş kahveler. İster sıcak ister soğuk, sade veya sütlü, kendi tat beklentinize uygun filtre kahve seçeneklerimizle sadece kahvemiz için bile uğramak isteyeceğiniz standardın dışında bir kafe.</p>
+            <p>Özenle demlenmiş kahveler. Standart içecekler dışında çeşitli filtre kahve seçeneklerimiz ve başka yerlerde bulamayacağınız Moka Pot tariflerimizle, sadece kahvemiz için bile uğramak isteyeceğiniz standardın dışında bir kafe.</p>
         </div>
         <div class="feature-card reveal">
             <div class="feature-icon">🎯</div>
@@ -1256,14 +1318,22 @@
             </div>
         </div>
         <div class="modal-filters" id="modalFilters">
-            <button class="filter-btn active" data-filter="all">Tüm Oyunlar</button>
-            <button class="filter-btn" data-filter="strateji">🧠 Strateji</button>
-            <button class="filter-btn" data-filter="parti">🎉 Parti</button>
-            <button class="filter-btn" data-filter="koop">🤝 Co-op</button>
-            <button class="filter-btn" data-filter="kart">🃏 Kart</button>
-            <button class="filter-btn" data-filter="aile">👨‍👩‍👧‍👦 Aile</button>
-            <button class="filter-btn" data-filter="rpg">⚔️ RPG</button>
-            <button class="filter-btn" data-filter="soyut">🧩 Soyut Strateji</button>
+            <div class="filter-row">
+                <span class="filter-row-label">Tür</span>
+                <button class="filter-btn active" data-filter="all">Tüm Oyunlar</button>
+                <button class="filter-btn" data-filter="yeni">🌱 Yeni Başlayanlar</button>
+                <button class="filter-btn" data-filter="hizli">⚡ Hızlı</button>
+                <button class="filter-btn" data-filter="strateji">🧠 Strateji</button>
+            </div>
+            <div class="filter-row" id="playerCountFilter">
+                <span class="filter-row-label">Oyuncu</span>
+                <button class="player-btn active" data-players="all">Tümü</button>
+                <button class="player-btn" data-players="1">1</button>
+                <button class="player-btn" data-players="2">2</button>
+                <button class="player-btn" data-players="3">3</button>
+                <button class="player-btn" data-players="4">4</button>
+                <button class="player-btn" data-players="5+">5+</button>
+            </div>
         </div>
         <div class="modal-body" id="modalBody">
             <div class="games-grid" id="gamesGrid"></div>
@@ -1316,85 +1386,99 @@
 
     // ===== GAME LIBRARY DATA & MODAL =====
     const GAMES = [
-
-        { name: 'Brass: Birmingham', image: 'images/games/brass.jpg', category: 'strateji', players: '2-4', zorluk: 'Zor', desc: 'Sanayi Devrimi sırasında ağlar kurun.', bgg: 'https://boardgamegeek.com/boardgame/224517/brass-birmingham', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/6EDWPGW69R#RWRhVddBgrVt'}] },
-        { name: 'Pandemic', image: 'images/games/pandemic.jpg', category: 'koop', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Diğer oyuncularla iş birliği yapın ve büyük pandemiyi durdurun.', bgg: 'https://boardgamegeek.com/boardgame/30549/pandemic', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/P4YDTY5BCM#dsQDip4b65Jl'}] },
-        { name: 'Power Grid', image: 'images/games/powergrid.jpg', category: 'strateji', players: '2-6', zorluk: 'Orta', desc: 'Açık arttırmalarla santraller alın, bina ağınızı genişletin, en çok eve elektrik veren kazanır.', bgg: 'https://boardgamegeek.com/boardgame/2651/power-grid', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/42CR4M31DM#wQ9QJZxayFb4'}] },
-        { name: 'Puerto Rico', image: 'images/games/puerto.jpg', category: 'strateji', players: '2-5', zorluk: 'Orta', desc: 'Doğru zamanda doğru üretimleri yapıp kargolayın ve en yüksek puanı almaya çalışın', bgg: 'https://boardgamegeek.com/boardgame/3076/puerto-rico', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/H3N63HRK1C#NEDVu4qxIuM3'}] },
-        { name: 'Kingdom Crossing', image: 'images/games/kingdomcrossing.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: 'Kunduz kraliçesine krallığa daha rahat ulaşabilmesi için 8. köprünün inşasını yapmasında yardım eden siz olmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/437245/kingdom-crossing', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/3BZAY6V568#fnMIop6HLoyh'}] },
-        { name: '7 Wonders Duel', image: 'images/games/7wd.jpg', category: 'strateji', players: '2', zorluk: 'Kolay-Orta', desc: 'En iyi medeniyeti oluşturup rakibinizi yenin.', bgg: 'https://boardgamegeek.com/boardgame/173346/7-wonders-duel', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/FJ5PZJ9XJ0#h8RiBdDlqgyQ'}] },
-        { name: 'Radlands', image: 'images/games/radlands.jpg', category: 'strateji', players: '2', zorluk: 'Kolay-Orta', desc: 'Post-apokalitlik bir dünyada punk gruplarınızı savaştırın.', bgg: 'https://boardgamegeek.com/boardgame/329082/radlands', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/KNGDEJ96GG#b1m3c7VsdDuH'}] },
-        { name: 'RA', image: 'images/games/ra.jpg', category: 'strateji', players: '2-5', zorluk: 'Kolay-Orta', desc: "Anıtlar ve antik eserler kazanmak için açık arttırma yapmak ister misin? RA'yı çağır!", bgg: 'https://boardgamegeek.com/boardgame/12/ra', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/VKEEWVFRJG#Cpe253WZd5po'}] },
-        { name: "Tzolk'in", image: 'images/games/tzolkin.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta-Zor', desc: 'Halkına liderlik et ve en iyi medeniyeti kur.', bgg: 'https://boardgamegeek.com/boardgame/126163/tzolkin-the-mayan-calendar', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/5DQM2NSA78#O6hWBgUVgin2'}] },
-        { name: 'Five Tribes', image: 'images/games/tribes.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: '5 Kabilenin üyelerini Naqala üzerinde hareket ettirin, şehirleri, ve Djinnleri kontrol edin', bgg: 'https://boardgamegeek.com/boardgame/157354/five-tribes-the-djinns-of-naqala', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/DGETEN9WB0#1NIpUg0lvO7R'}] },
-        { name: 'White Castle', image: 'images/games/castle.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: "Japonya Himeji Kalesi'ndeki en etkili klan olun.", bgg: 'https://boardgamegeek.com/boardgame/371942/the-white-castle', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/C6EJEM9MC8#iLnS1mMWKUV8'}] },
-        { name: 'Troyes', image: 'images/games/troyes.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: 'Tek cümleyle özetlemek mümkün değil, zarlı bir strateji oyunu diyelim.', bgg: 'https://boardgamegeek.com/boardgame/73439/troyes' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/XBC45FRZ2R#dq8L1FLRKPXn'}]},
-        { name: 'Crew: Quest for Planet Nine', image: 'images/games/crew.jpg', category: 'kart', players: '2-5', zorluk: 'Kolay', desc: "Astronot arkadaşlarınızla doğru kartları oynayıp görevleri tamamlayın, birlikte kazanın.", bgg: 'https://boardgamegeek.com/boardgame/284083/the-crew-the-quest-for-planet-nine', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/XBC45FRZ2R#dq8L1FLRKPXn'}] },
-        { name: 'Grand Austria Hotel', image: 'images/games/hotel.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: 'Ziyaretçilerinize en iyi hizmeti sunup en iyi odaları hazırlayın ve en başarılı otelci olun.', bgg: 'https://boardgamegeek.com/boardgame/182874/grand-austria-hotel',docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/8J9WPYYQ1G#GAxh24oTFdxD'}, {name:"Let's Waltz Ek Paket Kuralları",file:'https://drive.proton.me/urls/KHJ9EA44AG#Fob6b7879F4H'}] },
-        { name: 'Flamme Rouge', image: 'images/games/rouge.jpg', category: 'aile', players: '2-4', zorluk: 'Kolay', desc: 'Kartlarınızı doğru zamanda oynayın ve en hızlı bisiklet yarışçısı olun.', bgg: 'https://boardgamegeek.com/boardgame/199478/flamme-rouge' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/0XGCV0GPK8#gzs1yUuH9P3L'}]},
-        { name: 'Cartographers', image: 'images/games/carto.jpg', category: 'aile', players: '1-100', zorluk: 'Kolay', desc: 'Yeni topraklar keşfedin ve en iyi haritayı oluşturun.', bgg: 'https://boardgamegeek.com/boardgame/263918/cartographers', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/3TP9BXMMCC#jftvz7QZd8AK'}] },
-        { name: 'Age of Innovation', image: 'images/games/aoi.jpg', category: 'strateji', players: '1-5', zorluk: 'Zor', desc: 'Terra Mystica dünyasında kendi klanınızla yayılın ve binalar inşa edip en yüksek puanı kazanın.', bgg: 'https://boardgamegeek.com/boardgame/383179/age-of-innovation', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/AV6CZ84KM0#Lze4DMGJmjuX'}] },
-        { name: 'Carnegie', image: 'images/games/carnegie.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta-Zor', desc: 'Şirketini en etkili yöneten iş adamı siz olun.', bgg: 'https://boardgamegeek.com/boardgame/310873/carnegie' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/BW83PHWNQ4#DelYrK5Y04C7'}]},
-        { name: 'Lewis & Clark', image: 'images/games/lewis.jpg', category: 'strateji', players: '1-5', zorluk: 'Orta', desc: "Yerlilerin de yardımıyla Missouri'den Oregon'a yolculuk yapın ve ilk varan siz olun.", bgg: 'https://boardgamegeek.com/boardgame/140620/lewis-and-clark-the-expedition', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/FPWDJ1QCC4#ZMuRcJDwx9gv'}] },
-        { name: 'Princes of Florence', image: 'images/games/prince.jpg', category: 'strateji', players: '1-5', zorluk: 'Orta', desc: "Floransa'da en prestijli sarayı siz kurun.", bgg: 'https://boardgamegeek.com/boardgame/555/the-princes-of-florence' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/MKNSW93WM4#I8aF118VtLaO'}]},
-        { name: 'Castles of Burgundy', image: 'images/games/burgund.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/271320/the-castles-of-burgundy' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/Q350NQ5KGW#uVX5hds0vIxA'}]},
-        { name: 'Arboretum', image: 'images/games/arboretum.jpg', category: 'strateji', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Hayalinizdeki botanik bahçesini kurun, rakipleriniz sizi engellemezse.', bgg: 'https://boardgamegeek.com/boardgame/140934/arboretum', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/VEXMN9A5KG#0bkfhaxaYXWY'}] },
-        { name: 'Onitama', image: 'images/games/onitama.jpg', category: 'soyut', players: '2', zorluk: 'Kolay', desc: 'Satranç gibi, ama daha iyi.', bgg: 'https://boardgamegeek.com/boardgame/160477/onitama' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/K0FDK7DB48#YtMk24LWtzbq'}]},
-        { name: 'Faraway', image: 'images/games/faraway.jpg', category: 'kart', players: '2-6', zorluk: 'Kolay', desc: "Gizemli Alula'yı keşfedin, geri dönerken görevlerinizi tamamladığınızdan emin olun.", bgg: 'https://boardgamegeek.com/boardgame/385761/faraway', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/PN398J2BYM#uKNdwVYmFbAc'}] },
-        { name: 'Kanban', image: 'images/games/kanban.jpg', category: 'strateji', players: '2-4', zorluk: 'Zor', desc: 'Araba fabrikasında en verimli yönetici siz olun.', bgg: 'https://boardgamegeek.com/boardgame/109276/kanban-drivers-edition', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/P9X3TCM24C#QAjEWnHjaPeY'}] },
-        { name: 'High Society', image: 'images/games/society.jpg', category: 'kart', players: '3-5', zorluk: 'Kolay', desc: 'Açık arttırmada paranı bitirmeden doğru kartları kazan.', bgg: 'https://boardgamegeek.com/boardgame/220/high-society' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/W4MG9NV74M#mkS1r137wGqf'}]},
-        { name: 'Ginkgopoils', image: 'images/games/ginkgo.jpg', category: 'strateji', players: '1-5', zorluk: 'Orta', desc: 'Şehir inşa et puan kazan? diye özetlesek? Olmaz ama diyelim', bgg: 'https://boardgamegeek.com/boardgame/128271/ginkgopolis', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/8HXX2864K4#YYP3OEiel15b'}] },
-        { name: 'Concordia Venus', image: 'images/games/venus.jpg', category: 'strateji', players: '2-6', zorluk: 'Orta', desc: "Bir klasik olan Concordia'nın yeni versiyonu.", bgg: 'https://boardgamegeek.com/boardgame/256916/concordia-venus', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/7RBGXP3J3W#ScqbZ5JV7poa'}] },
-        { name: 'Bus', image: 'images/games/bus.jpg', category: 'strateji', players: '3-5', zorluk: 'Orta', desc: 'Otobüs hattınızı genişletip insanları şehirde taşıyın. Uzay-zamanı çok da bozmadan.', bgg: 'https://boardgamegeek.com/boardgame/552/bus', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/5TKTYY6XP4#2lOqe2wAYtBH'}] },
-        { name: 'Tekhenu', image: 'images/games/tekhenu.jpg', category: 'strateji', players: '1-4', zorluk: 'Zor', desc: "Obelisk'in dönüşünü dikkate alarak doğru zarları doğru zamanda kulan medeniyetini kur.", bgg: 'https://boardgamegeek.com/boardgame/297030/tekhenu-obelisk-of-the-sun' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/EYHG4WW3XW#YFI1Ky97OfUJ'}]},
-        { name: 'Castle Combo', image: 'images/games/combo.jpg', category: 'kart', players: '2-5', zorluk: 'Kolay', desc: 'Kale ve köy sakini insanları en iyi sırada bölgenize ekleyip en çok puanı kazanın.', bgg: 'https://boardgamegeek.com/boardgame/416851/castle-combo' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/G3QM56RAS0#yxEdQLuiO87a'}]},
-        { name: 'Furnace', image: 'images/games/furnace.jpg', category: 'strateji', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Doğru şirketlere yatırım yapıp en verimli üretimi siz yapın.', bgg: 'https://boardgamegeek.com/boardgame/318084/furnace', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/GSW33BJFMR#Mi6PP1xmHpr2'}] },
-        { name: 'Navegador', image: 'images/games/navegador.jpg', category: 'strateji', players: '2-5', zorluk: 'Orta', desc: "Geminizle Dünya'yı dolaşıp Portekiz Keşif Çağı'nı yeniden yaşayın.", bgg: 'https://boardgamegeek.com/boardgame/66589/navegador', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/72CZ0246TG#QHPMYKw3LPsO'}] },
-        { name: 'Rococo', image: 'images/games/rococo.jpg', category: 'strateji', players: '2-5', zorluk: 'Orta', desc: 'Prestijli balo için en güzel giysileri diken terzi siz olun.', bgg: 'https://boardgamegeek.com/boardgame/144344/rococo', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/TSCXAGFVFC#87YD00kcXaBX'}] },
-        { name: 'Splendor Duel', image: 'images/games/splendor.jpg', category: 'strateji', players: '2', zorluk: 'Kolay-Orta', desc: 'Gerekli mücevherleri toplayıp en yüksek puanı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/364073/splendor-duel', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/TYJ733XEJC#isqnBZH2lSaj'}] },
-        { name: 'The King is Dead', image: 'images/games/kingdead.jpg', category: 'strateji', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Kralsız kalan krallığı kim kazanacak belirleyin, kontrolü kazananın en iyi yancısı olan kazanır.', bgg: 'https://boardgamegeek.com/boardgame/319966/the-king-is-dead-second-edition', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/JP3S244E8W#vygfDdZhSSRF'}] },
-        { name: 'Medici', image: 'images/games/medici.jpg', category: 'kart', players: '2-6', zorluk: 'Kolay-Orta', desc: 'Rakip ürün tacilerinden daha yüksek prestij kazandıracak mallar kazanın.', bgg: 'https://boardgamegeek.com/boardgame/46/medici', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/JE135DMHHR#14rLZQwQRgPI'}] },
-        { name: 'Fromage', image: 'images/games/fromage.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: "'Fransa'da en iyi peyniri kim yapacak?' Oyunu.", bgg: 'https://boardgamegeek.com/boardgame/384213/fromage', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/YTB706TFB8#rh4uUVdZPGZP'}] },
-        { name: 'Zoo Vadis', image: 'images/games/zoo.jpg', category: 'strateji', players: '3-7', zorluk: 'Kolay', desc: 'Pazarlık yeteneğinizi bu oyunda test edin. Dikkat kavga çıkabilir!', bgg: 'https://boardgamegeek.com/boardgame/368061/zoo-vadis', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/Y8P2EMZMQG#syid7H58d838'}] },
-        { name: 'Cooper Island', image: 'images/games/cooper.jpg', category: 'strateji', players: '1-4', zorluk: 'Zor', desc: 'Yarımadasını en iyi geliştiriğ Cooper Adası etrafında en çok gezen gemi sahibi kazanır.', bgg: 'https://boardgamegeek.com/boardgame/269511/cooper-island' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/EZ8KV5MBDC#tO2dbqCG8dCh'}]},
-        { name: 'Hansa Teutonica', image: 'images/games/hansa.jpg', category: 'strateji', players: '3-5', zorluk: 'Orta', desc: 'Bir tema ile özetlemek zor olsa da, gerçek bir klasik.', bgg: 'https://boardgamegeek.com/boardgame/286749/hansa-teutonica-big-box', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/41E5N2MQD8#ZFkIdEEEUYVT'}] },
-        { name: 'Knarr', image: 'images/games/knarr.jpg', category: 'strateji', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Viking ekibinizi genişletin ve yeni yerler keşfedin, en hızlı hedefe ulaşan kazanır.', bgg: 'https://boardgamegeek.com/boardgame/379629/knarr' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/16VR7VQMXW#CeYQsqJirxWC'}]},
-        { name: 'Babylonia', image: 'images/games/babylon.jpg', category: 'soyut', players: '2-4', zorluk: 'Kolay-Orta', desc: 'Güney Mezopotamya dönemine gidip şehirleri kontrolünüz altına alın.', bgg: 'https://boardgamegeek.com/boardgame/266164/babylonia', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/77BAFZE89C#wtTXMU7q3wOO'}] },
-        { name: 'MLEM', image: 'images/games/mlem.jpg', category: 'aile', players: '2-5', zorluk: 'Kolay', desc: 'Astronotlarınızı aylara ve gezegenlere indirin. Ha bu arada, astronotlarınız birer kedi!', bgg: 'https://boardgamegeek.com/boardgame/387378/mlem-space-agency' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/K26VJZ5YGR#Ry1I7ijNOvI1'}]},
-        { name: 'Irish Gauge', image: 'images/games/irish.jpg', category: 'strateji', players: '3-5', zorluk: 'Kolay-Orta', desc: 'İrlanda raylı ulaşımını geliştirmeye yardım edin ama doğru tren şirketlerine yatırım yapın.', bgg: 'https://boardgamegeek.com/boardgame/161882/irish-gauge', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/33TXXSZM8W#5eYwbg1A1xCY'}] },
-        { name: 'Mysterium Park', image: 'images/games/mysterium.jpg', category: 'koop', players: '2-6', zorluk: 'Kolay', desc: 'Sirk ymneticisi öldü. Medyumlar olarak bir araya gelin ve olayı çözün.', bgg: 'https://boardgamegeek.com/boardgame/301767/mysterium-park' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/376RET46R8#X6cRy5EjdImB'}]},
-        { name: 'Creature Caravan', image: 'images/games/caravan.jpg', category: 'strateji', players: '1-4', zorluk: 'Kolay-Orta', desc: 'Fantastik dostlarınızı karavanınıza alın, onların yardımıyla güvenli bölgeye ulaşmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/385331/creature-caravan' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/T3T966EQ4C#SKcpb6f89qbX'}]},
-        { name: 'Carson City', image: 'images/games/carson.jpg', category: 'strateji', players: '1-6', zorluk: 'Orta', desc: 'Carson şehrini en karlı binalarla donatın, rakip kovboyları düellolarda elemeyi unutmayın.', bgg: 'https://boardgamegeek.com/boardgame/177352/carson-city-big-box', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/AVAZWMJRA0#9O2C206i3ojx'}] },
-        { name: 'HUANG', image: 'images/games/huang.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: "5. yüzyıl Çin Savaşan Devletler Çağı'nda Çin'i bir araya getiren klan siz olun.", bgg: 'https://boardgamegeek.com/boardgame/371688/huang', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/WVK2T0ZWEC#0fB8HD3bV1Ek'}] },
-        { name: 'Gold West', image: 'images/games/goldwest.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: 'En verimli madencilik ağını oluşturmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/154086/gold-west' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/N7V5F0Q5EW#6s2rn6UIYyvp'}]},
-        { name: 'ito', image: 'images/games/ito.jpg', category: 'parti', players: '2-10', zorluk: 'Kolay', desc: 'Birbirinizin düşüncesini okumayı gerektirecek kooperatif bir oyun.', bgg: 'https://boardgamegeek.com/boardgame/327778/ito', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/Y7VCSN6D5W#GxEPFLx02Tjn'}] },
-        { name: 'Tetrarchia', image: 'images/games/tetra.jpg', category: 'koop', players: '1-5', zorluk: 'Kolay-Orta', desc: "Tetrarşi'yi oluşturun ve Roma İmparatorluğu'nu kurtarın.", bgg: 'https://boardgamegeek.com/boardgame/183315/tetrarchia', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/9RR1JZ1TKC#vqlzY6coYFeT'}] },
-        { name: 'Iliad', image: 'images/games/iliad.jpg', category: 'soyut', players: '2', zorluk: 'Kolay', desc: 'Tanrıların korumasını kazanın, Hector ya da Aşil olarak Truva Savaşı galibi siz olun.', bgg: 'https://boardgamegeek.com/boardgame/420914/iliad' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/643BVVBHYG#iwkRcZSLE2mW'}]},
-        { name: 'Steam Power', image: 'images/games/steam.jpg', category: 'strateji', players: '1-5', zorluk: 'Kolay-Orta', desc: 'Tren ağınızı kurun, fabrikalar açın ve en çok kontratı tamamlayıp puan kazanan siz olun.', bgg: 'https://boardgamegeek.com/boardgame/391752/steam-power', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/A48KKG41H8#JCZEmUOI3s6m'}] },
-        { name: 'Kronologic:Paris 1920', image: 'images/games/krono.jpg', category: 'koop', players: '1-4', zorluk: 'Kolay', desc: 'Paris Opera binasında bir cinayet işlendi, ama nerede ve kim tarafından bilinmiyor. İlk bulan oyunu kazanır.', bgg: 'https://boardgamegeek.com/boardgame/402111/kronologic-paris-1920', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/XR6GGZJ8G4#q2WXKVetQGwy'}] },
-        { name: 'Wine Cellar', image: 'images/games/wine.jpg', category: 'kart', players: '1-8', zorluk: 'Kolay', desc: 'Doğru şarapları doğru zamanlarda yıllandırın ve en iyi şarap dağıtıcısı olun.', bgg: 'https://boardgamegeek.com/boardgame/411033/wine-cellar', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/8AEGJAPMC8#XHI3Xj6EV4rM'}] },
-        { name: 'Royal Society of Archeology', image: 'images/games/archeology.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: 'En iyi keşif yapan arkeolog ekibini oluşturup rakiplerinizi yenin.', bgg: 'https://boardgamegeek.com/boardgame/437101/the-royal-society-of-archeology' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/ZQD47PB3RM#rzB6qMNwaOpC'}]  },
-        { name: 'Wispwood', image: 'images/games/wispwood.jpg', category: 'soyut', players: '1-4', zorluk: 'Kolay', desc: 'Ormanınızı aydınlatın ve gizemli kedi varlıkların isteklerini yerine getirip ormana çekin.', bgg: 'https://boardgamegeek.com/boardgame/445044/wispwood', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/8WAEWB78NC#Rdgstm5fcjGm'}] },
-        { name: 'Luz', image: 'images/games/luz.jpg', category: 'kart', players: '3-5', zorluk: 'Kolay', desc: 'Rakiplerinin eline bakıp kendi elinde hangi kartlar olduğunu tahmin edip doğru kartları oynamaya çalış.', bgg: 'https://boardgamegeek.com/boardgame/420862/luz', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/BY41F2KWTR#pGsuUy6bnV3b'}] },
-        { name: 'Prophecy', image: 'images/games/prophecy.jpg', category: 'kart', players: '2-6', zorluk: 'Kolay', desc: 'Her round gelen kehanete göre kart kurban edin ve elinizde kalanları en iyi zamanda oynamaya çalışınç', bgg: 'https://boardgamegeek.com/boardgame/373435/prophecy', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/9GNX4N7WD0#N37cbjMUYDYh'}] },
-        { name: 'Salton Sea', image: 'images/games/salton.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta-Zor', desc: 'En verimli çalışan jeotermal enerji şirketi olmaya çalışın', bgg: 'https://boardgamegeek.com/boardgame/402663/salton-sea', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/BP4CRD0TZC#1ovOwzkFYdlu'}] },
-        { name: 'Fresco', image: 'images/games/fresco.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: 'Boyalar alıp karıştırın ve Rönesans tablosunu onarıp psikoposun lütfunu kazanın.', bgg: 'https://boardgamegeek.com/boardgame/66188/fresco', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/0DT2HPW84W#i4WZen3z9KtO'}] },
-        { name: 'Heaven & Ale', image: 'images/games/heavenale.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: 'Bira malzemeleri toplayın ve keşişlerin bira yapma zanaatini en iyi siz uygulayın.', bgg: 'https://boardgamegeek.com/boardgame/227789/heaven-and-ale', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/YAD02PMG8R#zgtSSDIe2AjU'}] },
-        { name: 'Small Samurai Empires', image: 'images/games/smallsamurai.jpg', category: 'strateji', players: '2-4', zorluk: 'Orta', desc: 'Samuray ordularınızı kullanıp Japonya üzerinde hakimiyet kurmak için savaşın.', bgg: 'https://boardgamegeek.com/boardgame/284616/small-samurai-empires', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/QYRY236R54#pVTHTezQSvKF'}] },
-        { name: 'Wroth', image: 'images/games/wroth.jpg', category: 'strateji', players: '1-4', zorluk: 'Kolay-Orta', desc: 'Wroth Adası hakimiyeti için rakiplerinize karşı, ya da onlarla birlikte savaşın.', bgg: 'https://boardgamegeek.com/boardgame/414117/wroth', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/G480W2HS1M#izKgeovw5mk8'}] },
-        { name: 'Stephens', image: 'images/games/stephens.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: 'En iyi camları yapan olun ve rakiplerinizin ürünlerini sönük bırakmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/357975/stephens', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/MF9RBAHBCG#yAXziDKdUOWd'}] },
-        { name: 'Paris', image: 'images/games/paris.jpg', category: 'soyut', players: '2', zorluk: 'Kolay', desc: 'Paris sokaklarınızı oluşturup rakibinizden daha iyi ışıklandırılmış bölgeyi oluşturmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/276498/paris-la-cite-de-la-lumiere', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/23AV9ZE4RC#wu5yk9ZOggNh'}] },
-        { name: 'Cities', image: 'images/games/cities.jpg', category: 'soyut', players: '2-4', zorluk: 'Kolay', desc: 'Şehri en iyi planlarla geliştirip daha iyi bir yer yapmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/402676/cities', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/VR9SFCDXQG#ovJCSAJAgESi'}] },
-        { name: 'New Frontiers', image: 'images/games/frontiers.jpg', category: 'strateji', players: '2-5', zorluk: 'Orta', desc: 'Doğru aksiyonları doğru zamanda seçin ve uzay imparatorluğunuzu kurun.', bgg: 'https://boardgamegeek.com/boardgame/255692/new-frontiers', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/64M9SDX0ZM#jLx5w7dYFDxB'}] },
-        { name: 'City of the Big Shoulder', image: 'images/games/cotbs.jpg', category: 'strateji', players: '2-4', zorluk: 'Zor', desc: 'Chicago yeniden inşası dönemine yardım eden iş adamlarını oynayın ve doğru hisselere yatırım yapıp en çok parayı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/214880/chicago-1875-city-of-the-big-shoulders', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/45QB9BDCFW#6hnW77jOGFpB'}] },
-        { name: 'Crown of Emara', image: 'images/games/emara.jpg', category: 'strateji', players: '1-4', zorluk: 'Orta', desc: 'Kral son yıllarında yerine geçecek kişiyi seçmek için bir test oluşturur, o testi hanginiz geçip yeni kral olacak?', bgg: 'https://boardgamegeek.com/boardgame/256570/crown-of-emara', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/JEW1SMZB90#OzHPzeb8xoMg'}] },
-        { name: 'Nokosu Dice', image: 'images/games/nokosu.jpg', category: 'kart', players: '3-5', zorluk: 'Kolay', desc: 'Doğru kartları ve doğru zarları doğru zamanda oynayıp en yüksek puanı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/294693/nokosu-dice', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/KPX7S2NBJM#0IuUkYsRg1Ay'}] },
-        { name: 'The Estates', image: 'images/games/estates.jpg', category: 'strateji', players: '2-5', zorluk: 'Kolay-Orta', desc: 'Şehrin inşası için doğru lokasyonlara ve binalara yapılan açık arttırmaları iyi seçin ve doğru bölgeleri rakiplerinize kaptırmayın.', bgg: 'https://boardgamegeek.com/boardgame/249381/the-estates', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/J14DWADFNM#LW1hF90Ws7Ye'}] },
-        { name: 'Deus', image: 'images/games/deus.jpg', category: 'kart', players: '1-8', zorluk: 'Kolay', desc: 'En iyi medeniyeti kurmaya çalışın, Tanrılar ile aranızı iyi tutmayı da unutmayın.', bgg: 'https://boardgamegeek.com/boardgame/162082/deus', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/6BRXTY4X6W#y2z5CARUnQ5o'}, {name:'Egypt Ek Paket Kuralları',file:'https://drive.proton.me/urls/6BJY2SD874#I4s2J47HckEQ'}] },
-        
-        
-        
-        
+        { name: '7 Wonders Duel', image: 'images/games/7wd.jpg', category: 'hizli', players: '2', coop: false, level: 2, desc: 'En gelişmiş medeniyeti oluşturup rakibinizi yenin.', bgg: 'https://boardgamegeek.com/boardgame/173346/7-wonders-duel', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/FJ5PZJ9XJ0#h8RiBdDlqgyQ'}] }, 
+        { name: '3 Ring Circus', image: 'images/games/3ring.jpg', category: 'strateji', players: '1-4', coop: false, level: 3, desc: 'En gösterişli sirki siz kurun.', bgg: 'https://boardgamegeek.com/boardgame/371947/3-ring-circus', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/NBQZ1MHFS0#r60H76SXMadI'}] },
+        { name: 'Ayar', image: 'images/games/ayar.jpg', category: 'strateji', players: '1-4', level: 3, desc: "Inka Uygarlığı'nın ortaya çıkış mitolojisini yeniden yazın."   .', bgg: 'https://boardgamegeek.com/boardgame/429438/ayar-children-of-the-sun', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/MTQHQ452RG#imVJmOUg1McF'}] },
+        { name: 'Fall', image: 'images/games/fall.jpg', category: 'strateji', players: '2', level: 2, coop: false, desc: 'Ormanı sonbahar florasına, faunasına ve mantarına ev sahipliği yapmak için yetiştirin.', bgg: 'https://boardgamegeek.com/boardgame/417741/fall' },
+        { name: 'Flip 7', image: 'images/games/flip7.jpg', category: ['hizli', 'yeni'], players: '3-18', level: 1, coop:false, desc: 'Hmm bu tur puanım 50, biraz daha puan kazanayım, 1 kart daha alayım. Hmm şu an puanım 0.', bgg: 'https://boardgamegeek.com/boardgame/420087/flip-7', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/AJNWBV5AB4#gR72B0m21QRh'}] }, 
+        { name: 'For the King(and Me)', image: 'images/games/fortheking.jpg', category: ['hizli', 'yeni'], players: '2-5', level: 2, coop:false, desc: 'Eğlenceli ama stratejik bir açık arttırma oyunu.', bgg: 'https://boardgamegeek.com/boardgame/333553/for-the-king-and-me', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/P5EQ3MTQY0#BQ6Gg0zCkgqq'}] },
+        { name: 'In the Hall of the Mountain King', image: 'images/games/hall.jpg', category: 'strateji', players: '2-5', level: 3, coop:false, desc: 'Troll ekibinizi dağdaki evlerine ulaştırın ve en görkemli zaferi siz elde edin.', bgg: 'https://boardgamegeek.com/boardgame/265402/in-the-hall-of-the-mountain-king', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/GE96CZ1KMG#N4m3pqO2dxUg'}] },
+        { name: 'Kanagawa', image: 'images/games/kanagawa.jpg', category: ['hizli', 'yeni'], players: '2-4', level: 2, coop: false, desc: "Japonya'nın doğasını ve kültürünü harmoniyle birleştirip en güzel manzarayı oluşturun.", bgg: 'https://boardgamegeek.com/boardgame/200147/kanagawa', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/FVH06PTE90#l7etkffyVmrT'}] },  
+        { name: 'Last Will', image: 'images/games/lastwill.jpg', category: 'strateji', players: '2-5', level: 3, coop:false, desc: 'Tüm mal varlığını kaybet ve en fakir sen ol, ve mirasa kon.', bgg: 'https://boardgamegeek.com/boardgame/97842/last-will', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/3EH0QNX34C#EsjvSNp0c6pB'}] },  
+        { name: 'Parks 2nd Edition', image: 'images/games/parks.jpg', category: ['hizli', 'yeni'], players: '1-5', level: 2, coop:false, desc: "ABD'nin en keyifli parklarını ziyaret edip en yüksek gezi puanını toplayın.", bgg: 'https://boardgamegeek.com/boardgame/437306/parks-second-edition', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/N27M6ARSMC#CDRwloOkLIt4'}] },
+        { name: 'Rebirth', image: 'images/games/rebirth.jpg', category: ['hizli', 'yeni', 'strateji'], players: '2-4', level: 2, coop:false, desc: "İskoçya ve İrlanda'nın yıkıntılarından medeniyeti yeniden kurun.", bgg: 'https://boardgamegeek.com/boardgame/417197/rebirth', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/NSQWDP9K0C#k67BKJp2RQly'}] },       
+        { name: 'Shackleton Base', image: 'images/games/shackleton.jpg', category: 'strateji', players: '1-4', level: 4, coop:false, desc: "Uzay ajansınısı iyi yönetin ve Ay'daki varlığınızı güçlendirin.", bgg: 'https://boardgamegeek.com/boardgame/408180/shackleton-base-a-journey-to-the-moon', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/4T1TT74HTW#vh09MHKcdiUa'}] },       
+        { name: 'Risk:Europe', image: 'images/games/risk.jpg', category: 'strateji', players: '2-4', coop: false, level: 3, desc: 'Efsane Risk artık çok daha iyi.', bgg: 'https://boardgamegeek.com/boardgame/204184/risk-europe', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/PVP2T5DWCW#a8puazkKcTHN'}] },      
+        { name: 'Bonfire', image: 'images/games/bonfire.jpg', category: 'strateji', players: '1-4', level: 4, coop:false , desc: 'Cücelerinizi yaşatabilmek için sönmüş ateşlerini tekrar yakmalarına yardım edin.', bgg: 'https://boardgamegeek.com/boardgame/304420/bonfire', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/PT9JTYSM6G#brRdUseuVmBU'}] },
+        { name: 'The Oracle of Delphi', image: 'images/games/delphi.jpg', category: 'strateji', players: '2-4', level: 3, coop: false, desc: "Zeus'un verdiği 12 görevi tamamlayan ilk siz olun.", bgg: 'https://boardgamegeek.com/boardgame/193558/the-oracle-of-delphi', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/CB8Z9X3RKR#9ZXsinRlWoDY'}] },     
+        { name: 'House of Fado', image: 'images/games/fado.jpg', category: 'strateji', players: '1-4', coop:false, level: 3, desc: 'Eleştirmenleri ve en prestijli müzisyenleri bulun ve en değerli Fado restoranı sizinki olsun.', bgg: 'https://boardgamegeek.com/boardgame/373667/house-of-fado', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/48SC633XMR#DHqEwsd0ytoP'}] },
+        { name: 'Sabika', image: 'images/games/sabika.jpg', category: 'strateji', players: '1-4', level: 4, coop: false, desc: "Alhambra'nın inşaatına destek sağlayan soylulardan biri siz olun.", bgg: 'https://boardgamegeek.com/boardgame/360265/sabika', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/MM0SRT29VC#sU3uixaVT9Gi'}] },       
+        { name: 'Suna Valo', image: 'images/games/suna.jpg', category: 'strateji', players: '2', level: 3, coop:false, desc: 'Solarpunk bir gelecekte geçen bu oyunda rakibinizden daha verimli çiftliği siz yapın.', bgg: 'https://boardgamegeek.com/boardgame/419384/suna-valo', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/49DTKHGC4G#WJZapFHVzAI6'}] },
+        { name: 'Architects of the West Kingdom', image: 'images/games/west.jpg', category: 'strateji', players: '1-6', level: 3, coop:false, desc: 'Karolenj İmparatorluğu en başarılı mimarını arıyor. O sen misin?.', bgg: 'https://boardgamegeek.com/boardgame/236457/architects-of-the-west-kingdom', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/9W4J7TWWGG#468erVBwRXeZ'},{name:'Age of Artisans',file:'https://drive.proton.me/urls/P0MKEAW5SR#OexYjmgxeULX'},{name:'Works of Wonder',file:'https://drive.proton.me/urls/YY0M8CB3WR#RYFn0ryd1VJ6'}] },        
+        { name: 'Age of Innovation', image: 'images/games/aoi.jpg', category: 'strateji', players: '1-5', level: 5, coop:false, desc: 'Terra Mystica dünyasında kendi klanınızla yayılın ve binalar inşa edip en yüksek puanı kazanın.', bgg: 'https://boardgamegeek.com/boardgame/383179/age-of-innovation', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/AV6CZ84KM0#Lze4DMGJmjuX'}] },
+        { name: 'Arboretum', image: 'images/games/arboretum.jpg', category: 'strateji', players: '2-4', level: 3, coop:false, desc: 'Hayalinizdeki botanik bahçesini kurun, rakipleriniz sizi engellemezse.', bgg: 'https://boardgamegeek.com/boardgame/140934/arboretum', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/VEXMN9A5KG#0bkfhaxaYXWY'}] },
+        { name: 'Babylonia', image: 'images/games/babylon.jpg', category: 'strateji', players: '2-4', level: 3, coop:false, desc: 'Güney Mezopotamya dönemine gidip şehirleri kontrolünüz altına alın.', bgg: 'https://boardgamegeek.com/boardgame/266164/babylonia', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/77BAFZE89C#wtTXMU7q3wOO'}] },
+        { name: 'Brass: Birmingham', image: 'images/games/brass.jpg', category: 'strateji', players: '2-4', level: 4, coop:false, desc: 'Sanayi Devrimi sırasında ağlar kurun.', bgg: 'https://boardgamegeek.com/boardgame/224517/brass-birmingham', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/6EDWPGW69R#RWRhVddBgrVt'}] },
+        { name: 'Bus', image: 'images/games/bus.jpg', category: 'strateji', players: '3-5', level: 3, coop:false, desc: 'Otobüs hattınızı genişletip insanları şehirde taşıyın. Uzay-zamanı çok da bozmadan.', bgg: 'https://boardgamegeek.com/boardgame/552/bus', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/5TKTYY6XP4#2lOqe2wAYtBH'}] },
+        { name: 'Carnegie', image: 'images/games/carnegie.jpg', category: 'strateji', players: '1-4', coop:false, level: 4, desc: 'Şirketini en etkili yöneten iş adamı siz olun.', bgg: 'https://boardgamegeek.com/boardgame/310873/carnegie' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/BW83PHWNQ4#DelYrK5Y04C7'}]},
+        { name: 'Carson City', image: 'images/games/carson.jpg', category: 'strateji', players: '1-6', coop:false, level: 3, desc: 'Carson şehrini en karlı binalarla donatın, rakip kovboyları düellolarda elemeyi unutmayın.', bgg: 'https://boardgamegeek.com/boardgame/177352/carson-city-big-box', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/AVAZWMJRA0#9O2C206i3ojx'}] },
+        { name: 'The Castles of Burgundy', image: 'images/games/burgund.jpg', category: 'strateji', coop:false, players: '1-4', level: 3, desc: 'Burgundy bölgesinin en güçlü prensliğini siz inşa edin.', bgg: 'https://boardgamegeek.com/boardgame/271320/the-castles-of-burgundy' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/Q350NQ5KGW#uVX5hds0vIxA'}]},
+        { name: 'Cities', image: 'images/games/cities.jpg', category: ['hizli','yeni','strateji'], players: '2-4', coop:false, level: 1, desc: 'Şehri en iyi planlarla geliştirip daha iyi bir yer yapmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/402676/cities', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/VR9SFCDXQG#ovJCSAJAgESi'}] },
+        { name: 'City of the Big Shoulders', image: 'images/games/cotbs.jpg', category: 'strateji', players: '2-4', coop:false, level: 4, desc: 'Chicago yeniden inşası dönemine yardım eden iş adamlarını oynayın ve doğru hisselere yatırım yapıp en çok parayı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/214880/chicago-1875-city-of-the-big-shoulders', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/45QB9BDCFW#6hnW77jOGFpB'}] },
+        { name: 'Concordia Venus', image: 'images/games/venus.jpg', category: 'strateji', players: '2-6', coop:false, level: 3, desc: "Bir klasik olan Concordia'nın yeni versiyonu.", bgg: 'https://boardgamegeek.com/boardgame/256916/concordia-venus', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/7RBGXP3J3W#ScqbZ5JV7poa'}] },
+        { name: 'Cooper Island', image: 'images/games/cooper.jpg', category: 'strateji', players: '1-4', coop:false, level: 4, desc: 'Yarımadasını en iyi geliştiriğ Cooper Adası etrafında en çok gezen gemi sahibi kazanır.', bgg: 'https://boardgamegeek.com/boardgame/269511/cooper-island' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/EZ8KV5MBDC#tO2dbqCG8dCh'}]},
+        { name: 'Creature Caravan', image: 'images/games/caravan.jpg', category: 'strateji', players: '1-4', coop:false, level: 2, desc: 'Fantastik dostlarınızı karavanınıza alın, onların yardımıyla güvenli bölgeye ulaşmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/385331/creature-caravan' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/T3T966EQ4C#SKcpb6f89qbX'}]},
+        { name: 'Keşif: Gezegen 9 Görevi', image: 'images/games/crew.jpg', category: ['hizli','yeni','strateji'], players: '2-5', coop:true, level: 2, desc: "Astronot arkadaşlarınızla doğru kartları oynayıp görevleri tamamlayın, birlikte kazanın.", bgg: 'https://boardgamegeek.com/boardgame/284083/the-crew-the-quest-for-planet-nine', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/XBC45FRZ2R#dq8L1FLRKPXn'}] },
+        { name: 'Crown of Emara', image: 'images/games/emara.jpg', category: 'strateji', players: '1-4', coop:false, level: 3, desc: 'Kral son yıllarında yerine geçecek kişiyi seçmek için bir test oluşturur, o testi hanginiz geçip yeni kral olacak?', bgg: 'https://boardgamegeek.com/boardgame/256570/crown-of-emara', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/JEW1SMZB90#OzHPzeb8xoMg'}] },
+        { name: 'Deus', image: 'images/games/deus.jpg', category: 'strateji', players: '1-8', coop:false, level: 3, desc: 'En iyi medeniyeti kurmaya çalışın, Tanrılar ile aranızı iyi tutmayı da unutmayın.', bgg: 'https://boardgamegeek.com/boardgame/162082/deus', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/6BRXTY4X6W#y2z5CARUnQ5o'}, {name:'Egypt Ek Paket Kuralları',file:'https://drive.proton.me/urls/6BJY2SD874#I4s2J47HckEQ'}] },
+        { name: 'The Estates', image: 'images/games/estates.jpg', category: 'strateji', players: '2-5', coop:false, level: 2, desc: 'Şehrin inşası için doğru lokasyonlara ve binalara yapılan açık arttırmaları iyi seçin ve doğru bölgeleri rakiplerinize kaptırmayın.', bgg: 'https://boardgamegeek.com/boardgame/249381/the-estates', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/J14DWADFNM#LW1hF90Ws7Ye'}] },     
+        { name: 'Five Tribes', image: 'images/games/tribes.jpg', category: 'strateji', players: '2-4',coop:false,  level: 3, desc: '5 Kabilenin üyelerini Naqala üzerinde hareket ettirin, şehirleri, ve Djinnleri kontrol edin', bgg: 'https://boardgamegeek.com/boardgame/157354/five-tribes-the-djinns-of-naqala', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/DGETEN9WB0#1NIpUg0lvO7R'}] },
+        { name: 'Flamme Rouge', image: 'images/games/rouge.jpg', category: ['hizli','yeni','strateji'], players: '2-4',coop:false,  level: 1, desc: 'Kartlarınızı doğru zamanda oynayın ve en hızlı bisiklet yarışçısı olun.', bgg: 'https://boardgamegeek.com/boardgame/199478/flamme-rouge' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/0XGCV0GPK8#gzs1yUuH9P3L'}]},
+        { name: 'Fresco', image: 'images/games/fresco.jpg', category: 'strateji', players: '2-4',coop:false,  level: 3, desc: 'Boyalar alıp karıştırın ve Rönesans tablosunu onarıp psikoposun lütfunu kazanın.', bgg: 'https://boardgamegeek.com/boardgame/66188/fresco', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/0DT2HPW84W#i4WZen3z9KtO'}] },        
+        { name: 'Fromage', image: 'images/games/fromage.jpg', category: ['hizli','strateji'], players: '1-4',coop:false,  level: 3, desc: "'Fransa'da en iyi peyniri kim yapacak?' Oyunu.", bgg: 'https://boardgamegeek.com/boardgame/384213/fromage', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/YTB706TFB8#rh4uUVdZPGZP'}] },        
+        { name: 'Furnace', image: 'images/games/furnace.jpg', category: 'strateji', players: '2-4',coop:false,  level: 2, desc: 'Doğru şirketlere yatırım yapıp en verimli üretimi siz yapın.', bgg: 'https://boardgamegeek.com/boardgame/318084/furnace', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/GSW33BJFMR#Mi6PP1xmHpr2'}] },        
+        { name: 'Ginkgopoils', image: 'images/games/ginkgo.jpg', category: 'strateji', players: '1-5',coop:false,  level: 3, desc: 'Şehir inşa et puan kazan? diye özetlesek? Olmaz ama diyelim', bgg: 'https://boardgamegeek.com/boardgame/128271/ginkgopolis', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/8HXX2864K4#YYP3OEiel15b'}] },
+        { name: 'Gold West', image: 'images/games/goldwest.jpg', category: 'strateji', players: '2-4',coop:false,  level: 2, desc: 'En verimli madencilik ağını oluşturmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/154086/gold-west' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/N7V5F0Q5EW#6s2rn6UIYyvp'}]},      
+        { name: 'Grand Austria Hotel', image: 'images/games/hotel.jpg', category: 'strateji', players: '2-4',coop:false,  level: 3, desc: 'Ziyaretçilerinize en iyi hizmeti sunup en iyi odaları hazırlayın ve en başarılı otelci olun.', bgg: 'https://boardgamegeek.com/boardgame/182874/grand-austria-hotel',docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/8J9WPYYQ1G#GAxh24oTFdxD'}, {name:"Let's Waltz Ek Paket Kuralları",file:'https://drive.proton.me/urls/KHJ9EA44AG#Fob6b7879F4H'}] },
+        { name: 'Hansa Teutonica', image: 'images/games/hansa.jpg', category: 'strateji', players: '3-5',coop:false,  level: 3, desc: 'Bir tema ile özetlemek zor olsa da, gerçek bir klasik.', bgg: 'https://boardgamegeek.com/boardgame/286749/hansa-teutonica-big-box', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/41E5N2MQD8#ZFkIdEEEUYVT'}] },
+        { name: 'Harmoni', image: 'images/games/harmoni.jpg', category: ['hizli','yeni','strateji'], players: '1-4',coop:false, level: 2, desc: 'Hayvanları ağırlayabilmek için gereken en keyifli manzaraları siz yaratın.', bgg: 'https://boardgamegeek.com/filepage/276502/official-harmonies-rulebook', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/V8CDSVDSWG#5w2PoeZQtdIH'}] },     
+        { name: 'Heaven & Ale', image: 'images/games/heavenale.jpg', category: 'strateji', players: '2-4', level: 3, desc: 'Bira malzemeleri toplayın ve keşişlerin bira yapma zanaatini en iyi siz uygulayın.', bgg: 'https://boardgamegeek.com/boardgame/227789/heaven-and-ale', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/YAD02PMG8R#zgtSSDIe2AjU'}] },      
+        { name: 'High Society', image: 'images/games/society.jpg', category: ['hizli','yeni','strateji'], players: '3-5',coop:false,  level: 1, desc: 'Açık arttırmada paranı bitirmeden doğru kartları kazan.', bgg: 'https://boardgamegeek.com/boardgame/220/high-society' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/W4MG9NV74M#mkS1r137wGqf'}]},
+        { name: 'HUANG', image: 'images/games/huang.jpg', category: 'strateji', players: '2-4',coop:false,  level: 3, desc: "5. yüzyıl Çin Savaşan Devletler Çağı'nda Çin'i bir araya getiren klan siz olun.", bgg: 'https://boardgamegeek.com/boardgame/371688/huang', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/WVK2T0ZWEC#0fB8HD3bV1Ek'}] },
+        { name: 'Iliad', image: 'images/games/iliad.jpg', category: ['hizli','yeni','strateji'], players: '2',coop:false,  level: 2, desc: 'Tanrıların korumasını kazanın, Hector ya da Aşil olarak Truva Savaşı galibi siz olun.', bgg: 'https://boardgamegeek.com/boardgame/420914/iliad' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/643BVVBHYG#iwkRcZSLE2mW'}]},        
+        { name: 'Irish Gauge', image: 'images/games/irish.jpg', category: 'strateji', players: '3-5',coop:false,  level: 2, desc: 'İrlanda raylı ulaşımını geliştirmeye yardım edin ama doğru tren şirketlerine yatırım yapın.', bgg: 'https://boardgamegeek.com/boardgame/161882/irish-gauge', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/33TXXSZM8W#5eYwbg1A1xCY'}] },
+        { name: 'ito', image: 'images/games/ito.jpg', category: ['hizli','yeni'], players: '2-10',coop:true,  level: 1, desc: 'Birbirinizin düşüncesini okumayı gerektirecek kooperatif bir oyun.', bgg: 'https://boardgamegeek.com/boardgame/327778/ito', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/Y7VCSN6D5W#GxEPFLx02Tjn'}] },        
+        { name: 'Kale Kombo', image: 'images/games/combo.jpg', category: ['hizli','yeni','strateji'], players: '2-5', coop:false, level: 1, desc: 'Kale ve köy sakini insanları en iyi sırada bölgenize ekleyip en çok puanı kazanın.', bgg: 'https://boardgamegeek.com/boardgame/416851/castle-combo' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/G3QM56RAS0#yxEdQLuiO87a'}]},       
+        { name: 'Kanban', image: 'images/games/kanban.jpg', category: 'strateji', players: '2-4',coop:false,  level: 5, desc: 'Araba fabrikasında en verimli yönetici siz olun.', bgg: 'https://boardgamegeek.com/boardgame/109276/kanban-drivers-edition', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/P9X3TCM24C#QAjEWnHjaPeY'}] },
+        { name: 'Kingdom Crossing', image: 'images/games/kingdomcrossing.jpg', category: 'strateji', players: '1-4', level: 3, desc: 'Kunduz kraliçesine krallığa daha rahat ulaşabilmesi için 8. köprünün inşasını yapmasında yardım eden siz olmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/437245/kingdom-crossing', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/3BZAY6V568#fnMIop6HLoyh'}] },
+        { name: 'The King is Dead', image: 'images/games/kingdead.jpg', category: 'strateji', players: '2-4',coop:false,  level: 3, desc: 'Kralsız kalan krallığı kim kazanacak belirleyin, kontrolü kazananın en iyi yancısı olan kazanır.', bgg: 'https://boardgamegeek.com/boardgame/319966/the-king-is-dead-second-edition', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/JP3S244E8W#vygfDdZhSSRF'}] },        
+        { name: 'Knarr', image: 'images/games/knarr.jpg', category: 'strateji', players: '2-4',coop:false,  level: 2, desc: 'Viking ekibinizi genişletin ve yeni yerler keşfedin, en hızlı hedefe ulaşan kazanır.', bgg: 'https://boardgamegeek.com/boardgame/379629/knarr' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/16VR7VQMXW#CeYQsqJirxWC'}]},       
+        { name: 'Kronologic:Paris 1920', image: 'images/games/krono.jpg', category: ['strateji','yeni','hizli'], players: '1-4',coop:false,  level: 2, desc: 'Paris Opera binasında bir cinayet işlendi, ama nerede ve kim tarafından bilinmiyor. İlk bulan oyunu kazanır.', bgg: 'https://boardgamegeek.com/boardgame/402111/kronologic-paris-1920', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/XR6GGZJ8G4#q2WXKVetQGwy'}] },        
+        { name: 'Kuzey Kaşifleri', image: 'images/games/carto.jpg', category: ['hizli','yeni','strateji'], players: '1-100', coop:false, level: 2, desc: 'Yeni topraklar keşfedin ve en iyi haritayı oluşturun.', bgg: 'https://boardgamegeek.com/boardgame/263918/cartographers', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/3TP9BXMMCC#jftvz7QZd8AK'}] }, 
+        { name: 'Lewis & Clark', image: 'images/games/lewis.jpg', category: 'strateji', players: '1-5',coop:false,  level: 3, desc: "Yerlilerin de yardımıyla Missouri'den Oregon'a yolculuk yapın ve ilk varan siz olun.", bgg: 'https://boardgamegeek.com/boardgame/140620/lewis-and-clark-the-expedition', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/FPWDJ1QCC4#ZMuRcJDwx9gv'}] },
+        { name: 'Luz', image: 'images/games/luz.jpg', category: ['hizli','yeni'], players: '3-5', coop:false, level: 1, desc: 'Rakiplerinin eline bakıp kendi elinde hangi kartlar olduğunu tahmin edip doğru kartları oynamaya çalış.', bgg: 'https://boardgamegeek.com/boardgame/420862/luz', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/BY41F2KWTR#pGsuUy6bnV3b'}] },        
+        { name: 'Medici', image: 'images/games/medici.jpg', category: ['strateji','yeni'], players: '2-6', coop:false, level: 2, desc: 'Rakip ürün tacilerinden daha yüksek prestij kazandıracak mallar kazanın.', bgg: 'https://boardgamegeek.com/boardgame/46/medici', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/JE135DMHHR#14rLZQwQRgPI'}] },
+        { name: 'MLEM', image: 'images/games/mlem.jpg', category: ['hizli','yeni','strateji'], players: '2-5', coop:false, level: 2, desc: 'Astronotlarınızı aylara ve gezegenlere indirin. Ha bu arada, astronotlarınız birer kedi!', bgg: 'https://boardgamegeek.com/boardgame/387378/mlem-space-agency' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/K26VJZ5YGR#Ry1I7ijNOvI1'}]},
+        { name: 'Mysterium Park', image: 'images/games/mysterium.jpg', category: ['hizli','yeni'], players: '2-6', coop:true, level: 1, desc: 'Sirk ymneticisi öldü. Medyumlar olarak bir araya gelin ve olayı çözün.', bgg: 'https://boardgamegeek.com/boardgame/301767/mysterium-park' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/376RET46R8#X6cRy5EjdImB'}]},       
+        { name: 'Navegador', image: 'images/games/navegador.jpg', category: 'strateji', players: '2-5', coop:false, level: 3, desc: "Geminizle Dünya'yı dolaşıp Portekiz Keşif Çağı'nı yeniden yaşayın.", bgg: 'https://boardgamegeek.com/boardgame/66589/navegador', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/72CZ0246TG#QHPMYKw3LPsO'}] },
+        { name: 'New Frontiers', image: 'images/games/frontiers.jpg', category: 'strateji', players: '2-5',coop:false,  level: 3, desc: 'Doğru aksiyonları doğru zamanda seçin ve uzay imparatorluğunuzu kurun.', bgg: 'https://boardgamegeek.com/boardgame/255692/new-frontiers', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/64M9SDX0ZM#jLx5w7dYFDxB'}] },        
+        { name: 'Nokosu Dice', image: 'images/games/nokosu.jpg', category: 'strateji', players: '3-5',coop:false,  level: 2, desc: 'Doğru kartları ve doğru zarları doğru zamanda oynayıp en yüksek puanı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/294693/nokosu-dice', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/KPX7S2NBJM#0IuUkYsRg1Ay'}] },       
+        { name: 'Onitama', image: 'images/games/onitama.jpg', category: ['hizli','yeni','strateji'], players: '2', coop:false, level: 1, desc: 'Satranç gibi, ama daha iyi.', bgg: 'https://boardgamegeek.com/boardgame/160477/onitama' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/K0FDK7DB48#YtMk24LWtzbq'}]},
+        { name: 'Pandemic', image: 'images/games/pandemic.jpg', category: ['strateji','yeni'], players: '2-4', coop:true, level: 3, desc: 'Diğer oyuncularla iş birliği yapın ve büyük pandemiyi durdurun.', bgg: 'https://boardgamegeek.com/boardgame/30549/pandemic', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/P4YDTY5BCM#dsQDip4b65Jl'}] },
+        { name: 'Paris:La Cite de la Lumiere', image: 'images/games/paris.jpg', category: ['hizli','yeni','strateji'], players: '2',coop:false,  level: 2, desc: 'Paris sokaklarınızı oluşturup rakibinizden daha iyi ışıklandırılmış bölgeyi oluşturmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/276498/paris-la-cite-de-la-lumiere', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/23AV9ZE4RC#wu5yk9ZOggNh'}] },                
+        { name: 'Power Grid', image: 'images/games/powergrid.jpg', category: 'strateji', players: '2-6', coop:false, level: 3, desc: 'Açık arttırmalarla santraller alın, bina ağınızı genişletin, en çok eve elektrik veren kazanır.', bgg: 'https://boardgamegeek.com/boardgame/2651/power-grid', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/42CR4M31DM#wQ9QJZxayFb4'}] },
+        { name: 'The Princes of Florence', image: 'images/games/prince.jpg', category: 'strateji', players: '1-5', coop:false, level: 3, desc: "Floransa'da en prestijli sarayı siz kurun.", bgg: 'https://boardgamegeek.com/boardgame/555/the-princes-of-florence' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/MKNSW93WM4#I8aF118VtLaO'}]},
+        { name: 'Prophecy', image: 'images/games/prophecy.jpg', category: ['hizli','yeni'], players: '2-6', coop:false, level: 1, desc: 'Her round gelen kehanete göre kart kurban edin ve elinizde kalanları en iyi zamanda oynamaya çalışınç', bgg: 'https://boardgamegeek.com/boardgame/373435/prophecy', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/9GNX4N7WD0#N37cbjMUYDYh'}] },     
+        { name: 'Puerto Rico', image: 'images/games/puerto.jpg', category: 'strateji', players: '2-5', coop:false, level: 3, desc: 'Doğru zamanda doğru üretimleri yapıp kargolayın ve en yüksek puanı almaya çalışın', bgg: 'https://boardgamegeek.com/boardgame/3076/puerto-rico', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/H3N63HRK1C#NEDVu4qxIuM3'}] },
+        { name: 'RA', image: 'images/games/ra.jpg', category: ['hizli','strateji']', players: '2-5',coop:false,  level: 2, desc: "Anıtlar ve antik eserler kazanmak için açık arttırma yapmak ister misin? RA'yı çağır!", bgg: 'https://boardgamegeek.com/boardgame/12/ra', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/VKEEWVFRJG#Cpe253WZd5po'}] },        
+        { name: 'Radlands', image: 'images/games/radlands.jpg', category: ['hizli','strateji'], players: '2', coop:false, level: 2, desc: 'Post-apokalitlik bir dünyada punk gruplarınızı savaştırın.', bgg: 'https://boardgamegeek.com/boardgame/329082/radlands', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/KNGDEJ96GG#b1m3c7VsdDuH'}] },
+        { name: 'Rococo', image: 'images/games/rococo.jpg', category: 'strateji', players: '2-5', coop:false, level: 3, desc: 'Prestijli balo için en güzel giysileri diken terzi siz olun.', bgg: 'https://boardgamegeek.com/boardgame/144344/rococo', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/TSCXAGFVFC#87YD00kcXaBX'}] },
+        { name: 'The Royal Society of Archeology', image: 'images/games/archeology.jpg', category: 'strateji', players: '1-4', coop:false, level: 3, desc: 'En iyi keşif yapan arkeolog ekibini oluşturup rakiplerinizi yenin.', bgg: 'https://boardgamegeek.com/boardgame/437101/the-royal-society-of-archeology' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/ZQD47PB3RM#rzB6qMNwaOpC'}]  },        
+        { name: 'Salton Sea', image: 'images/games/salton.jpg', category: 'strateji', players: '1-4', coop:false, level: 4, desc: 'En verimli çalışan jeotermal enerji şirketi olmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/402663/salton-sea', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/BP4CRD0TZC#1ovOwzkFYdlu'}] },
+        { name: 'Small Samurai Empires', image: 'images/games/smallsamurai.jpg', category: 'strateji', players: '2-4', coop:false, level: 3, desc: 'Samuray ordularınızı kullanıp Japonya üzerinde hakimiyet kurmak için savaşın.', bgg: 'https://boardgamegeek.com/boardgame/284616/small-samurai-empires', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/QYRY236R54#pVTHTezQSvKF'}] },
+        { name: 'Splendor Duel', image: 'images/games/splendor.jpg', category: ['hizli','yeni','strateji'], players: '2', coop:false, level: 2, desc: 'Gerekli mücevherleri toplayıp en yüksek puanı kazanmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/364073/splendor-duel', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/TYJ733XEJC#isqnBZH2lSaj'}] },        
+        { name: 'Steam Power', image: 'images/games/steam.jpg', category: ['strateji','yeni'], players: '1-5', coop:false, level: 2, desc: 'Tren ağınızı kurun, fabrikalar açın ve en çok kontratı tamamlayıp puan kazanan siz olun.', bgg: 'https://boardgamegeek.com/boardgame/391752/steam-power', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/A48KKG41H8#JCZEmUOI3s6m'}] },
+        { name: 'Stephens', image: 'images/games/stephens.jpg', category: 'strateji', players: '1-4', coop:false, level: 3, desc: 'En iyi camları yapan olun ve rakiplerinizin ürünlerini sönük bırakmaya çalışın.', bgg: 'https://boardgamegeek.com/boardgame/357975/stephens', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/MF9RBAHBCG#yAXziDKdUOWd'}] },
+        { name: 'Tekhenu', image: 'images/games/tekhenu.jpg', category: 'strateji', players: '1-4', coop:false, level: 4, desc: "Obelisk'in dönüşünü dikkate alarak doğru zarları doğru zamanda kulan medeniyetini kur.", bgg: 'https://boardgamegeek.com/boardgame/297030/tekhenu-obelisk-of-the-sun' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/EYHG4WW3XW#YFI1Ky97OfUJ'}]},       
+        { name: 'Tetrarchia', image: 'images/games/tetra.jpg', category: ['hizli','strateji'], players: '1-5', coop:true, level: 2, desc: "Tetrarşi'yi oluşturun ve Roma İmparatorluğu'nu hep beraber kurtarın.", bgg: 'https://boardgamegeek.com/boardgame/183315/tetrarchia', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/9RR1JZ1TKC#vqlzY6coYFeT'}] },
+        { name: 'Troyes', image: 'images/games/troyes.jpg', category: 'strateji', players: '1-4', coop:false, level: 3, desc: 'Tek cümleyle özetlemek mümkün değil, zarlı bir strateji oyunu diyelim.', bgg: 'https://boardgamegeek.com/boardgame/73439/troyes' , docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/XBC45FRZ2R#dq8L1FLRKPXn'}]},                
+        { name: "Tzolk'in", image: 'images/games/tzolkin.jpg', category: 'strateji', players: '2-4', coop:false, level: 4, desc: 'Halkına liderlik et ve en iyi medeniyeti kur.', bgg: 'https://boardgamegeek.com/boardgame/126163/tzolkin-the-mayan-calendar', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/5DQM2NSA78#O6hWBgUVgin2'}] },
+        { name: 'The White Castle', image: 'images/games/castle.jpg', category: 'strateji', players: '1-4', coop:false, level: 3, desc: "Japonya Himeji Kalesi'ndeki en etkili klan olun.", bgg: 'https://boardgamegeek.com/boardgame/371942/the-white-castle', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/C6EJEM9MC8#iLnS1mMWKUV8'}] },
+        { name: 'Uzaklar', image: 'images/games/faraway.jpg', category: ['hizli','yeni','strateji'], players: '2-6',coop:false,  level: 2, desc: "Gizemli Alula'yı keşfedin, geri dönerken görevlerinizi tamamladığınızdan emin olun.", bgg: 'https://boardgamegeek.com/boardgame/385761/faraway', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/PN398J2BYM#uKNdwVYmFbAc'}] },        
+        { name: 'Wine Cellar', image: 'images/games/wine.jpg', category: ['hizli','yeni'], players: '1-8', coop:false, level: 1, desc: 'Doğru şarapları doğru zamanlarda yıllandırın ve en iyi şarap dağıtıcısı olun.', bgg: 'https://boardgamegeek.com/boardgame/411033/wine-cellar', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/8AEGJAPMC8#XHI3Xj6EV4rM'}] },        
+        { name: 'Wispwood', image: 'images/games/wispwood.jpg', category: ['hizli','yeni'], players: '1-4', coop:false, level: 2, desc: 'Ormanınızı aydınlatın ve gizemli kedi varlıkların isteklerini yerine getirip ormana çekin.', bgg: 'https://boardgamegeek.com/boardgame/445044/wispwood', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/8WAEWB78NC#Rdgstm5fcjGm'}] },
+        { name: 'Wroth', image: 'images/games/wroth.jpg', category: 'strateji', players: '1-4', coop:true, level: 2, desc: 'Wroth Adası hakimiyeti için rakiplerinize karşı, ya da onlarla birlikte savaşın.', bgg: 'https://boardgamegeek.com/boardgame/414117/wroth', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/G480W2HS1M#izKgeovw5mk8'}] },
+        { name: 'Zoo Vadis', image: 'images/games/zoo.jpg', category: ['hizli','yeni'], players: '3-7', coop:false, level: 2, desc: 'Pazarlık yeteneğinizi bu oyunda test edin. Dikkat kavga çıkabilir!', bgg: 'https://boardgamegeek.com/boardgame/368061/zoo-vadis', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/Y8P2EMZMQG#syid7H58d838'}] },        
         
     ];
 
@@ -1406,10 +1490,23 @@
 
     function renderGames(filter, query) {
         let filtered = GAMES;
-        if (filter !== 'all') filtered = filtered.filter(g => g.category === filter);
+        // Category filter
+        if (filter !== 'all') {
+            filtered = filtered.filter(g => getFilters(g).includes(filter));
+        }
+        // Player count filter
+        if (activePlayerCount !== 'all') {
+            filtered = filtered.filter(g => supportsPlayerCount(g, activePlayerCount));
+        }
+        // Search
         if (query) {
             const q = query.toLowerCase();
-            filtered = filtered.filter(g => g.name.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q) || g.category.includes(q));
+            
+            filtered = filtered.filter(g =>
+                g.name.toLowerCase().includes(q) ||
+                g.desc.toLowerCase().includes(q) ||
+                (g.category || '').includes(q)
+            );
         }
         if (filtered.length === 0) {
             gamesGrid.innerHTML = '<div class="no-results"><span>🍋</span>Oyun bulunamadı. Farklı bir arama deneyin!</div>';
@@ -1420,14 +1517,18 @@
             const visual = g.image
                 ? `<div class="game-card-visual" data-game="${realIndex}"><img class="game-card-img" src="${g.image}" alt="${g.name}"></div>`
                 : `<div class="game-card-visual" data-game="${realIndex}"><div class="game-card-emoji">${g.emoji}</div></div>`;
+            const coopBadge = isCoop(g) ? `<span class="coop-badge">🤝 Co-op</span>` : '';
+            const level = getLevel(g);
+            
             return `
             <div class="game-card">
                 ${visual}
                 <div class="game-card-name"><a href="${g.bgg}" target="_blank" rel="noopener noreferrer">${g.name}</a></div>
                 <div class="game-card-meta">
                     <span class="game-meta-tag">👥 ${g.players}</span>
-                    <span class="game-meta-tag">${g.zorluk}</span>
+                    ${coopBadge}
                 </div>
+                ${difficultyBar(level)}
                 <div class="game-card-detail">${g.desc}</div>
             </div>
         `}).join('');
@@ -1435,8 +1536,10 @@
 
     function openGameLibrary() {
         activeFilter = 'all';
+        activePlayerCount = 'all';
         searchInput.value = '';
         filters.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+        document.querySelectorAll('.player-btn').forEach(b => b.classList.toggle('active', b.dataset.players === 'all'));
         renderGames('all', '');
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -1489,17 +1592,20 @@
         popupTitle.innerHTML = `<a href="${g.bgg}" target="_blank" rel="noopener noreferrer">${g.name}</a>`;
 
         // Stats
+        const popupLevel = getLevel(g);
+        const popupCoop = isCoop(g) ? `<span class="coop-badge" style="margin-top:0.3rem;display:inline-flex;">🤝 Co-op</span>` : '';
+        
         popupStats.innerHTML = `
             <div class="game-popup-stat">
                 <div class="game-popup-stat-val">👥 ${g.players}</div>
                 <div class="game-popup-stat-label">Oyuncu</div>
             </div>
             <div class="game-popup-stat">
-                <div class="game-popup-stat-val">${g.zorluk}</div>
-                <div class="game-popup-stat-label">Zorluk</div>
+                ${difficultyBar(popupLevel)}
+                <div class="game-popup-stat-label">${g.zorluk || 'Zorluk'}</div>
             </div>
         `;
-
+        if (popupCoop) popupStats.insertAdjacentHTML('beforeend', `<div class="game-popup-stat" style="grid-column:1/-1;background:transparent;border:none;padding:0;text-align:center;">${popupCoop}</div>`);
         // Description (use details if available, fallback to desc)
         popupDesc.textContent = g.details || g.desc;
 
