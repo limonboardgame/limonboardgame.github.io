@@ -1487,6 +1487,82 @@
     const searchInput = document.getElementById('gameSearch');
     const filters = document.getElementById('modalFilters');
     let activeFilter = 'all';
+    let activePlayerCount = 'all';
+
+    // ===== AUTO-DERIVATION HELPERS =====
+    // Returns the list of filter tags for a game (e.g. ['strateji', 'hizli']).
+    // - If `filters` is set (array) → uses it directly
+    // - If `category` is an array → uses it directly
+    // - If `category` is a string → auto-derives from category + zorluk
+    function getFilters(game) {
+        if (Array.isArray(game.filters)) return game.filters;
+        if (Array.isArray(game.category)) return game.category;
+        const f = new Set();
+        const z = (game.zorluk || '').toLowerCase();
+        const c = (game.category || '').toLowerCase();
+        if (z.includes('kolay')) f.add('yeni');
+        if (c === 'aile' || c === 'parti') f.add('yeni');
+        if (c === 'kart' || c === 'parti') f.add('hizli');
+        if (z.includes('zor')) f.add('strateji');
+        if (c === 'strateji' && z.includes('orta')) f.add('strateji');
+        if (c === 'soyut' && !z.includes('kolay')) f.add('strateji');
+        return [...f];
+    }
+    // Returns true if the game is cooperative.
+    // - Uses explicit `coop: true/false` if set
+    // - Otherwise checks legacy category === 'koop'
+    function isCoop(game) {
+        if (game.coop !== undefined) return game.coop;
+        if (Array.isArray(game.category)) return game.category.includes('koop');
+        return game.category === 'koop';
+    }
+    // Returns 1-5 difficulty.
+    // - Uses explicit `level: N` if set
+    // - Otherwise derives from zorluk text
+    function getLevel(game) {
+        if (typeof game.level === 'number') return game.level;
+        const z = (game.zorluk || '').toLowerCase().trim();
+        if (z === 'kolay') return 1;
+        if (z === 'kolay-orta') return 2;
+        if (z === 'orta') return 3;
+        if (z === 'orta-zor') return 4;
+        if (z === 'zor') return 5;
+        return 3;
+    }
+    // Parses "2-4" or "2" into a {min, max} player range
+    function getPlayerRange(game) {
+        const p = (game.players || '').toString();
+        const parts = p.split('-').map(s => parseInt(s.trim(), 10));
+        const min = isNaN(parts[0]) ? 1 : parts[0];
+        const max = isNaN(parts[1]) ? min : parts[1];
+        return { min, max };
+    }
+    function supportsPlayerCount(game, count) {
+        if (count === 'all') return true;
+        const { min, max } = getPlayerRange(game);
+        if (count === '5+') return max >= 5;
+        const n = parseInt(count, 10);
+        return n >= min && n <= max;
+    }
+    // For search: flatten category/filters into a searchable string
+    function searchableTags(game) {
+        if (Array.isArray(game.filters)) return game.filters.join(' ');
+        if (Array.isArray(game.category)) return game.category.join(' ');
+        return game.category || '';
+    }
+    // Builds the difficulty bar HTML (5 segments, green → red)
+    function difficultyBar(level) {
+        const segments = [1, 2, 3, 4, 5].map(i => {
+            const filled = i <= level ? `filled-${i}` : '';
+            return `<div class="difficulty-segment ${filled}"></div>`;
+        }).join('');
+        return `
+            <div class="difficulty-bar" title="Zorluk: ${level}/5">
+                <div class="difficulty-segments">${segments}</div>
+                <span class="difficulty-label">${level}/5</span>
+            </div>
+        `;
+    }
 
     function renderGames(filter, query) {
         let filtered = GAMES;
