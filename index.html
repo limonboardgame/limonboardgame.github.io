@@ -1638,6 +1638,16 @@
         renderGames(activeFilter, searchInput.value);
     });
 
+    // Player count filter handler
+    document.getElementById('playerCountFilter').addEventListener('click', e => {
+        const btn = e.target.closest('.player-btn');
+        if (!btn) return;
+        activePlayerCount = btn.dataset.players;
+        document.querySelectorAll('.player-btn').forEach(b => b.classList.toggle('active', b.dataset.players === activePlayerCount));
+        renderGames(activeFilter, searchInput.value);
+    });
+
+
     searchInput.addEventListener('input', () => {
         renderGames(activeFilter, searchInput.value);
     });
