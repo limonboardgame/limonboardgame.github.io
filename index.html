@@ -986,6 +986,133 @@
             .map-actions { padding: 0.8rem; }
             .map-btn { flex: 1; justify-content: center; padding: 0.7rem 0.8rem; font-size: 0.82rem; }
         }
+
+        /* === SAY / FEEDBACK + WISHLIST === */
+        .say-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .say-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 2rem 1.9rem;
+            border: 1px solid rgba(42, 35, 24, 0.06);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .say-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--lemon), var(--lemon-glow), var(--leaf-light));
+            opacity: 0.7;
+        }
+        .say-head {
+            display: flex; align-items: center; gap: 0.8rem;
+            margin-bottom: 0.7rem;
+        }
+        .say-icon {
+            width: 46px; height: 46px; border-radius: 13px;
+            background: linear-gradient(135deg, rgba(245, 217, 0, 0.16), rgba(245, 217, 0, 0.04));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.35rem; flex-shrink: 0;
+        }
+        .say-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.25rem; letter-spacing: -0.01em;
+        }
+        .say-sub {
+            color: var(--bark-mid); font-size: 0.9rem;
+            line-height: 1.6; margin-bottom: 1.3rem;
+        }
+        .say-form { display: flex; flex-direction: column; gap: 0.8rem; flex: 1; }
+        .say-field { display: flex; flex-direction: column; gap: 0.35rem; }
+        .say-label {
+            font-size: 0.78rem; font-weight: 600; color: var(--bark-mid);
+            letter-spacing: 0.02em;
+        }
+        .say-label .opt { color: var(--bark-soft); font-weight: 400; font-style: italic; }
+        .say-input, .say-textarea {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(42, 35, 24, 0.12);
+            background: var(--cream);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.92rem;
+            color: var(--bark);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        .say-input::placeholder, .say-textarea::placeholder { color: var(--bark-soft); }
+        .say-input:focus, .say-textarea:focus {
+            border-color: var(--lemon);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(245, 217, 0, 0.14);
+        }
+        .say-textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+        .say-actions {
+            display: flex; align-items: center; gap: 0.9rem;
+            margin-top: auto; padding-top: 0.4rem;
+        }
+        .say-btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.72rem 1.6rem; border-radius: 50px; border: none;
+            background: var(--lemon); color: var(--bark);
+            font-weight: 600; font-size: 0.9rem; cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .say-btn:hover:not(:disabled) {
+            background: var(--lemon-glow);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lemon);
+        }
+        .say-btn:disabled { opacity: 0.65; cursor: default; }
+        .say-hint {
+            font-size: 0.74rem; color: var(--bark-soft); font-style: italic;
+        }
+        /* status message */
+        .say-status {
+            font-size: 0.86rem; font-weight: 500;
+            padding: 0.7rem 0.9rem; border-radius: var(--radius-sm);
+            display: none; line-height: 1.5;
+        }
+        .say-status.show { display: block; }
+        .say-status.ok {
+            background: var(--leaf-soft); color: var(--leaf);
+            border: 1px solid rgba(74, 124, 35, 0.2);
+        }
+        .say-status.err {
+            background: rgba(200, 60, 40, 0.06); color: #A33A25;
+            border: 1px solid rgba(200, 60, 40, 0.18);
+        }
+        /* honeypot — hidden from humans, catches bots */
+        .say-hp {
+            position: absolute; left: -9999px;
+            width: 1px; height: 1px; opacity: 0;
+        }
+        /* spinner */
+        .say-spin {
+            width: 14px; height: 14px; border-radius: 50%;
+            border: 2px solid rgba(42, 35, 24, 0.25);
+            border-top-color: var(--bark);
+            animation: saySpin 0.7s linear infinite;
+            display: none;
+        }
+        .say-btn.loading .say-spin { display: inline-block; }
+        @keyframes saySpin { to { transform: rotate(360deg); } }
+
+        /* mobile — declared after the base rules so the cascade applies correctly */
+        @media (max-width: 768px) {
+            .say-grid { grid-template-columns: 1fr; gap: 1.2rem; }
+            .say-card { padding: 1.6rem 1.3rem; }
+            .say-actions { flex-wrap: wrap; gap: 0.6rem; }
+            .say-btn { flex: 1; justify-content: center; }
+        }
     </style>
 </head>
 <body>
@@ -1000,6 +1127,7 @@
         <li><a href="#about">Hakkımızda</a></li>
         <li><a href="#games">Oyunlar</a></li>
         <li><a href="#visit">Saatler</a></li>
+        <li><a href="#say">Bize Yazın</a></li>
     </ul>
     <a href="#visit" class="nav-cta">Bize Ulaşın</a>
     <button class="hamburger" id="hamburger" aria-label="Menü">
@@ -1291,6 +1419,80 @@
         </div>
     </div>
 </section>
+
+<!-- SAY: FEEDBACK + GAME WISHLIST -->
+<section id="say">
+    <div class="reveal">
+        <div class="section-label">Sizi dinliyoruz</div>
+        <h2 class="section-title">Bize yazın</h2>
+        <p class="section-desc">Bir öneriniz, bir şikayetiniz ya da görmek istediğiniz bir oyun mu var? İkisi de bize ulaşır — hem de tamamen anonim olarak.</p>
+    </div>
+
+    <div class="say-grid">
+
+        <!-- ANONYMOUS FEEDBACK -->
+        <div class="say-card reveal">
+            <div class="say-head">
+                <div class="say-icon">💬</div>
+                <div class="say-title">Görüş &amp; Öneri</div>
+            </div>
+            <p class="say-sub">Beğendiğiniz, beğenmediğiniz, aklınıza takılan her şey. İsim istemiyoruz — dilerseniz tamamen anonim yazabilirsiniz.</p>
+
+            <form class="say-form" id="feedbackForm" novalidate>
+                <div class="say-field">
+                    <label class="say-label" for="fbMessage">Mesajınız</label>
+                    <textarea class="say-textarea" id="fbMessage" name="Mesaj" required
+                              placeholder="Aklınızdan geçenleri buraya yazın..."></textarea>
+                </div>
+                <div class="say-field">
+                    <label class="say-label" for="fbContact">İletişim <span class="opt">— isteğe bağlı</span></label>
+                    <input class="say-input" type="text" id="fbContact" name="Iletisim"
+                           placeholder="Cevap isterseniz e-posta ya da Instagram">
+                </div>
+                <input class="say-hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <div class="say-status" id="fbStatus" role="status" aria-live="polite"></div>
+                <div class="say-actions">
+                    <button class="say-btn" type="submit" id="fbBtn">
+                        <span class="say-spin"></span><span class="say-btn-text">Gönder</span>
+                    </button>
+                    <span class="say-hint">Anonim gönderilir</span>
+                </div>
+            </form>
+        </div>
+
+        <!-- GAME WISHLIST -->
+        <div class="say-card reveal">
+            <div class="say-head">
+                <div class="say-icon">🎲</div>
+                <div class="say-title">Oyun Dileği</div>
+            </div>
+            <p class="say-sub">Kütüphanemizde görmek istediğiniz bir oyun mu var? Söyleyin, listemize ekleyelim. En çok istenenleri öncelikli alıyoruz.</p>
+
+            <form class="say-form" id="wishForm" novalidate>
+                <div class="say-field">
+                    <label class="say-label" for="wishGame">Oyun adı</label>
+                    <input class="say-input" type="text" id="wishGame" name="Oyun" required
+                           placeholder="Örn. Ark Nova">
+                </div>
+                <div class="say-field">
+                    <label class="say-label" for="wishNote">Ek yorum <span class="opt">— isteğe bağlı</span></label>
+                    <textarea class="say-textarea" id="wishNote" name="Not" style="min-height:78px"
+                              placeholder="Birkaç kelimeyle anlatın, merak ediyoruz"></textarea>
+                </div>
+                <input class="say-hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <div class="say-status" id="wishStatus" role="status" aria-live="polite"></div>
+                <div class="say-actions">
+                    <button class="say-btn" type="submit" id="wishBtn">
+                        <span class="say-spin"></span><span class="say-btn-text">Dileğimi gönder</span>
+                    </button>
+                    <span class="say-hint">Anonim gönderilir</span>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+
 
 <!-- FOOTER -->
 <footer>
@@ -1754,6 +1956,83 @@
         } else if (modal.classList.contains('active')) {
             closeGameLibrary();
         }
+    });
+
+    // ===== BİZE YAZIN — feedback & wishlist forms =====
+    // Submissions are delivered to this address via FormSubmit (formsubmit.co).
+    // To change the destination, edit the line below and re-activate (see note in chat).
+    const SAY_EMAIL = 'info@limonboardgame.com';
+    const SAY_ENDPOINT = 'https://formsubmit.co/ajax/' + SAY_EMAIL;
+
+    function wireSayForm({ formId, btnId, statusId, subject, requiredId, okMsg }) {
+        const form = document.getElementById(formId);
+        const btn = document.getElementById(btnId);
+        const status = document.getElementById(statusId);
+        if (!form) return;
+        const btnText = btn.querySelector('.say-btn-text');
+        const original = btnText.textContent;
+
+        function setStatus(kind, msg) {
+            status.className = 'say-status show ' + kind;
+            status.textContent = msg;
+        }
+
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+
+            // honeypot — bots fill hidden fields, humans don't
+            if (form.querySelector('[name="_honey"]').value) return;
+
+            const req = document.getElementById(requiredId);
+            if (!req.value.trim()) {
+                setStatus('err', 'Lütfen bu alanı doldurun.');
+                req.focus();
+                return;
+            }
+
+            const data = { _subject: subject, _template: 'table', _captcha: 'false' };
+            new FormData(form).forEach((v, k) => {
+                if (k === '_honey') return;
+                data[k] = (typeof v === 'string' && v.trim()) ? v.trim() : '—';
+            });
+
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btnText.textContent = 'Gönderiliyor...';
+            status.className = 'say-status';
+
+            try {
+                const res = await fetch(SAY_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                setStatus('ok', okMsg);
+                form.reset();
+            } catch (err) {
+                setStatus('err', 'Gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin — ya da bize doğrudan ' + SAY_EMAIL + ' adresinden yazın.');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btnText.textContent = original;
+            }
+        });
+    }
+
+    wireSayForm({
+        formId: 'feedbackForm', btnId: 'fbBtn', statusId: 'fbStatus',
+        requiredId: 'fbMessage',
+        subject: 'Limon — Yeni görüş/öneri',
+        okMsg: 'Teşekkürler! Mesajınız bize ulaştı. 🍋'
+    });
+
+    wireSayForm({
+        formId: 'wishForm', btnId: 'wishBtn', statusId: 'wishStatus',
+        requiredId: 'wishGame',
+        subject: 'Limon — Yeni oyun dileği',
+        okMsg: 'Dileğiniz listemize eklendi. Teşekkürler! 🎲'
+    
     });
 </script>
 </body>
