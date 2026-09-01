@@ -700,6 +700,44 @@
             background: var(--leaf); color: white;
             border-color: var(--leaf); font-weight: 700;
         }
+
+        /* Designer dropdown */
+        .designer-select {
+            padding: 0.35rem 2rem 0.35rem 0.8rem;
+            border-radius: 50px;
+            border: 1px solid rgba(42, 35, 24, 0.12);
+            background-color: var(--white);
+            color: var(--bark);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            max-width: 280px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' fill='%235C4F3A' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .designer-select:hover { border-color: rgba(245, 217, 0, 0.5); }
+        .designer-select:focus {
+            border-color: var(--lemon);
+            box-shadow: 0 0 0 3px rgba(245, 217, 0, 0.14);
+        }
+        .designer-select.filtering {
+            background-color: var(--lemon);
+            border-color: var(--lemon);
+            font-weight: 600;
+        }
+        /* Designer credit on each game card */
+        .game-card-designer {
+            font-size: 0.72rem;
+            color: var(--bark-soft);
+            font-style: italic;
+            margin-bottom: 0.35rem;
+            line-height: 1.35;
+        }
         
         .modal-body {
             overflow-y: auto; padding: 1.5rem 2rem 2rem; flex: 1;
@@ -1714,6 +1752,12 @@
                 <button class="player-btn" data-players="4">4</button>
                 <button class="player-btn" data-players="5+">5+</button>
             </div>
+            <div class="filter-row">
+                <span class="filter-row-label">Tasarımcı</span>
+                <select class="designer-select" id="designerFilter" aria-label="Tasarımcıya göre filtrele">
+                    <option value="all">Tümü</option>
+                </select>
+            </div>
         </div>
         <div class="modal-body" id="modalBody">
             <div class="games-grid" id="gamesGrid"></div>
@@ -1765,6 +1809,120 @@
     });
 
     // ===== GAME LIBRARY DATA & MODAL =====
+    // ===== TASARIMCILAR =====
+    // Oyun adı → tasarımcı(lar). Yeni oyun eklerken buraya da bir satır ekleyin.
+    // Listede olmayan oyunlar "Tümü" seçiliyken görünür, tasarımcı filtresinde çıkmaz.
+    const DESIGNERS = {
+        '7 Wonders Duel': ['Antoine Bauza', 'Bruno Cathala'],
+        '3 Ring Circus': ['Remo Conzadori', 'Fabio Lopiano'],
+        'Amerigo': ['Stefan Feld'],
+        'Age of Innovation': ['Helge Ostertag'],
+        'Arboretum': ['Dan Cassar'],
+        'Architects of the West Kingdom': ['Shem Phillips', 'S J Macdonald'],
+        'Ayar' : ['Fabio Lopiano'],
+        'Babylonia': ['Reiner Knizia'],
+        'Bonfire': ['Stefan Feld'],
+        'Brass: Birmingham': ['Martin Wallace', 'Gavan Brown', 'Matt Tolman'],
+        'Bus': ['Jeroen Doumen', 'Joris Wiersinga'],
+        'Captain Flip': ['Paolo Mori', 'Remo Conzadori'],
+        'Carcassonne': ['Klaus-Jürgen Wrede'],
+        'Carnegie': ['Xavier Georges'],
+        'Carson City': ['Xavier Georges'],
+        'Carpe Diem': ['Stefan Feld'],
+        'Casus Peşinde' : ['Christian Kudahl','Laura Kudahl'],
+        'Catan:On the Road': ['Benjamin Teuber'],
+        'The Castles of Burgundy': ['Stefan Feld'],
+        'Cities' : ['Steve Finn','Phil Walker-Harding'],
+        'City of the Big Shoulders': ['Raymond Chandler III'],
+        'Concordia': ['Mac Gerdts'],
+        'Concordia Venus': ['Mac Gerdts'],
+        'Cooper Island': ['Andreas Odendahl'],
+        'Creature Caravan' : ['Ryan Laukat'],
+        'Crown of Emara': ['Benjamin Schwer'],
+        'Deus': ['Sébastien Dujardin'],
+        'The Estates': ['Klaus Zoch'],
+        'Fall' : ['Giampaolo Razzino'],
+        'Five Tribes': ['Bruno Cathala'],
+        'Flip 7': ['Eric Olsen'],
+        'For the King(and Me)' : ['Steve Finn'],
+        'Flamme Rouge': ['Asger Aleksandrov Granerud'],
+        'Fresco': ['Wolfgang Panning','Marco Ruskowski', 'Marcel Süßelbeck'],
+        'Fromage': ["Matthew O'Malley", 'Ben Rosset'],
+        'Furnace': ['Ivan Lashin'],
+        'Ginkgopoils': ['Xavier Georges'],
+        'Gold West': ['J. Alex Kevern'],
+        'Grand Austria Hotel': ['Virginio Gigli', 'Simone Luciani'],
+        'Hansa Teutonica': ['Andreas Steding'],
+        'Harekat:Normandiya' : ['Trevor Benjamin','David Thompson I'],
+        'Harmoni': ['Johan Benvenuto'],
+        'Heaven & Ale': ['Michael Kiesling', 'Andreas Schmidt'],
+        'High Society': ['Reiner Knizia'],
+        'House of Fado' : ['Vital Lacerda','João Quintela Martins'],
+        'HUANG' : ['Reiner Knizia'],
+        'Inheritors' : ['Jeffrey CCH','Kenneth YWN'],
+        'In the Hall of the Mountain King': ['Jay Cormier', 'Graeme Jahns'],
+        'Irish Gauge': ['Amabel Holland'],
+        'ito' : ['326'],
+        'Kale Kombo': ['Grégory Grard', 'Mathieu Roussel'],
+        'Kanagawa': ['Bruno Cathala', 'Charles Chevallier'],
+        'Kanban': ['Vital Lacerda'],
+        'Keşif: Gezegen 9 Görevi': ['Thomas Sing'],
+        'Kingdom Crossing' : ['Marco Canetta','Stefania Niccolini'],
+        'The King is Dead': ['Peer Sylvester'],
+        'Kodachi' : ['Adam West'],
+        'Knarr': ['Thomas Dupont'],
+        'Kronologic:Paris 1920': ['Fabien Gridel', 'Yoann Levet'],
+        'Kuzey Kaşifleri' : ['Jordy Adan'],
+        'Last Will': ['Vladimír Suchý'],
+        'Lewis & Clark': ['Cédrick Chaboussit'],
+        'LUZ' : ['Taiki Shinzawa'],
+        'Magic Number Eleven' : ['Bonghwan Ju'],
+        'Medici': ['Reiner Knizia'],
+        'MLEM': ['Reiner Knizia'],
+        'Monopoly Deal' : ['Katharine Chapman'],
+        'Mysterium Park': ['Oleksandr Nevskiy', 'Oleg Sidorenko'],
+        'Navegador': ['Mac Gerdts'],
+        'New Frontiers': ['Thomas Lehmann'],
+        'Nokosu Dice' : ['Yusuke Matsumoto'],
+        'Notre Dame': ['Stefan Feld'],
+        'Onitama': ['Shimpei Sato'],
+        'The Oracle of Delphi': ['Stefan Feld'],
+        'Pandemic': ['Matt Leacock'],
+        'Paris:La Cite de la Lumiere': ['José Antonio Abascal Acebo'],
+        'Parks 2nd Edition': ['Henry Audubon'],
+        'Power Grid': ['Friedemann Friese'],
+        'The Princes of Florence': ['Wolfgang Kramer', 'Richard Ulrich','Jens Christopher Ulrich'],
+        'Prophecy' : ['Christopher Haviland','Robert A. Kamp'],
+        'Puerto Rico': ['Andreas Seyfarth'],
+        'RA': ['Reiner Knizia'],
+        'Rebirth': ['Reiner Knizia'],
+        'Risk:Europe' : ['Austin Rucker'],
+        'Rococo': ['Louis Malz', 'Stefan Malz','Matthias Cramer'],
+        'The Royal Society of Archeology' : ['Eric Jumel'],
+        'Sabika': ['German P. Millan'],
+        'Salton Sea' : ['David Bernal'],
+        'Shackleton Base': ['Fabio Lopiano', 'Nestore Mangone'],
+        'Skull King': ['Brent Beck','Jeffrey Beck'],
+        'Small Samurai Empires' : ['Milan Tasevski'],
+        'Splendor Duel': ['Marc André', 'Bruno Cathala'],
+        'Steam Power' : ['Martin Wallace'],
+        'Stephens' : ['Costa','Rola'],
+        'Strasbourg': ['Stefan Feld'],
+        'Suna Valo' : ['Andreas Odendahl'],
+        'Sky Team': ['Luc Rémond'],
+        'Tekhenu': ['Daniele Tascini', 'David Turczi'],
+        'Tenby' : ['Benjie Talbott'],
+        'Tigris&Euphrates': ['Reiner Knizia'],
+        'Troyes': ['Sébastien Dujardin', 'Xavier Georges', 'Alain Orban'],
+        "Tzolk'in" : ['Simone Luciani','Daniele Tascini'],
+        'The White Castle': ['Isra C.', 'Shei S.'],
+        'Uzaklar': ['Johannes Goupy', 'Corentin Lebrat'],
+        'Wine Cellar' :['Andrew Stiles'],
+        'Wispwood' : ['Reed Ambrose'],
+        'Wroth' : ['Manny Trembley'],
+        'Zoo Vadis': ['Reiner Knizia'],
+    };
+    function getDesigners(game) { return DESIGNERS[game.name] || []; }
     const GAMES = [
         { name: '7 Wonders Duel', image: 'images/games/7wd.jpg', filters: ['hizli','strateji'], players: '2', coop: false, level: 2, desc: 'En gelişmiş medeniyeti oluşturup rakibinizi yenin.', bgg: 'https://boardgamegeek.com/boardgame/173346/7-wonders-duel', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/FJ5PZJ9XJ0#h8RiBdDlqgyQ'}] }, 
         { name: '3 Ring Circus', image: 'images/games/3ring.jpg', filters: ['strateji'], players: '1-4', coop: false, level: 3, desc: 'En gösterişli sirki siz kurun.', bgg: 'https://boardgamegeek.com/boardgame/371947/3-ring-circus', docs : [{name:'Resmi Kural Kitabı',file:'https://drive.proton.me/urls/NBQZ1MHFS0#r60H76SXMadI'}] },
