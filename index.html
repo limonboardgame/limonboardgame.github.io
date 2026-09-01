@@ -2039,8 +2039,9 @@
     const gamesGrid = document.getElementById('gamesGrid');
     const searchInput = document.getElementById('gameSearch');
     const filters = document.getElementById('modalFilters');
-    let activeFilter = 'all';
+    let activeFilters = new Set();      // empty = "Tüm Oyunlar"; multiple = AND
     let activePlayerCount = 'all';
+    let activeDesigner = 'all';
 
     // ===== AUTO-DERIVATION HELPERS =====
     // Returns the list of filter tags for a game (e.g. ['strateji', 'hizli']).
@@ -2117,15 +2118,23 @@
         `;
     }
 
-    function renderGames(filter, query) {
+    function renderGames(_ignored, query) {
         let filtered = GAMES;
-        // Category filter
-        if (filter !== 'all') {
-            filtered = filtered.filter(g => getFilters(g).includes(filter));
+        // Category filters — a game must match EVERY selected tag (AND)
+        if (activeFilters.size > 0) {
+            filtered = filtered.filter(g => {
+                const tags = getFilters(g);
+                for (const f of activeFilters) if (!tags.includes(f)) return false;
+                return true;
+            });
         }
         // Player count filter
         if (activePlayerCount !== 'all') {
             filtered = filtered.filter(g => supportsPlayerCount(g, activePlayerCount));
+        }
+        // Designer filter
+        if (activeDesigner !== 'all') {
+            filtered = filtered.filter(g => getDesigners(g).includes(activeDesigner));
         }
         // Search
         if (query) {
@@ -2164,12 +2173,15 @@
     }
 
     function openGameLibrary() {
-        activeFilter = 'all';
+        activeFilters.clear();
         activePlayerCount = 'all';
+        activeDesigner = 'all';
         searchInput.value = '';
-        filters.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+        syncFilterButtons();
         document.querySelectorAll('.player-btn').forEach(b => b.classList.toggle('active', b.dataset.players === 'all'));
-        renderGames('all', '');
+        const dsel = document.getElementById('designerFilter');
+        dsel.value = 'all'; dsel.classList.remove('filtering');
+        renderGames(null, '');
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
         setTimeout(() => searchInput.focus(), 400);
@@ -2183,13 +2195,48 @@
     document.getElementById('modalClose').addEventListener('click', closeGameLibrary);
     modal.addEventListener('click', e => { if (e.target === modal) closeGameLibrary(); });
 
+    function syncFilterButtons() {
+        filters.querySelectorAll('.filter-btn').forEach(b => {
+            const f = b.dataset.filter;
+            b.classList.toggle('active', f === 'all' ? activeFilters.size === 0 : activeFilters.has(f));
+        });
+    }
+
     filters.addEventListener('click', e => {
         const btn = e.target.closest('.filter-btn');
         if (!btn) return;
-        activeFilter = btn.dataset.filter;
-        filters.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === activeFilter));
-        renderGames(activeFilter, searchInput.value);
+        const f = btn.dataset.filter;
+        if (f === 'all') {
+            activeFilters.clear();                    // "Tüm Oyunlar" clears the selection
+        } else if (activeFilters.has(f)) {
+            activeFilters.delete(f);                  // clicking an active tag turns it off
+        } else {
+            activeFilters.add(f);
+        }
+        syncFilterButtons();
+        renderGames(null, searchInput.value);
     });
+
+    // ===== Designer dropdown =====
+    (function buildDesignerDropdown() {
+        const sel = document.getElementById('designerFilter');
+        if (!sel) return;
+        // unique designers that actually have at least one game in the library
+        const counts = new Map();
+        GAMES.forEach(g => getDesigners(g).forEach(d => counts.set(d, (counts.get(d) || 0) + 1)));
+        const names = [...counts.keys()].sort((a, b) => a.localeCompare(b, 'tr'));
+        names.forEach(d => {
+            const o = document.createElement('option');
+            o.value = d;
+            o.textContent = `${d} (${counts.get(d)})`;
+            sel.appendChild(o);
+        });
+        sel.addEventListener('change', () => {
+            activeDesigner = sel.value;
+            sel.classList.toggle('filtering', activeDesigner !== 'all');
+            renderGames(null, searchInput.value);
+        });
+    })();
 
     // Player count filter handler
     document.getElementById('playerCountFilter').addEventListener('click', e => {
@@ -2197,12 +2244,12 @@
         if (!btn) return;
         activePlayerCount = btn.dataset.players;
         document.querySelectorAll('.player-btn').forEach(b => b.classList.toggle('active', b.dataset.players === activePlayerCount));
-        renderGames(activeFilter, searchInput.value);
+        renderGames(null, searchInput.value);
     });
 
 
     searchInput.addEventListener('input', () => {
-        renderGames(activeFilter, searchInput.value);
+        renderGames(null, searchInput.value);
     });
     
 
