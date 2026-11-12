@@ -116,13 +116,8 @@ fieldset{border:0;margin:0;padding:0;display:grid;gap:8px}
 
 /* result */
 .result{padding:26px 22px;display:grid;gap:16px}
+.teach{padding:14px 16px;border-radius:12px;background:var(--lemon-soft)}
 .result .big{font-family:var(--display);font-size:28px;font-weight:800;line-height:1.1}
-.pay{display:grid;gap:10px;padding:16px;border-radius:12px;background:var(--lemon-soft)}
-.pay .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px}
-.iban{font-family:var(--mono);font-size:15px;word-break:break-all;user-select:all}
-.copy{font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--lemon-ink);border-radius:8px;padding:6px 12px;background:transparent;color:var(--lemon-ink);cursor:pointer}
-:root[data-theme="dark"] .copy{border-color:var(--lemon);color:var(--lemon)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .copy{border-color:var(--lemon);color:var(--lemon)}}
 .link{font:inherit;background:none;border:0;color:var(--leaf);font-weight:700;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .empty{padding:28px 22px;text-align:left;display:grid;gap:8px}
 footer{margin-top:28px;font-size:13px;color:var(--muted);display:grid;gap:4px}
@@ -156,14 +151,13 @@ footer{margin-top:28px;font-size:13px;color:var(--muted);display:grid;gap:4px}
 /* ===== AYARLAR / SETTINGS ===================================================
    Paste your Apps Script web app URL here (ends with /exec).
    Leave empty to see the page in preview mode with example events. */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiuT-jKw4FO2kQEyduEbwt32_puSecQ4UoxOOGDz2gq3DY28wMjB1cYCcoe7snrm65/exec";
+const SCRIPT_URL = "";
 /* ========================================================================== */
 
 const DEMO_EVENTS = [
-  {id:"lightA",name:"Limon Turnuvası",game:"Hafif oyun A",date:"2026-12-06",time:"13:30",capacity:16,pairs:false,fee:250,deposit:100,deadline:"2026-12-04",desc:"3 eleme turu + final masası. Yaklaşık 5 saat.",open:true,taken:11,waitlist:0,left:5},
-  {id:"lightB",name:"Limon Çiftler Turnuvası",game:"Hafif oyun B",date:"2026-12-20",time:"13:30",capacity:10,pairs:true,fee:250,deposit:100,deadline:"2026-12-18",desc:"İki kişilik takımlar. Partnerler farklı masalarda oynar, puanlar toplanır.",open:true,taken:10,waitlist:2,left:0}
+  {id:"lightA",name:"Limon Turnuvası",game:"Hafif oyun A",date:"2026-12-06",time:"13:30",teach:"12:30",capacity:16,pairs:false,fee:0,deadline:"2026-12-04",desc:"3 eleme turu + final masası. Yaklaşık 5 saat.",open:true,taken:11,waitlist:0,left:5},
+  {id:"lightB",name:"Limon Çiftler Turnuvası",game:"Hafif oyun B",date:"2026-12-20",time:"13:30",teach:"12:30",capacity:10,pairs:true,fee:0,deadline:"2026-12-18",desc:"İki kişilik takımlar. Partnerler farklı masalarda oynar, puanlar toplanır.",open:true,taken:10,waitlist:2,left:0}
 ];
-const DEMO_PAY = {iban:"TR00 0000 0000 0000 0000 0000 00",holder:"Limon (örnek)"};
 
 const $ = s => document.querySelector(s);
 const demo = !SCRIPT_URL;
@@ -171,7 +165,7 @@ let events = [], current = null;
 
 const fmtDay = d => { const x = new Date(d + "T12:00:00"); return isNaN(x) ? {n:"–",m:""} : {n:x.getDate(), m:x.toLocaleDateString("tr-TR",{month:"short"})}; };
 const fmtLong = d => { const x = new Date(d + "T12:00:00"); return isNaN(x) ? d : x.toLocaleDateString("tr-TR",{day:"numeric",month:"long",weekday:"long"}); };
-const tl = n => n ? `${Number(n).toLocaleString("tr-TR")} TL` : "Ücretsiz";
+const tl = n => `${Number(n).toLocaleString("tr-TR")} TL`;
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const unit = ev => ev.pairs ? "takım" : "kişi";
 
@@ -247,7 +241,8 @@ function renderMain(){
       <div class="facts">
         <div><span class="k">Tarih</span><span class="v">${esc(fmtLong(ev.date))}</span></div>
         <div><span class="k">Saat</span><span class="v">${esc(ev.time)}</span></div>
-        <div><span class="k">Ücret</span><span class="v">${tl(ev.fee)}${ev.pairs && ev.fee ? " / kişi" : ""}</span></div>
+        ${ev.teach ? `<div><span class="k">Oyun anlatımı</span><span class="v">${esc(ev.teach)}</span></div>` : ""}
+        ${ev.fee ? `<div><span class="k">Ücret</span><span class="v">${tl(ev.fee)}${ev.pairs ? " / kişi" : ""}</span></div>` : ""}
       </div>
       ${ev.desc ? `<p class="muted">${esc(ev.desc)}</p>` : ""}
       ${seatsHtml(ev)}
@@ -258,36 +253,27 @@ function renderMain(){
   }
   m.innerHTML = `<div class="card">${top}
     <form id="form" novalidate>
-      ${full ? `<div class="banner warn">Kontenjan doldu. Formu doldurursan <b>yedek listeye</b> yazılırsın; yer açılınca sırayla haber veriyoruz.</div>` : ""}
+      ${full ? `<div class="banner warn">Kontenjan doldu. Formu doldurursan <b>yedek listeye</b> yazılırsın. Yer açılırsa sıradaki kişi kesin listeye alınır.</div>` : ""}
       ${ev.pairs ? `<div class="f"><label for="team">Takım adı <small>(isteğe bağlı)</small></label><input type="text" id="team" maxlength="40" autocomplete="off"></div>` : ""}
       <div class="f"><label for="name">${ev.pairs ? "Senin adın soyadın" : "Ad Soyad"} <span class="req">*</span></label><input type="text" id="name" autocomplete="name" maxlength="60"><span class="err" id="e-name"></span></div>
-      <div class="f"><label for="phone">Telefon (WhatsApp) <span class="req">*</span></label><input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="05xx xxx xx xx"><small>Hatırlatma ve değişiklikleri buradan yazacağız.</small><span class="err" id="e-phone"></span></div>
       ${ev.pairs ? `<div class="partner">
         <div class="f"><label for="partner">Partnerinin adı soyadı <span class="req">*</span></label><input type="text" id="partner" maxlength="60" autocomplete="off"><span class="err" id="e-partner"></span></div>
-        <div class="f"><label for="partnerPhone">Partnerinin telefonu <span class="req">*</span></label><input type="tel" id="partnerPhone" inputmode="tel" placeholder="05xx xxx xx xx" autocomplete="off"><span class="err" id="e-partnerPhone"></span></div>
       </div>` : ""}
-      <div class="f"><label for="instagram">Instagram <small>(isteğe bağlı)</small></label><input type="text" id="instagram" maxlength="40" placeholder="@kullaniciadi" autocomplete="off"></div>
       <fieldset class="f">
         <legend>Oyunu daha önce oynadın mı? <span class="req">*</span></legend>
         <label class="opt"><input type="radio" name="exp" value="Birçok kez oynadım"><span>Birçok kez oynadım</span></label>
         <label class="opt"><input type="radio" name="exp" value="Birkaç kez oynadım"><span>Birkaç kez oynadım</span></label>
-        <label class="opt"><input type="radio" name="exp" value="Hiç oynamadım, kurallar gecesine gelmek istiyorum"><span>Hiç oynamadım, kurallar gecesine gelmek istiyorum</span></label>
+        <label class="opt"><input type="radio" name="exp" value="Hiç oynamadım, oyun anlatımına katılmak istiyorum."><span>Hiç oynamadım, oyun anlatımına katılmak istiyorum.</span></label>
         <span class="err" id="e-exp"></span>
       </fieldset>
-      <div class="f">
-        <label class="check"><input type="checkbox" id="kvkk"><span>Ad ve telefon bilgilerimin${ev.pairs ? " (ve partnerimin)" : ""} yalnızca bu turnuvanın organizasyonu ve iletişimi için Limon tarafından kullanılmasını kabul ediyorum. <span class="req">*</span></span></label>
-        <span class="err" id="e-kvkk"></span>
-        <label class="check"><input type="checkbox" id="marketing"><span>Limon'un gelecek etkinlik duyurularını WhatsApp'tan almak istiyorum.</span></label>
-      </div>
       <div class="hp" aria-hidden="true"><label for="website">Web sitesi</label><input type="text" id="website" tabindex="-1" autocomplete="off"></div>
       <div id="formErr"></div>
       <button class="submit${full ? " wait" : ""}" id="submit" type="submit">${full ? "Yedek listeye yazıl" : (ev.pairs ? "Takımımızı kaydet" : "Kaydımı yap")}</button>
-      ${ev.deposit ? `<p class="note">Kayıttan sonra yerini kesinleştirmek için 48 saat içinde ${tl(ev.deposit)} ön ödeme gerekir; katılım ücretinden düşülür.</p>` : ""}
+      <p class="note">Adın yalnızca turnuva listesi için kullanılır.</p>
     </form></div>`;
   $("#form").addEventListener("submit", submit);
 }
 
-const phoneOk = v => { const d = String(v).replace(/\D/g, ""); const t = d.slice(-10); return /^5\d{9}$/.test(t) && [10,11,12].includes(d.length); };
 function setErr(id, msg){ const el = $("#e-" + id); if(el) el.textContent = msg || ""; const inp = $("#" + id); if(inp && inp.tagName === "INPUT" && inp.type !== "checkbox") inp.setAttribute("aria-invalid", msg ? "true" : "false"); }
 
 async function submit(e){
@@ -296,20 +282,17 @@ async function submit(e){
   const v = id => ($("#" + id) ? $("#" + id).value.trim() : "");
   const exp = document.querySelector('input[name="exp"]:checked');
   const data = {
-    event: ev.id, name: v("name"), phone: v("phone"), instagram: v("instagram"),
-    experience: exp ? exp.value : "", team: v("team"), partner: v("partner"), partnerPhone: v("partnerPhone"),
-    kvkk: $("#kvkk").checked, marketing: $("#marketing").checked, website: v("website")
+    event: ev.id, name: v("name"), experience: exp ? exp.value : "",
+    team: v("team"), partner: v("partner"), website: v("website")
   };
   let bad = false;
   const chk = (id, cond, msg) => { setErr(id, cond ? "" : msg); if(!cond) bad = true; };
   chk("name", data.name.length >= 3, "Adını ve soyadını yaz.");
-  chk("phone", phoneOk(data.phone), "Telefonu 05xx xxx xx xx şeklinde yaz.");
   if(ev.pairs){
-    chk("partner", data.partner.length >= 3, "Partnerinin adını yaz.");
-    chk("partnerPhone", phoneOk(data.partnerPhone) && data.partnerPhone.replace(/\D/g,"").slice(-10) !== data.phone.replace(/\D/g,"").slice(-10), "Partnerinin kendi telefonunu yaz.");
+    const same = data.partner.toLocaleLowerCase("tr-TR") === data.name.toLocaleLowerCase("tr-TR");
+    chk("partner", data.partner.length >= 3 && !same, same ? "Partnerin farklı bir kişi olmalı." : "Partnerinin adını yaz.");
   }
   chk("exp", !!data.experience, "Bir seçenek işaretle.");
-  chk("kvkk", data.kvkk, "Kayıt için bu onay gerekli.");
   if(bad){ const first = document.querySelector('[aria-invalid="true"]') || $("#e-exp"); first && first.scrollIntoView({block:"center", behavior:"smooth"}); return; }
 
   const btn = $("#submit"); btn.disabled = true; btn.textContent = "Gönderiliyor…";
@@ -319,7 +302,7 @@ async function submit(e){
     if(demo){
       await new Promise(r => setTimeout(r, 600));
       const status = ev.left > 0 ? "Kesin" : "Yedek";
-      res = {ok:true, status, position: status === "Yedek" ? ev.waitlist + 1 : "", left: Math.max(0, ev.left - 1), payment:{fee:ev.fee, deposit:ev.deposit, ...DEMO_PAY}};
+      res = {ok:true, status, position: status === "Yedek" ? ev.waitlist + 1 : "", left: Math.max(0, ev.left - 1)};
     }else{
       const r = await fetch(SCRIPT_URL, {method:"POST", body: JSON.stringify(data)});
       res = await r.json();
@@ -328,10 +311,10 @@ async function submit(e){
     showResult(res, data);
   }catch(err){
     const map = {
-      duplicate:"Bu telefon numarası bu turnuvaya zaten kayıtlı. Bir sorun varsa Instagram'dan yaz.",
+      duplicate:"Bu isimle bu turnuvaya zaten kayıt var. Bir sorun varsa Instagram'dan yaz.",
       closed:"Bu turnuvanın kayıtları kapandı.",
-      phone:"Telefon numarası geçersiz görünüyor.", partner_phone:"Partnerin telefon numarası geçersiz görünüyor.",
-      same_phone:"Partnerin kendi telefon numarasını yaz.", busy:"Aynı anda çok kayıt geldi. Birkaç saniye sonra tekrar dene."
+      name:"Adını ve soyadını yaz.", partner:"Partnerinin adını yaz.",
+      same_name:"Partnerin farklı bir kişi olmalı.", busy:"Aynı anda çok kayıt geldi. Birkaç saniye sonra tekrar dene."
     };
     $("#formErr").innerHTML = `<div class="banner bad">${map[err && err.code] || "Kayıt gönderilemedi. İnternet bağlantını kontrol edip tekrar dene."}</div>`;
     btn.disabled = false; btn.textContent = ev.left === 0 ? "Yedek listeye yazıl" : "Tekrar dene";
@@ -339,34 +322,23 @@ async function submit(e){
 }
 
 function showResult(res, data){
-  const ev = current, p = res.payment || {};
+  const ev = current;
   const confirmed = res.status === "Kesin";
   if(confirmed){ ev.taken++; ev.left = Math.max(0, ev.left - 1); } else { ev.waitlist++; }
   const who = ev.pairs ? `${esc(data.name)} & ${esc(data.partner)}` : esc(data.name.split(" ")[0]);
   const card = document.querySelector(".card");
   card.querySelector("form").outerHTML = `<div class="result" role="status">
     ${confirmed ? `<span class="eyebrow">Kayıt alındı</span><p class="big">Yerin ayrıldı, ${who}!</p>`
-                : `<span class="eyebrow">Yedek liste</span><p class="big">Yedek listede ${res.position}. sıradasın.</p><p>Bir yer açılınca WhatsApp'tan haber vereceğiz. Şimdilik ödeme yapma.</p>`}
-    ${confirmed && p.deposit ? `<div class="pay">
-        <p>Yerini kesinleştirmek için <b>48 saat içinde ${tl(p.deposit)}</b> gönder. Açıklamaya adını yaz. Kalan ${tl(Math.max(0, (p.fee||0) - p.deposit))} turnuva günü ödenir.</p>
-        <div class="row"><span class="iban" id="iban">${esc(p.iban)}</span><button class="copy" type="button" id="copyIban">IBAN'ı kopyala</button></div>
-        <span class="muted">Alıcı: ${esc(p.holder)}</span>
-      </div>` : ""}
-    ${confirmed ? `<p>Turnuvadan bir gün önce WhatsApp'tan hatırlatma göndereceğiz. Görüşmek üzere: ${esc(fmtLong(ev.date))}, ${esc(ev.time)}.</p>` : ""}
+                : `<span class="eyebrow">Yedek liste</span><p class="big">Yedek listede ${res.position}. sıradasın.</p><p>Bir yer açılırsa sıradaki kişi kesin listeye alınır. Durumunu öğrenmek için Instagram'dan @limonboardgame'e yazabilirsin.</p>`}
+    ${confirmed && ev.teach && /^Hiç/.test(data.experience) ? `<p class="teach">Oyun anlatımı <b>${esc(ev.teach)}</b>'da başlıyor. Kuralları öğrenmek için o saatte gel.</p>` : ""}
+    ${confirmed ? `<p>Görüşmek üzere: ${esc(fmtLong(ev.date))}, ${esc(ev.time)}.</p>` : ""}
     <p><button class="link" type="button" id="again">Başka bir kayıt yap</button></p>
   </div>`;
   const seats = card.querySelector(".seats"); if(seats) seats.outerHTML = seatsHtml(ev);
   renderPicker();
-  const c = $("#copyIban");
-  if(c) c.addEventListener("click", () => {
-    const t = p.iban.replace(/\s/g, "");
-    const ok = () => { c.textContent = "Kopyalandı"; setTimeout(() => c.textContent = "IBAN'ı kopyala", 1800); };
-    try{ navigator.clipboard.writeText(t).then(ok, () => selectIban()); }catch(_){ selectIban(); }
-  });
   $("#again").addEventListener("click", renderMain);
   card.scrollIntoView({behavior:"smooth", block:"start"});
 }
-function selectIban(){ const r = document.createRange(); r.selectNodeContents($("#iban")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
 
 load();
 </script>
