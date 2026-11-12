@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Limon Turnuva Kaydı</title>
+<meta name="description" content="Limon Karşıyaka masa oyunu turnuvalarına kayıt.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single column that reads like a tournament entry card; seats drawn as tables of four. */
+:root{
+  --bg:#F5F6EE; --surface:#FFFFFF; --surface-2:#EDF0E2; --ink:#1D261B; --muted:#5E6957; --line:#D7DDC8;
+  --lemon:#EDBC12; --lemon-soft:#F8EBB2; --lemon-ink:#2A2300;
+  --leaf:#2E6A39; --leaf-soft:#DAEAD5; --warn:#A64D16; --warn-soft:#F5E0D0; --bad:#B3261E; --bad-soft:#F6DAD7;
+  --display:"Bricolage Grotesque","Figtree",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10150E; --surface:#182015; --surface-2:#202A1C; --ink:#E7EDDC; --muted:#A3AE99; --line:#313B2B;
+    --lemon:#F2C94C; --lemon-soft:#3A3314; --lemon-ink:#241E00;
+    --leaf:#8CCB87; --leaf-soft:#1E3320; --warn:#EB9C5F; --warn-soft:#3B2615; --bad:#F08A80; --bad-soft:#3E1D1A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10150E; --surface:#182015; --surface-2:#202A1C; --ink:#E7EDDC; --muted:#A3AE99; --line:#313B2B;
+  --lemon:#F2C94C; --lemon-soft:#3A3314; --lemon-ink:#241E00;
+  --leaf:#8CCB87; --leaf-soft:#1E3320; --warn:#EB9C5F; --warn-soft:#3B2615; --bad:#F08A80; --bad-soft:#3E1D1A;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:620px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2{font-family:var(--display);margin:0;letter-spacing:-.015em;text-wrap:balance}
+h1{font-size:clamp(30px,7vw,40px);font-weight:800;line-height:1.05}
+h2{font-size:22px;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+:focus-visible{outline:2px solid var(--leaf);outline-offset:2px}
+
+header{display:flex;gap:12px;align-items:center;margin-bottom:26px}
+header .mark{flex:none}
+header b{font-family:var(--display);font-size:20px;font-weight:800;display:block;line-height:1}
+header span{font-size:13px;color:var(--muted)}
+
+.demo{background:var(--lemon-soft);border:1px dashed var(--lemon);border-radius:10px;padding:10px 14px;font-size:14px;margin-bottom:20px}
+
+/* event picker */
+.picker{display:grid;gap:10px;margin-bottom:26px}
+.ev{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;text-align:left;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px;font:inherit;color:inherit;cursor:pointer}
+.ev:hover{border-color:var(--muted)}
+.ev[aria-pressed="true"]{border-color:var(--lemon);box-shadow:0 0 0 2px var(--lemon-soft)}
+.ev .day{display:grid;place-items:center;width:52px;height:56px;border-radius:10px;background:var(--surface-2);line-height:1}
+.ev .day b{font-family:var(--display);font-size:22px}
+.ev .day small{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:3px}
+.ev .t{min-width:0}
+.ev .t b{display:block;font-weight:700}
+.ev .t span{font-size:13px;color:var(--muted)}
+.pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:var(--leaf-soft);color:var(--leaf)}
+.pill.low{background:var(--lemon-soft);color:var(--lemon-ink)}
+:root[data-theme="dark"] .pill.low{color:var(--lemon)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pill.low{color:var(--lemon)}}
+.pill.full{background:var(--warn-soft);color:var(--warn)}
+.pill.closed{background:var(--surface-2);color:var(--muted)}
+
+/* event card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.card-top{padding:22px 22px 18px;display:grid;gap:14px;border-bottom:1px dashed var(--line);position:relative}
+.facts{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px}
+.facts div{display:flex;gap:6px;align-items:baseline}
+.facts .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.facts .v{font-weight:600}
+.seats{display:grid;gap:8px}
+.seat-row{display:flex;flex-wrap:wrap;gap:10px}
+.tbl{display:grid;grid-template-columns:repeat(2,14px);gap:4px;padding:6px;border-radius:9px;background:var(--surface-2)}
+.tbl.pairs{grid-template-columns:repeat(2,14px)}
+.seat{width:14px;height:14px;border-radius:50%;border:2px solid var(--lemon);background:transparent}
+.seat.taken{background:var(--lemon);border-color:var(--lemon)}
+.seat-count{font-size:15px}
+.seat-count b{font-family:var(--mono);font-weight:500}
+
+form{padding:22px;display:grid;gap:18px}
+.f{display:grid;gap:6px}
+.f label,.f legend{font-weight:600;font-size:15px}
+.f small{color:var(--muted);font-size:13px;font-weight:400}
+.f label.opt,.f label.check{font-weight:400}
+.req{color:var(--warn)}
+input[type=text],input[type=tel]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px}
+input[type=text]:focus,input[type=tel]:focus{border-color:var(--leaf);outline:none;box-shadow:0 0 0 3px var(--leaf-soft)}
+input[aria-invalid="true"]{border-color:var(--bad)}
+.err{color:var(--bad);font-size:13px;font-weight:600}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;background:var(--bg)}
+.opt:has(input:checked){border-color:var(--leaf);background:var(--leaf-soft)}
+.opt input{margin-top:3px;accent-color:var(--leaf);width:18px;height:18px;flex:none}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
+.check input{margin-top:2px;width:18px;height:18px;accent-color:var(--leaf);flex:none}
+.partner{display:grid;gap:14px;padding:14px;border-radius:12px;background:var(--surface-2)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.submit{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:12px;padding:14px 18px;background:var(--lemon);color:var(--lemon-ink);cursor:pointer}
+.submit.wait{background:var(--ink);color:var(--bg)}
+.submit:disabled{opacity:.6;cursor:progress}
+.note{font-size:13px;color:var(--muted)}
+.banner{padding:12px 14px;border-radius:10px;font-size:14px}
+.banner.bad{background:var(--bad-soft);color:var(--bad)}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+
+/* result */
+.result{padding:26px 22px;display:grid;gap:16px}
+.result .big{font-family:var(--display);font-size:28px;font-weight:800;line-height:1.1}
+.pay{display:grid;gap:10px;padding:16px;border-radius:12px;background:var(--lemon-soft)}
+.pay .row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px}
+.iban{font-family:var(--mono);font-size:15px;word-break:break-all;user-select:all}
+.copy{font:inherit;font-size:13px;font-weight:700;border:1.5px solid var(--lemon-ink);border-radius:8px;padding:6px 12px;background:transparent;color:var(--lemon-ink);cursor:pointer}
+:root[data-theme="dark"] .copy{border-color:var(--lemon);color:var(--lemon)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .copy{border-color:var(--lemon);color:var(--lemon)}}
+.link{font:inherit;background:none;border:0;color:var(--leaf);font-weight:700;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.empty{padding:28px 22px;text-align:left;display:grid;gap:8px}
+footer{margin-top:28px;font-size:13px;color:var(--muted);display:grid;gap:4px}
+@media (prefers-reduced-motion:no-preference){.seat.taken{transition:background .3s}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="mark" width="40" height="40" viewBox="0 0 42 42" aria-hidden="true">
+      <ellipse cx="21" cy="22" rx="16" ry="13" fill="var(--lemon)"/>
+      <ellipse cx="21" cy="22" rx="10" ry="7.5" fill="none" stroke="var(--lemon-ink)" stroke-opacity=".25" stroke-width="1.5"/>
+      <path d="M21 9 C 24 4, 30 4, 32 6 C 29 9, 25 10, 21 9 Z" fill="var(--leaf)"/>
+    </svg>
+    <div><b>Limon</b><span>Masa oyunu kafe · Karşıyaka</span></div>
+  </header>
+
+  <div class="demo" id="demo" hidden><b>Önizleme modu.</b> Kayıtlar kaydedilmez. Gerçek kayıt için sayfanın başındaki <code>SCRIPT_URL</code> değerini doldurun.</div>
+
+  <div id="loading" class="muted">Turnuvalar yükleniyor…</div>
+  <div id="picker" class="picker" role="group" aria-label="Turnuva seç" hidden></div>
+  <section id="main"></section>
+
+  <footer>
+    <span>Sorular için Instagram: @limonboardgame</span>
+    <span>Bilgilerin yalnızca turnuva organizasyonu için kullanılır ve kimseyle paylaşılmaz.</span>
+  </footer>
+</div>
+
+<script>
+/* ===== AYARLAR / SETTINGS ===================================================
+   Paste your Apps Script web app URL here (ends with /exec).
+   Leave empty to see the page in preview mode with example events. */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiuT-jKw4FO2kQEyduEbwt32_puSecQ4UoxOOGDz2gq3DY28wMjB1cYCcoe7snrm65/exec";
+/* ========================================================================== */
+
+const DEMO_EVENTS = [
+  {id:"lightA",name:"Limon Turnuvası",game:"Hafif oyun A",date:"2026-12-06",time:"13:30",capacity:16,pairs:false,fee:250,deposit:100,deadline:"2026-12-04",desc:"3 eleme turu + final masası. Yaklaşık 5 saat.",open:true,taken:11,waitlist:0,left:5},
+  {id:"lightB",name:"Limon Çiftler Turnuvası",game:"Hafif oyun B",date:"2026-12-20",time:"13:30",capacity:10,pairs:true,fee:250,deposit:100,deadline:"2026-12-18",desc:"İki kişilik takımlar. Partnerler farklı masalarda oynar, puanlar toplanır.",open:true,taken:10,waitlist:2,left:0}
+];
+const DEMO_PAY = {iban:"TR00 0000 0000 0000 0000 0000 00",holder:"Limon (örnek)"};
+
+const $ = s => document.querySelector(s);
+const demo = !SCRIPT_URL;
+let events = [], current = null;
+
+const fmtDay = d => { const x = new Date(d + "T12:00:00"); return isNaN(x) ? {n:"–",m:""} : {n:x.getDate(), m:x.toLocaleDateString("tr-TR",{month:"short"})}; };
+const fmtLong = d => { const x = new Date(d + "T12:00:00"); return isNaN(x) ? d : x.toLocaleDateString("tr-TR",{day:"numeric",month:"long",weekday:"long"}); };
+const tl = n => n ? `${Number(n).toLocaleString("tr-TR")} TL` : "Ücretsiz";
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const unit = ev => ev.pairs ? "takım" : "kişi";
+
+function pill(ev){
+  if(!ev.open) return `<span class="pill closed">Kayıt kapalı</span>`;
+  if(ev.left === 0) return `<span class="pill full">Yedek liste</span>`;
+  if(ev.left <= Math.max(2, Math.ceil(ev.capacity * .25))) return `<span class="pill low">Son ${ev.left} ${unit(ev)}</span>`;
+  return `<span class="pill ok">${ev.left} ${unit(ev)} yer var</span>`;
+}
+
+async function load(){
+  try{
+    if(demo){ events = DEMO_EVENTS; $("#demo").hidden = false; }
+    else{
+      const res = await fetch(SCRIPT_URL + "?action=status");
+      const data = await res.json();
+      if(!data.ok) throw new Error(data.code);
+      events = data.events;
+    }
+    events.sort((a,b) => a.date.localeCompare(b.date));
+    $("#loading").hidden = true;
+    const want = new URLSearchParams(location.search).get("e");
+    current = events.find(e => e.id === want) || events.find(e => e.open) || events[0] || null;
+    renderPicker(); renderMain();
+  }catch(err){
+    $("#loading").innerHTML = `<div class="banner bad">Turnuva bilgileri şu an yüklenemedi. Sayfayı yenile veya Instagram'dan @limonboardgame'e yaz.</div>`;
+  }
+}
+
+function renderPicker(){
+  const p = $("#picker");
+  if(events.length < 2){ p.hidden = true; return; }
+  p.hidden = false;
+  p.innerHTML = events.map(ev => { const d = fmtDay(ev.date); return `
+    <button type="button" class="ev" data-id="${esc(ev.id)}" aria-pressed="${current && current.id === ev.id}">
+      <span class="day"><b>${d.n}</b><small>${esc(d.m)}</small></span>
+      <span class="t"><b>${esc(ev.name)}</b><span>${esc(ev.game)} · ${esc(ev.time)}${ev.pairs ? " · çiftler" : ""}</span></span>
+      ${pill(ev)}
+    </button>`; }).join("");
+}
+$("#picker").addEventListener("click", e => {
+  const b = e.target.closest("[data-id]"); if(!b) return;
+  current = events.find(x => x.id === b.dataset.id);
+  try{ history.replaceState(null, "", "?e=" + encodeURIComponent(current.id)); }catch(_){}
+  renderPicker(); renderMain();
+});
+
+function seatsHtml(ev){
+  const per = ev.pairs ? 2 : 4;
+  const groups = Math.ceil(ev.capacity / per);
+  let html = "", n = 0;
+  for(let g = 0; g < groups; g++){
+    let s = "";
+    for(let i = 0; i < per && n < ev.capacity; i++, n++) s += `<span class="seat${n < ev.taken ? " taken" : ""}"></span>`;
+    html += `<span class="tbl${ev.pairs ? " pairs" : ""}">${s}</span>`;
+  }
+  return `<div class="seats" aria-label="${ev.taken} dolu, ${ev.left} boş">
+    <div class="seat-row" aria-hidden="true">${html}</div>
+    <p class="seat-count"><b>${ev.taken}/${ev.capacity}</b> ${unit(ev)} kayıtlı${ev.left ? ` · <b>${ev.left}</b> yer kaldı` : ` · kontenjan doldu${ev.waitlist ? `, yedekte ${ev.waitlist} ${unit(ev)}` : ""}`}</p>
+  </div>`;
+}
+
+function renderMain(){
+  const m = $("#main");
+  if(!current){
+    m.innerHTML = `<div class="card"><div class="empty"><h2>Şu an açık turnuva yok</h2><p class="muted">Yeni turnuvalar Instagram'da duyurulur: @limonboardgame</p></div></div>`;
+    return;
+  }
+  const ev = current, full = ev.left === 0;
+  const top = `<div class="card-top">
+      <span class="eyebrow">${esc(ev.game)}${ev.pairs ? " · Çiftler" : ""}</span>
+      <h1>${esc(ev.name)}</h1>
+      <div class="facts">
+        <div><span class="k">Tarih</span><span class="v">${esc(fmtLong(ev.date))}</span></div>
+        <div><span class="k">Saat</span><span class="v">${esc(ev.time)}</span></div>
+        <div><span class="k">Ücret</span><span class="v">${tl(ev.fee)}${ev.pairs && ev.fee ? " / kişi" : ""}</span></div>
+      </div>
+      ${ev.desc ? `<p class="muted">${esc(ev.desc)}</p>` : ""}
+      ${seatsHtml(ev)}
+    </div>`;
+  if(!ev.open){
+    m.innerHTML = `<div class="card">${top}<div class="empty"><h2>Kayıtlar kapandı</h2><p class="muted">Bir sonraki turnuva için Instagram'ı takip et: @limonboardgame</p></div></div>`;
+    return;
+  }
+  m.innerHTML = `<div class="card">${top}
+    <form id="form" novalidate>
+      ${full ? `<div class="banner warn">Kontenjan doldu. Formu doldurursan <b>yedek listeye</b> yazılırsın; yer açılınca sırayla haber veriyoruz.</div>` : ""}
+      ${ev.pairs ? `<div class="f"><label for="team">Takım adı <small>(isteğe bağlı)</small></label><input type="text" id="team" maxlength="40" autocomplete="off"></div>` : ""}
+      <div class="f"><label for="name">${ev.pairs ? "Senin adın soyadın" : "Ad Soyad"} <span class="req">*</span></label><input type="text" id="name" autocomplete="name" maxlength="60"><span class="err" id="e-name"></span></div>
+      <div class="f"><label for="phone">Telefon (WhatsApp) <span class="req">*</span></label><input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="05xx xxx xx xx"><small>Hatırlatma ve değişiklikleri buradan yazacağız.</small><span class="err" id="e-phone"></span></div>
+      ${ev.pairs ? `<div class="partner">
+        <div class="f"><label for="partner">Partnerinin adı soyadı <span class="req">*</span></label><input type="text" id="partner" maxlength="60" autocomplete="off"><span class="err" id="e-partner"></span></div>
+        <div class="f"><label for="partnerPhone">Partnerinin telefonu <span class="req">*</span></label><input type="tel" id="partnerPhone" inputmode="tel" placeholder="05xx xxx xx xx" autocomplete="off"><span class="err" id="e-partnerPhone"></span></div>
+      </div>` : ""}
+      <div class="f"><label for="instagram">Instagram <small>(isteğe bağlı)</small></label><input type="text" id="instagram" maxlength="40" placeholder="@kullaniciadi" autocomplete="off"></div>
+      <fieldset class="f">
+        <legend>Oyunu daha önce oynadın mı? <span class="req">*</span></legend>
+        <label class="opt"><input type="radio" name="exp" value="Birçok kez oynadım"><span>Birçok kez oynadım</span></label>
+        <label class="opt"><input type="radio" name="exp" value="Birkaç kez oynadım"><span>Birkaç kez oynadım</span></label>
+        <label class="opt"><input type="radio" name="exp" value="Hiç oynamadım, kurallar gecesine gelmek istiyorum"><span>Hiç oynamadım, kurallar gecesine gelmek istiyorum</span></label>
+        <span class="err" id="e-exp"></span>
+      </fieldset>
+      <div class="f">
+        <label class="check"><input type="checkbox" id="kvkk"><span>Ad ve telefon bilgilerimin${ev.pairs ? " (ve partnerimin)" : ""} yalnızca bu turnuvanın organizasyonu ve iletişimi için Limon tarafından kullanılmasını kabul ediyorum. <span class="req">*</span></span></label>
+        <span class="err" id="e-kvkk"></span>
+        <label class="check"><input type="checkbox" id="marketing"><span>Limon'un gelecek etkinlik duyurularını WhatsApp'tan almak istiyorum.</span></label>
+      </div>
+      <div class="hp" aria-hidden="true"><label for="website">Web sitesi</label><input type="text" id="website" tabindex="-1" autocomplete="off"></div>
+      <div id="formErr"></div>
+      <button class="submit${full ? " wait" : ""}" id="submit" type="submit">${full ? "Yedek listeye yazıl" : (ev.pairs ? "Takımımızı kaydet" : "Kaydımı yap")}</button>
+      ${ev.deposit ? `<p class="note">Kayıttan sonra yerini kesinleştirmek için 48 saat içinde ${tl(ev.deposit)} ön ödeme gerekir; katılım ücretinden düşülür.</p>` : ""}
+    </form></div>`;
+  $("#form").addEventListener("submit", submit);
+}
+
+const phoneOk = v => { const d = String(v).replace(/\D/g, ""); const t = d.slice(-10); return /^5\d{9}$/.test(t) && [10,11,12].includes(d.length); };
+function setErr(id, msg){ const el = $("#e-" + id); if(el) el.textContent = msg || ""; const inp = $("#" + id); if(inp && inp.tagName === "INPUT" && inp.type !== "checkbox") inp.setAttribute("aria-invalid", msg ? "true" : "false"); }
+
+async function submit(e){
+  e.preventDefault();
+  const ev = current;
+  const v = id => ($("#" + id) ? $("#" + id).value.trim() : "");
+  const exp = document.querySelector('input[name="exp"]:checked');
+  const data = {
+    event: ev.id, name: v("name"), phone: v("phone"), instagram: v("instagram"),
+    experience: exp ? exp.value : "", team: v("team"), partner: v("partner"), partnerPhone: v("partnerPhone"),
+    kvkk: $("#kvkk").checked, marketing: $("#marketing").checked, website: v("website")
+  };
+  let bad = false;
+  const chk = (id, cond, msg) => { setErr(id, cond ? "" : msg); if(!cond) bad = true; };
+  chk("name", data.name.length >= 3, "Adını ve soyadını yaz.");
+  chk("phone", phoneOk(data.phone), "Telefonu 05xx xxx xx xx şeklinde yaz.");
+  if(ev.pairs){
+    chk("partner", data.partner.length >= 3, "Partnerinin adını yaz.");
+    chk("partnerPhone", phoneOk(data.partnerPhone) && data.partnerPhone.replace(/\D/g,"").slice(-10) !== data.phone.replace(/\D/g,"").slice(-10), "Partnerinin kendi telefonunu yaz.");
+  }
+  chk("exp", !!data.experience, "Bir seçenek işaretle.");
+  chk("kvkk", data.kvkk, "Kayıt için bu onay gerekli.");
+  if(bad){ const first = document.querySelector('[aria-invalid="true"]') || $("#e-exp"); first && first.scrollIntoView({block:"center", behavior:"smooth"}); return; }
+
+  const btn = $("#submit"); btn.disabled = true; btn.textContent = "Gönderiliyor…";
+  $("#formErr").innerHTML = "";
+  try{
+    let res;
+    if(demo){
+      await new Promise(r => setTimeout(r, 600));
+      const status = ev.left > 0 ? "Kesin" : "Yedek";
+      res = {ok:true, status, position: status === "Yedek" ? ev.waitlist + 1 : "", left: Math.max(0, ev.left - 1), payment:{fee:ev.fee, deposit:ev.deposit, ...DEMO_PAY}};
+    }else{
+      const r = await fetch(SCRIPT_URL, {method:"POST", body: JSON.stringify(data)});
+      res = await r.json();
+    }
+    if(!res.ok) throw res;
+    showResult(res, data);
+  }catch(err){
+    const map = {
+      duplicate:"Bu telefon numarası bu turnuvaya zaten kayıtlı. Bir sorun varsa Instagram'dan yaz.",
+      closed:"Bu turnuvanın kayıtları kapandı.",
+      phone:"Telefon numarası geçersiz görünüyor.", partner_phone:"Partnerin telefon numarası geçersiz görünüyor.",
+      same_phone:"Partnerin kendi telefon numarasını yaz.", busy:"Aynı anda çok kayıt geldi. Birkaç saniye sonra tekrar dene."
+    };
+    $("#formErr").innerHTML = `<div class="banner bad">${map[err && err.code] || "Kayıt gönderilemedi. İnternet bağlantını kontrol edip tekrar dene."}</div>`;
+    btn.disabled = false; btn.textContent = ev.left === 0 ? "Yedek listeye yazıl" : "Tekrar dene";
+  }
+}
+
+function showResult(res, data){
+  const ev = current, p = res.payment || {};
+  const confirmed = res.status === "Kesin";
+  if(confirmed){ ev.taken++; ev.left = Math.max(0, ev.left - 1); } else { ev.waitlist++; }
+  const who = ev.pairs ? `${esc(data.name)} & ${esc(data.partner)}` : esc(data.name.split(" ")[0]);
+  const card = document.querySelector(".card");
+  card.querySelector("form").outerHTML = `<div class="result" role="status">
+    ${confirmed ? `<span class="eyebrow">Kayıt alındı</span><p class="big">Yerin ayrıldı, ${who}!</p>`
+                : `<span class="eyebrow">Yedek liste</span><p class="big">Yedek listede ${res.position}. sıradasın.</p><p>Bir yer açılınca WhatsApp'tan haber vereceğiz. Şimdilik ödeme yapma.</p>`}
+    ${confirmed && p.deposit ? `<div class="pay">
+        <p>Yerini kesinleştirmek için <b>48 saat içinde ${tl(p.deposit)}</b> gönder. Açıklamaya adını yaz. Kalan ${tl(Math.max(0, (p.fee||0) - p.deposit))} turnuva günü ödenir.</p>
+        <div class="row"><span class="iban" id="iban">${esc(p.iban)}</span><button class="copy" type="button" id="copyIban">IBAN'ı kopyala</button></div>
+        <span class="muted">Alıcı: ${esc(p.holder)}</span>
+      </div>` : ""}
+    ${confirmed ? `<p>Turnuvadan bir gün önce WhatsApp'tan hatırlatma göndereceğiz. Görüşmek üzere: ${esc(fmtLong(ev.date))}, ${esc(ev.time)}.</p>` : ""}
+    <p><button class="link" type="button" id="again">Başka bir kayıt yap</button></p>
+  </div>`;
+  const seats = card.querySelector(".seats"); if(seats) seats.outerHTML = seatsHtml(ev);
+  renderPicker();
+  const c = $("#copyIban");
+  if(c) c.addEventListener("click", () => {
+    const t = p.iban.replace(/\s/g, "");
+    const ok = () => { c.textContent = "Kopyalandı"; setTimeout(() => c.textContent = "IBAN'ı kopyala", 1800); };
+    try{ navigator.clipboard.writeText(t).then(ok, () => selectIban()); }catch(_){ selectIban(); }
+  });
+  $("#again").addEventListener("click", renderMain);
+  card.scrollIntoView({behavior:"smooth", block:"start"});
+}
+function selectIban(){ const r = document.createRange(); r.selectNodeContents($("#iban")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+
+load();
+</script>
+</body>
+</html>
