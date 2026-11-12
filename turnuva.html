@@ -105,6 +105,11 @@ fieldset{border:0;margin:0;padding:0;display:grid;gap:8px}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:14px;cursor:pointer}
 .check input{margin-top:2px;width:18px;height:18px;accent-color:var(--leaf);flex:none}
 .partner{display:grid;gap:14px;padding:14px;border-radius:12px;background:var(--surface-2)}
+.contact{display:grid;gap:14px;padding:14px;border-radius:12px;border:1.5px dashed var(--line)}
+.contact-head{font-weight:600;font-size:15px}
+.contact-head small{display:block;margin-top:2px;font-weight:400;color:var(--muted);font-size:13px}
+input[type=email]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px}
+input[type=email]:focus{border-color:var(--leaf);outline:none;box-shadow:0 0 0 3px var(--leaf-soft)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .submit{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:12px;padding:14px 18px;background:var(--lemon);color:var(--lemon-ink);cursor:pointer}
 .submit.wait{background:var(--ink);color:var(--bg)}
@@ -151,7 +156,7 @@ footer{margin-top:28px;font-size:13px;color:var(--muted);display:grid;gap:4px}
 /* ===== AYARLAR / SETTINGS ===================================================
    Paste your Apps Script web app URL here (ends with /exec).
    Leave empty to see the page in preview mode with example events. */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTo935Vy-XVR6i6b4QVzYDUwYiXR9TH5rwLNaVhjfq8v60ih5I8x9PfGfAu3zMyLy9/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiuT-jKw4FO2kQEyduEbwt32_puSecQ4UoxOOGDz2gq3DY28wMjB1cYCcoe7snrm65/exec";
 /* ========================================================================== */
 
 const DEMO_EVENTS = [
@@ -253,12 +258,18 @@ function renderMain(){
   }
   m.innerHTML = `<div class="card">${top}
     <form id="form" novalidate>
-      ${full ? `<div class="banner warn">Kontenjan doldu. Formu doldurursan <b>yedek listeye</b> yazılırsın. Yer açılırsa sıradaki kişi kesin listeye alınır.</div>` : ""}
+      ${full ? `<div class="banner warn">Kontenjan doldu. Formu doldurursan <b>yedek listeye</b> yazılırsın. Yer açılırsa sırayla haber veriyoruz.</div>` : ""}
       ${ev.pairs ? `<div class="f"><label for="team">Takım adı <small>(isteğe bağlı)</small></label><input type="text" id="team" maxlength="40" autocomplete="off"></div>` : ""}
       <div class="f"><label for="name">${ev.pairs ? "Senin adın soyadın" : "Ad Soyad"} <span class="req">*</span></label><input type="text" id="name" autocomplete="name" maxlength="60"><span class="err" id="e-name"></span></div>
       ${ev.pairs ? `<div class="partner">
         <div class="f"><label for="partner">Partnerinin adı soyadı <span class="req">*</span></label><input type="text" id="partner" maxlength="60" autocomplete="off"><span class="err" id="e-partner"></span></div>
       </div>` : ""}
+      <div class="contact">
+        <p class="contact-head">İletişim <span class="req">*</span> <small>En az birini yaz. Kayıt durumunu buradan bildireceğiz.</small></p>
+        <div class="f"><label for="email">E-posta</label><input type="email" id="email" autocomplete="email" inputmode="email" maxlength="80" placeholder="ornek@mail.com"><small>Yazarsan kayıt onayın hemen e-postana gelir.</small><span class="err" id="e-email"></span></div>
+        <div class="f"><label for="phone">Telefon</label><input type="tel" id="phone" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="05xx xxx xx xx"><span class="err" id="e-phone"></span></div>
+        <span class="err" id="e-contact"></span>
+      </div>
       <fieldset class="f">
         <legend>Oyunu daha önce oynadın mı? <span class="req">*</span></legend>
         <label class="opt"><input type="radio" name="exp" value="Birçok kez oynadım"><span>Birçok kez oynadım</span></label>
@@ -266,15 +277,20 @@ function renderMain(){
         <label class="opt"><input type="radio" name="exp" value="Hiç oynamadım, oyun anlatımına katılmak istiyorum."><span>Hiç oynamadım, oyun anlatımına katılmak istiyorum.</span></label>
         <span class="err" id="e-exp"></span>
       </fieldset>
+      <div class="f">
+        <label class="check"><input type="checkbox" id="kvkk"><span>İletişim bilgilerimin yalnızca bu turnuvayla ilgili bilgilendirme için Limon tarafından kullanılmasını kabul ediyorum. <span class="req">*</span></span></label>
+        <span class="err" id="e-kvkk"></span>
+      </div>
       <div class="hp" aria-hidden="true"><label for="website">Web sitesi</label><input type="text" id="website" tabindex="-1" autocomplete="off"></div>
       <div id="formErr"></div>
       <button class="submit${full ? " wait" : ""}" id="submit" type="submit">${full ? "Yedek listeye yazıl" : (ev.pairs ? "Takımımızı kaydet" : "Kaydımı yap")}</button>
-      <p class="note">Adın yalnızca turnuva listesi için kullanılır.</p>
     </form></div>`;
   $("#form").addEventListener("submit", submit);
 }
 
 function setErr(id, msg){ const el = $("#e-" + id); if(el) el.textContent = msg || ""; const inp = $("#" + id); if(inp && inp.tagName === "INPUT" && inp.type !== "checkbox") inp.setAttribute("aria-invalid", msg ? "true" : "false"); }
+
+const phoneValid = v => { const d = String(v).replace(/\D/g, ""); return /^5\d{9}$/.test(d.slice(-10)) && [10,11,12].includes(d.length); };
 
 async function submit(e){
   e.preventDefault();
@@ -283,7 +299,8 @@ async function submit(e){
   const exp = document.querySelector('input[name="exp"]:checked');
   const data = {
     event: ev.id, name: v("name"), experience: exp ? exp.value : "",
-    team: v("team"), partner: v("partner"), website: v("website")
+    team: v("team"), partner: v("partner"), email: v("email"), phone: v("phone"),
+    kvkk: $("#kvkk").checked, website: v("website")
   };
   let bad = false;
   const chk = (id, cond, msg) => { setErr(id, cond ? "" : msg); if(!cond) bad = true; };
@@ -292,8 +309,14 @@ async function submit(e){
     const same = data.partner.toLocaleLowerCase("tr-TR") === data.name.toLocaleLowerCase("tr-TR");
     chk("partner", data.partner.length >= 3 && !same, same ? "Partnerin farklı bir kişi olmalı." : "Partnerinin adını yaz.");
   }
+  const emailOk = !data.email || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email);
+  const phoneOk = !data.phone || phoneValid(data.phone);
+  chk("email", emailOk, "E-posta adresi geçersiz görünüyor.");
+  chk("phone", phoneOk, "Telefonu 05xx xxx xx xx şeklinde yaz.");
+  chk("contact", !!(data.email || data.phone), "E-posta veya telefon yaz.");
   chk("exp", !!data.experience, "Bir seçenek işaretle.");
-  if(bad){ const first = document.querySelector('[aria-invalid="true"]') || $("#e-exp"); first && first.scrollIntoView({block:"center", behavior:"smooth"}); return; }
+  chk("kvkk", data.kvkk, "Kayıt için bu onay gerekli.");
+  if(bad){ const first = document.querySelector('[aria-invalid="true"]') || [...document.querySelectorAll(".err")].find(e => e.textContent); first && first.scrollIntoView({block:"center", behavior:"smooth"}); return; }
 
   const btn = $("#submit"); btn.disabled = true; btn.textContent = "Gönderiliyor…";
   $("#formErr").innerHTML = "";
@@ -302,7 +325,7 @@ async function submit(e){
     if(demo){
       await new Promise(r => setTimeout(r, 600));
       const status = ev.left > 0 ? "Kesin" : "Yedek";
-      res = {ok:true, status, position: status === "Yedek" ? ev.waitlist + 1 : "", left: Math.max(0, ev.left - 1)};
+      res = {ok:true, status, position: status === "Yedek" ? ev.waitlist + 1 : "", left: Math.max(0, ev.left - 1), emailed: !!data.email};
     }else{
       const r = await fetch(SCRIPT_URL, {method:"POST", body: JSON.stringify(data)});
       res = await r.json();
@@ -311,7 +334,9 @@ async function submit(e){
     showResult(res, data);
   }catch(err){
     const map = {
-      duplicate:"Bu isimle bu turnuvaya zaten kayıt var. Bir sorun varsa Instagram'dan yaz.",
+      duplicate:"Bu isim, e-posta veya telefonla bu turnuvaya zaten kayıt var. Bir sorun varsa Instagram'dan yaz.",
+      contact:"E-posta veya telefon yaz.", email:"E-posta adresi geçersiz görünüyor.", phone:"Telefon numarası geçersiz görünüyor.",
+      kvkk:"Kayıt için iletişim onayı gerekli.",
       closed:"Bu turnuvanın kayıtları kapandı.",
       name:"Adını ve soyadını yaz.", partner:"Partnerinin adını yaz.",
       same_name:"Partnerin farklı bir kişi olmalı.", busy:"Aynı anda çok kayıt geldi. Birkaç saniye sonra tekrar dene."
@@ -329,9 +354,10 @@ function showResult(res, data){
   const card = document.querySelector(".card");
   card.querySelector("form").outerHTML = `<div class="result" role="status">
     ${confirmed ? `<span class="eyebrow">Kayıt alındı</span><p class="big">Yerin ayrıldı, ${who}!</p>`
-                : `<span class="eyebrow">Yedek liste</span><p class="big">Yedek listede ${res.position}. sıradasın.</p><p>Bir yer açılırsa sıradaki kişi kesin listeye alınır. Durumunu öğrenmek için Instagram'dan @limonboardgame'e yazabilirsin.</p>`}
+                : `<span class="eyebrow">Yedek liste</span><p class="big">Yedek listede ${res.position}. sıradasın.</p><p>Bir yer açılırsa ${data.email ? "e-postayla" : "telefonla"} haber vereceğiz.</p>`}
     ${confirmed && ev.teach && /^Hiç/.test(data.experience) ? `<p class="teach">Oyun anlatımı <b>${esc(ev.teach)}</b>'da başlıyor. Kuralları öğrenmek için o saatte gel.</p>` : ""}
     ${confirmed ? `<p>Görüşmek üzere: ${esc(fmtLong(ev.date))}, ${esc(ev.time)}.</p>` : ""}
+    ${res.emailed ? `<p class="muted">Bir onay e-postası <b>${esc(data.email)}</b> adresine gönderildi. Gelmezse spam klasörüne bak.</p>` : ""}
     <p><button class="link" type="button" id="again">Başka bir kayıt yap</button></p>
   </div>`;
   const seats = card.querySelector(".seats"); if(seats) seats.outerHTML = seatsHtml(ev);
