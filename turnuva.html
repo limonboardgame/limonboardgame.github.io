@@ -179,7 +179,7 @@ footer{margin-top:28px;font-size:13px;color:var(--muted);display:grid;gap:4px}
 /* ===== AYARLAR / SETTINGS ===================================================
    Paste your Apps Script web app URL here (ends with /exec).
    Leave empty to see the page in preview mode with example events. */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiuT-jKw4FO2kQEyduEbwt32_puSecQ4UoxOOGDz2gq3DY28wMjB1cYCcoe7snrm65/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGLh201zCVNXYzAczp3lBgDEZFX911X3OQL2s5R4EHRCg1vuBV1hOronyNIzdXgBK6/exec";
 
 /* Tournament structure shown under the form ("Turnuva nasıl işler?").
    Times are minutes after the event's start time (Saat column in the sheet).
@@ -366,7 +366,7 @@ function howHtml(ev){
   }
 
   const roundTiles = Array.from({length: F.rounds}, (_, i) =>
-    `<div class="stage"><span class="lab">${i + 1}. Tur</span><span class="tm">${esc(at(F.roundStart[i] ?? (30 + i * 60)))}</span>${miniTables(tables, per)}</div>`).join("");
+    `<div class="stage"><span class="lab">${i + 1}. Tur${miniTables(tables, per)}</div>`).join("");
   const finalLabel = pairs ? `En iyi ${Math.floor(F.finalists / 2)} takım` : `En yüksek puanlı ${F.finalists} oyuncu`;
 
   return `<section class="how" aria-labelledby="how-h">
@@ -375,16 +375,16 @@ function howHtml(ev){
     <div class="funnel">${esc(finalLabel)}</div>
     <div class="stage final">${trophy}${miniTables(1, F.finalists)}<span class="txt"><span class="lab">Final</span><span class="tm">${esc(at(F.finalStart))} · ${F.finalists} kişilik masa</span></span></div>
     <div>
-      <p class="sub">Her oyundan sonra masadaki sıralamana göre puan alırsın</p>
+      <p class="sub">Her oyundan sonra masadaki sıralamana göre puan alırsınız</p>
       <div class="pts">${ptsChips(per)}</div>
     </div>
     <ul class="rules">
       ${ev.teach ? `<li>Oyunu bilmeyenler için oyun anlatımı ${esc(tAt(ev.teach))} başlar.</li>` : ""}
-      <li>${esc(tAt(start))} giriş yapılır, ilk tur ${esc(tAt(at(F.roundStart[0])))} başlar. Herkes en az ${F.rounds} oyun oynar.</li>
-      <li>İlk turda masalar kura ile kurulur. Sonraki turlarda benzer puandaki oyuncular aynı masaya oturur.</li>
+      <li>${esc(tAt(start))}'da ilk tur başlar. Herkes en az ${F.rounds} oyun oynar.</li>
+      <li>İlk turda masalar deneyim seviyesine göre kurulur. Sonraki turlarda benzer puandaki oyuncular aynı masaya oturur.</li>
       ${pairs ? `<li>Partnerler her turda <b>farklı masalarda</b> oynar. İkinizin puanı toplanır ve takım puanını oluşturur.</li>` : ""}
       <li>${F.rounds} turun sonunda ${pairs ? `en çok puan toplayan <b>${Math.floor(F.finalists / 2)} takım</b> (${F.finalists} oyuncu)` : `en çok puan toplayan <b>${F.finalists} oyuncu</b>`} final masasına çıkar. Puanlar eşitse, oyun içi skorunun masa birincisinin skoruna oranı belirleyici olur.</li>
-      <li>${pairs ? "Finalde iki partnerin puanı toplanır; en yüksek toplamı alan takım şampiyon olur." : "Final masasını kazanan şampiyon olur."} Ödüller yaklaşık ${esc(tAt(at(F.end)))} verilir.</li>
+      <li>${pairs ? "Finalde iki partnerin puanı toplanır; en yüksek toplamı alan takım şampiyon olur." : "Final masasını kazanan şampiyon olur."}</li>
     </ul>
   </section>`;
 }
