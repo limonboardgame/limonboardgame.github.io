@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Harmoni Turnuva Kaydı</title>
-<meta name="description" content="Limon Board Game Kafe masa oyunu turnuvalarına kayıt olun.">
+<title>Limon Turnuva Kaydı</title>
+<meta name="description" content="Limon Karşıyaka masa oyunu turnuvalarına kayıt.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
@@ -125,6 +125,29 @@ input[type=email]:focus{border-color:var(--leaf);outline:none;box-shadow:0 0 0 3
 .result .big{font-family:var(--display);font-size:28px;font-weight:800;line-height:1.1}
 .link{font:inherit;background:none;border:0;color:var(--leaf);font-weight:700;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .empty{padding:28px 22px;text-align:left;display:grid;gap:8px}
+/* how it works */
+.how{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;gap:18px}
+.how h2{font-size:20px}
+.flow{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:8px;align-items:stretch}
+.stage{border-radius:12px;background:var(--surface-2);padding:10px 8px 12px;display:grid;gap:8px;justify-items:center;text-align:center;min-width:0}
+.stage .lab{font-weight:700;font-size:14px}
+.stage .tm{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mini{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.mt{display:grid;grid-template-columns:repeat(2,6px);gap:2px;padding:3px;border-radius:4px;background:var(--surface)}
+.mt i{width:6px;height:6px;border-radius:50%;background:var(--lemon)}
+.funnel{display:flex;align-items:center;gap:10px;justify-content:center;font-size:13px;color:var(--muted);font-weight:600}
+.funnel::before,.funnel::after{content:"";height:1.5px;flex:1;background:var(--line)}
+.stage.final{background:var(--leaf-soft);grid-template-columns:auto auto auto;justify-content:center;align-items:center;column-gap:14px;padding:14px}
+.stage.final .txt{display:grid;gap:2px;text-align:left}
+.stage.final .lab{color:var(--leaf);font-size:16px}
+.stage.final .mt{background:var(--surface);padding:5px;gap:4px;grid-template-columns:repeat(2,10px)}
+.stage.final .mt i{width:10px;height:10px;background:var(--leaf)}
+.pts{display:flex;flex-wrap:wrap;gap:6px}
+.pt{display:flex;gap:6px;align-items:baseline;padding:5px 10px;border-radius:999px;border:1px solid var(--line);font-size:13px}
+.pt b{font-family:var(--mono);font-weight:500}
+.rules{margin:0;padding-left:18px;display:grid;gap:6px;font-size:15px}
+.rules li::marker{color:var(--lemon)}
+.sub{font-weight:600;font-size:15px;margin-bottom:8px}
 footer{margin-top:28px;font-size:13px;color:var(--muted);display:grid;gap:4px}
 @media (prefers-reduced-motion:no-preference){.seat.taken{transition:background .3s}}
 </style>
@@ -137,7 +160,7 @@ footer{margin-top:28px;font-size:13px;color:var(--muted);display:grid;gap:4px}
       <ellipse cx="21" cy="22" rx="10" ry="7.5" fill="none" stroke="var(--lemon-ink)" stroke-opacity=".25" stroke-width="1.5"/>
       <path d="M21 9 C 24 4, 30 4, 32 6 C 29 9, 25 10, 21 9 Z" fill="var(--leaf)"/>
     </svg>
-    <div><b>Limon Board Game Kafe</b><span></span></div>
+    <div><b>Limon</b><span>Masa oyunu kafe · Karşıyaka</span></div>
   </header>
 
   <div class="demo" id="demo" hidden><b>Önizleme modu.</b> Kayıtlar kaydedilmez. Gerçek kayıt için sayfanın başındaki <code>SCRIPT_URL</code> değerini doldurun.</div>
@@ -157,6 +180,19 @@ footer{margin-top:28px;font-size:13px;color:var(--muted);display:grid;gap:4px}
    Paste your Apps Script web app URL here (ends with /exec).
    Leave empty to see the page in preview mode with example events. */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiuT-jKw4FO2kQEyduEbwt32_puSecQ4UoxOOGDz2gq3DY28wMjB1cYCcoe7snrm65/exec";
+
+/* Tournament structure shown under the form ("Turnuva nasıl işler?").
+   Times are minutes after the event's start time (Saat column in the sheet).
+   Pair events and qualifier nights (ids starting with "heavy") use their own text below. */
+const FORMAT = {
+  rounds: 3,          // qualifying rounds
+  tableSize: 4,       // players per table in the qualifying rounds
+  pairsTableSize: 5,  // players per table at pair events
+  finalists: 4,       // players at the final table
+  roundStart: [30, 90, 150], // 1st, 2nd, 3rd round start: 14:00, 15:00, 16:00 for a 13:30 start
+  finalStart: 225,    // final: 17:15
+  end: 285            // awards / end: about 18:15
+};
 /* ========================================================================== */
 
 const DEMO_EVENTS = [
@@ -253,7 +289,7 @@ function renderMain(){
       ${seatsHtml(ev)}
     </div>`;
   if(!ev.open){
-    m.innerHTML = `<div class="card">${top}<div class="empty"><h2>Kayıtlar kapandı</h2><p class="muted">Bir sonraki turnuva için Instagram'ı takip et: @limonboardgame</p></div></div>`;
+    m.innerHTML = `<div class="card">${top}<div class="empty"><h2>Kayıtlar kapandı</h2><p class="muted">Bir sonraki turnuva için Instagram'ı takip et: @limonboardgame</p></div></div>` + howHtml(ev);
     return;
   }
   m.innerHTML = `<div class="card">${top}
@@ -267,28 +303,91 @@ function renderMain(){
       <div class="contact">
         <p class="contact-head">İletişim <span class="req">*</span> <small>En az birini yaz. Kayıt durumunu buradan bildireceğiz.</small></p>
         <div class="f"><label for="email">E-posta</label><input type="email" id="email" autocomplete="email" inputmode="email" maxlength="80" placeholder="ornek@mail.com"><small>Yazarsan kayıt onayın hemen e-postana gelir.</small><span class="err" id="e-email"></span></div>
-        <div class="f"><label for="phone">Telefon</label><input type="tel" id="phone" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="5xx xxx xx xx"><span class="err" id="e-phone"></span></div>
+        <div class="f"><label for="phone">Telefon</label><input type="tel" id="phone" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="05xx xxx xx xx"><span class="err" id="e-phone"></span></div>
         <span class="err" id="e-contact"></span>
       </div>
       <fieldset class="f">
-        <legend>Oyunu daha önce oynadınız mı? <span class="req">*</span></legend>
-        <label class="opt"><input type="radio" name="exp" value="Birçok kez oynadım."><span>Birçok kez oynadım</span></label>
-        <label class="opt"><input type="radio" name="exp" value="Birkaç kez oynadım."><span>Birkaç kez oynadım</span></label>
+        <legend>Oyunu daha önce oynadın mı? <span class="req">*</span></legend>
+        <label class="opt"><input type="radio" name="exp" value="Birçok kez oynadım"><span>Birçok kez oynadım</span></label>
+        <label class="opt"><input type="radio" name="exp" value="Birkaç kez oynadım"><span>Birkaç kez oynadım</span></label>
         <label class="opt"><input type="radio" name="exp" value="Hiç oynamadım, oyun anlatımına katılmak istiyorum."><span>Hiç oynamadım, oyun anlatımına katılmak istiyorum.</span></label>
         <span class="err" id="e-exp"></span>
       </fieldset>
       <div class="f">
-        <label class="check"><input type="checkbox" id="kvkk"><span>İletişim bilgilerimin yalnızca bu turnuvayla ilgili bilgilendirme için Limon Board Game Kafe tarafından kullanılmasını kabul ediyorum. <span class="req">*</span></span></label>
+        <label class="check"><input type="checkbox" id="kvkk"><span>İletişim bilgilerimin yalnızca bu turnuvayla ilgili bilgilendirme için Limon tarafından kullanılmasını kabul ediyorum. <span class="req">*</span></span></label>
         <span class="err" id="e-kvkk"></span>
       </div>
       <div class="hp" aria-hidden="true"><label for="website">Web sitesi</label><input type="text" id="website" tabindex="-1" autocomplete="off"></div>
       <div id="formErr"></div>
       <button class="submit${full ? " wait" : ""}" id="submit" type="submit">${full ? "Yedek listeye yazıl" : (ev.pairs ? "Takımımızı kaydet" : "Kaydımı yap")}</button>
-    </form></div>`;
+    </form></div>` + howHtml(ev);
   $("#form").addEventListener("submit", submit);
 }
 
 function setErr(id, msg){ const el = $("#e-" + id); if(el) el.textContent = msg || ""; const inp = $("#" + id); if(inp && inp.tagName === "INPUT" && inp.type !== "checkbox") inp.setAttribute("aria-invalid", msg ? "true" : "false"); }
+
+/* ---------- "Turnuva nasıl işler?" ---------- */
+/* Turkish locative suffix for a clock time: 14:00'te, 12:30'da, 18:15'te */
+function tAt(hhmm){
+  const x = /^(\d{1,2}):(\d{2})/.exec(hhmm || ""); if(!x) return hhmm || "";
+  const n = +x[2] ? +x[2] : +x[1];
+  const ones = ["da","de","de","te","te","te","da","de","de","da"], tens = ["da","da","de","da","ta","de"];
+  const suf = n % 10 ? ones[n % 10] : (n === 0 ? "da" : tens[Math.floor(n / 10)]);
+  return `${hhmm}'${suf}`;
+}
+function addMin(hhmm, m){ const x = /^(\d{1,2}):(\d{2})/.exec(hhmm || ""); if(!x) return ""; const t = (+x[1]) * 60 + (+x[2]) + m; return String(Math.floor(t / 60) % 24).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"); }
+function miniTables(n, per){ let h = ""; for(let i = 0; i < n; i++){ h += `<span class="mt">${"<i></i>".repeat(Math.min(per, 4))}</span>`; } return `<span class="mini" aria-hidden="true">${h}</span>`; }
+function pointsFor(n){ const a = []; for(let i = 0; i < n; i++) a.push(i === 0 ? n : Math.max(0, n - 1 - i)); return a; }
+const trophy = `<svg width="34" height="34" viewBox="0 0 26 26" aria-hidden="true"><path d="M5 5h16v4a8 8 0 0 1-16 0z" fill="var(--lemon)"/><path d="M5 7H2.5a3 3 0 0 0 3 4M21 7h2.5a3 3 0 0 1-3 4" fill="none" stroke="var(--lemon)" stroke-width="1.6"/><rect x="11" y="16" width="4" height="4" fill="var(--lemon)"/><rect x="8" y="20" width="10" height="2.6" rx="1" fill="var(--leaf)"/></svg>`;
+
+function howHtml(ev){
+  const nights = /^heavy/i.test(ev.id);
+  const pairs = !!ev.pairs && !nights;
+  const F = FORMAT, start = ev.time;
+  const per = pairs ? F.pairsTableSize : F.tableSize;
+  const players = pairs ? ev.capacity * 2 : ev.capacity;
+  const tables = Math.max(1, Math.ceil(players / per));
+  const at = m => addMin(start, m);
+  const ptsChips = (n) => pointsFor(n).map((p, i) => `<span class="pt">${i + 1}. sıra<b>${p} puan</b></span>`).join("");
+
+  if(nights){
+    return `<section class="how" aria-labelledby="how-h">
+      <h2 id="how-h">Turnuva nasıl işler?</h2>
+      <div class="flow" style="--n:1"><div class="stage"><span class="lab">Eleme gecesi</span><span class="tm">${esc(start)}</span>${miniTables(tables, F.tableSize)}<span class="tm">Her masada 1 oyun</span></div></div>
+      <div class="funnel">Masa birincileri</div>
+      <div class="stage final">${trophy}<span class="txt"><span class="lab">Final günü</span><span class="tm">${F.finalists} kişilik final masası</span></span></div>
+      <ul class="rules">
+        <li>Eleme gecesinde masalar kura ile kurulur ve her masa bir oyun oynar.</li>
+        <li>Her masanın birincisi final gününe kalır. Final masası dolmazsa, masa birincisinin puanına en yakın oyuncular yer alır.</li>
+        <li>Final masasını kazanan şampiyon olur.</li>
+        <li>Uzun bir oyun olduğu için süre sınırı vardır. Süre dolunca tur tamamlanır ve puanlar sayılır.</li>
+      </ul>
+    </section>`;
+  }
+
+  const roundTiles = Array.from({length: F.rounds}, (_, i) =>
+    `<div class="stage"><span class="lab">${i + 1}. Tur</span><span class="tm">${esc(at(F.roundStart[i] ?? (30 + i * 60)))}</span>${miniTables(tables, per)}</div>`).join("");
+  const finalLabel = pairs ? `En iyi ${Math.floor(F.finalists / 2)} takım` : `En yüksek puanlı ${F.finalists} oyuncu`;
+
+  return `<section class="how" aria-labelledby="how-h">
+    <h2 id="how-h">Turnuva nasıl işler?</h2>
+    <div class="flow" style="--n:${F.rounds}">${roundTiles}</div>
+    <div class="funnel">${esc(finalLabel)}</div>
+    <div class="stage final">${trophy}${miniTables(1, F.finalists)}<span class="txt"><span class="lab">Final</span><span class="tm">${esc(at(F.finalStart))} · ${F.finalists} kişilik masa</span></span></div>
+    <div>
+      <p class="sub">Her oyundan sonra masadaki sıralamana göre puan alırsın</p>
+      <div class="pts">${ptsChips(per)}</div>
+    </div>
+    <ul class="rules">
+      ${ev.teach ? `<li>Oyunu bilmeyenler için oyun anlatımı ${esc(tAt(ev.teach))} başlar.</li>` : ""}
+      <li>${esc(tAt(start))} giriş yapılır, ilk tur ${esc(tAt(at(F.roundStart[0])))} başlar. Herkes en az ${F.rounds} oyun oynar.</li>
+      <li>İlk turda masalar kura ile kurulur. Sonraki turlarda benzer puandaki oyuncular aynı masaya oturur.</li>
+      ${pairs ? `<li>Partnerler her turda <b>farklı masalarda</b> oynar. İkinizin puanı toplanır ve takım puanını oluşturur.</li>` : ""}
+      <li>${F.rounds} turun sonunda ${pairs ? `en çok puan toplayan <b>${Math.floor(F.finalists / 2)} takım</b> (${F.finalists} oyuncu)` : `en çok puan toplayan <b>${F.finalists} oyuncu</b>`} final masasına çıkar. Puanlar eşitse, oyun içi skorunun masa birincisinin skoruna oranı belirleyici olur.</li>
+      <li>${pairs ? "Finalde iki partnerin puanı toplanır; en yüksek toplamı alan takım şampiyon olur." : "Final masasını kazanan şampiyon olur."} Ödüller yaklaşık ${esc(tAt(at(F.end)))} verilir.</li>
+    </ul>
+  </section>`;
+}
 
 const phoneValid = v => { const d = String(v).replace(/\D/g, ""); return /^5\d{9}$/.test(d.slice(-10)) && [10,11,12].includes(d.length); };
 
@@ -355,7 +454,7 @@ function showResult(res, data){
   card.querySelector("form").outerHTML = `<div class="result" role="status">
     ${confirmed ? `<span class="eyebrow">Kayıt alındı</span><p class="big">Yerin ayrıldı, ${who}!</p>`
                 : `<span class="eyebrow">Yedek liste</span><p class="big">Yedek listede ${res.position}. sıradasın.</p><p>Bir yer açılırsa ${data.email ? "e-postayla" : "telefonla"} haber vereceğiz.</p>`}
-    ${confirmed && ev.teach && /^Hiç/.test(data.experience) ? `<p class="teach">Oyun anlatımı <b>${esc(ev.teach)}</b>'da başlıyor. Kuralları öğrenmek için o saatte gel.</p>` : ""}
+    ${confirmed && ev.teach && /^Hiç/.test(data.experience) ? `<p class="teach">Oyun anlatımı <b>${esc(tAt(ev.teach))}</b> başlıyor. Kuralları öğrenmek için o saatte gel.</p>` : ""}
     ${confirmed ? `<p>Görüşmek üzere: ${esc(fmtLong(ev.date))}, ${esc(ev.time)}.</p>` : ""}
     ${res.emailed ? `<p class="muted">Bir onay e-postası <b>${esc(data.email)}</b> adresine gönderildi. Gelmezse spam klasörüne bak.</p>` : ""}
     <p><button class="link" type="button" id="again">Başka bir kayıt yap</button></p>
